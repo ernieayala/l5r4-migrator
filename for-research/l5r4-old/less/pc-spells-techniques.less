@@ -1,0 +1,110 @@
+.l5r4.pc {
+
+  .special-list {
+    display: flex;
+    flex-direction: column;
+
+    .item {
+      display : grid;
+      grid-template-columns: 1fr 2fr max-content;
+      column-gap: 1em;
+      border-bottom: solid 1px rgba(0, 0, 0, 0.26);
+    }
+
+    h3 {
+      display: flex;
+      margin: 0.25rem 0;
+      img {
+        align-self: baseline;
+        margin-right: 5px;
+        width: 15px;
+        height: 15px;
+        border: none;
+      }
+    }
+  }
+
+  .advantage-list {
+    .advantage-stats{
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      column-gap:.2em;
+      align-items: center;
+    }
+  }
+  .disadvantage-list {
+    .disadvantage-stats{
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      column-gap:.2em;
+      align-items: center;
+    }
+  }
+  .techniques-list {
+    .technique-stats{
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      column-gap:.2em;
+      align-items: center;
+    }
+  }
+  .masteries-list {
+    .mastery-stats{
+      display: grid;
+      grid-template-columns: 1fr;
+      column-gap:.2em;
+      align-items: center;
+    }
+  }
+  .spells-list {
+    .spell-stats{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-areas: "ring mastery duration" "range aoe aoe" "raises raises raises";
+      column-gap:.2em;
+      align-items: center;
+      .spell-ring {
+        grid-area: ring;
+      }
+      .spell-mastery {
+        grid-area: mastery;
+      }
+      .spell-range {
+        grid-area: range;
+      }
+      .spell-aoe {
+        grid-area: aoe;
+      }
+      .spell-duration {
+        grid-area: duration;
+      }
+      .spell-raises {
+        grid-area: raises;
+      }
+    }
+  }
+  .kata-list {
+    .kata-stats{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap:.2em;
+      align-items: center;
+    }
+  }
+  .kiho-list {
+    .kiho-stats{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      column-gap:.2em;
+      align-items: center;
+    }
+  }
+  .tattoo-list {
+    .tattoo-stats{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      column-gap:.2em;
+      align-items: center;
+    }
+  }
+}

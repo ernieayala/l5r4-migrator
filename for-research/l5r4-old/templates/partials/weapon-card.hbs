@@ -1,0 +1,37 @@
+<div class="item-border {{type}}">
+  <div class="weapon-card item" data-item-id="{{_id}}">
+    <div class="weapon-info weapon-name">
+      {{#if inSheet}}
+      <a class="weapon-roll" title="{{localize "l5r4.mech.damageRoll"}}"><img src="icons/dice/d10black.svg" /></a>
+      <img width="15px" height="15px" src="{{img}}" />
+      <h3 class="weapon-roll" title="{{localize "l5r4.mech.damageRoll"}}">{{name}}</h3>
+      {{/if}}
+      {{#unless inSheet}}
+        <h3>{{name}}</h3>
+      {{/unless}}
+    </div>
+    <div class="weapon-info weapon-stats">
+      <div>
+        {{localize "l5r4.weapon.damage"}}: {{system.damageRoll}}k{{system.damageKeep}}
+      </div>
+      {{#if ranged}}
+        <div>
+          {{localize "l5r4.weapon.str"}}: {{system.str}}
+        </div>
+        <select class="arrow-type inline-edit" data-field="system.arrow">
+          {{selectOptions @root.config.arrows selected=system.arrow localize=true}}
+        </select>
+      {{/if}}
+    </div>
+    {{#unless inSheet}}
+      <div class="weapon-effects">
+        {{{system.description}}}
+      </div>
+    {{/unless}}
+    {{#if inSheet}}
+      <div>
+        <a class="item-edit"  title="{{localize "l5r4.sheet.edit"}}"><i class="fas fa-edit fa-fw"></i></a>
+      </div>
+    {{/if}}
+  </div>
+</div>

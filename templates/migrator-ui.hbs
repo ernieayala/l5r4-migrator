@@ -1,0 +1,283 @@
+<div class="l5r4-migrator-content">
+  <header class="migrator-header">
+    <h2>🎴 L5R4 Migration Tool</h2>
+    <p class="system-info">
+      <strong>System:</strong> {{systemId}} | <strong>World:</strong> {{worldName}}
+    </p>
+  </header>
+  
+  <section class="migrator-status">
+    <div class="status-indicator">
+      {{#if isL5R4}}
+        <i class="fas fa-check-circle" style="color: green;"></i>
+        <span>Running on <strong>l5r4</strong> - Ready to export</span>
+      {{else if isL5R4Enhanced}}
+        <i class="fas fa-check-circle" style="color: green;"></i>
+        <span>Running on <strong>l5r4-enhanced</strong> - Ready to import</span>
+      {{else}}
+        <i class="fas fa-exclamation-triangle" style="color: orange;"></i>
+        <span>Unsupported system: {{systemId}}</span>
+      {{/if}}
+    </div>
+    
+    {{#if hasExportData}}
+    <div class="status-indicator" style="margin-top: 0.5em;">
+      <i class="fas fa-database" style="color: blue;"></i>
+      <span>Export data loaded</span>
+    </div>
+    {{/if}}
+    
+    {{#if hasValidation}}
+    <div class="status-indicator" style="margin-top: 0.5em;">
+      {{#if validationReady}}
+        <i class="fas fa-check-circle" style="color: green;"></i>
+        <span>Validation passed - Ready to import!</span>
+      {{else}}
+        <i class="fas fa-exclamation-circle" style="color: orange;"></i>
+        <span>Validation found issues - Check report</span>
+      {{/if}}
+    </div>
+    {{/if}}
+  </section>
+  
+  <section class="migrator-workflow">
+    <h3>Migration Workflow</h3>
+    
+    <!-- Step 1: Backup -->
+    <div class="workflow-step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h4>Create Backup (Recommended)</h4>
+        <p class="step-description">Create a safety backup before starting migration</p>
+        <button type="button" data-action="backup" class="action-button">
+          <i class="fas fa-save"></i>
+          <span>Create Backup</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Step 2: Export (l5r4 only) -->
+    {{#if isL5R4}}
+    <div class="workflow-step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h4>Export World Data</h4>
+        <p class="step-description">Export all actors, items, and world data from l5r4 system</p>
+        <button type="button" data-action="export" class="action-button">
+          <i class="fas fa-file-export"></i>
+          <span>Export Data</span>
+        </button>
+        <p class="step-note">
+          <em>After export, switch to l5r4-enhanced system and upload the export file</em>
+        </p>
+      </div>
+    </div>
+    {{/if}}
+    
+    <!-- Step 2: Upload (l5r4-enhanced only) -->
+    {{#if isL5R4Enhanced}}
+    <div class="workflow-step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h4>Upload Export File</h4>
+        <p class="step-description">Load the export file from your l5r4 world</p>
+        <button type="button" data-action="uploadFile" class="action-button">
+          <i class="fas fa-upload"></i>
+          <span>Upload Export File</span>
+        </button>
+        {{#if hasExportData}}
+        <p class="step-note" style="color: green;">
+          <i class="fas fa-check"></i> <em>Export data loaded</em>
+        </p>
+        {{/if}}
+      </div>
+    </div>
+    
+    <!-- Step 3: Validate -->
+    <div class="workflow-step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h4>Validate Data</h4>
+        <p class="step-description">Check data integrity and migration readiness</p>
+        <button type="button" data-action="validate" class="action-button" {{#unless hasExportData}}disabled{{/unless}}>
+          <i class="fas fa-check-double"></i>
+          <span>Validate Data</span>
+        </button>
+        {{#if hasValidation}}
+        <p class="step-note" style="color: {{#if validationReady}}green{{else}}orange{{/if}};">
+          <i class="fas {{#if validationReady}}fa-check{{else}}fa-exclamation{{/if}}"></i>
+          <em>Validation {{#if validationReady}}passed{{else}}found issues{{/if}}</em>
+        </p>
+        {{/if}}
+      </div>
+    </div>
+    
+    <!-- Step 4: Import -->
+    <div class="workflow-step">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <h4>Import to l5r4-enhanced</h4>
+        <p class="step-description">Transform and import data into current world</p>
+        <button type="button" data-action="import" class="action-button primary" {{#unless hasExportData}}disabled{{/unless}}>
+          <i class="fas fa-file-import"></i>
+          <span>Import Data</span>
+        </button>
+        <p class="step-note warning">
+          <i class="fas fa-exclamation-triangle"></i>
+          <em>Create a backup first! Import will add documents to this world.</em>
+        </p>
+      </div>
+    </div>
+    {{/if}}
+  </section>
+  
+  <section class="migrator-info">
+    <h3>ℹ️ Information</h3>
+    <ul>
+      <li><strong>Phase 1 (l5r4):</strong> Create backup, then export data</li>
+      <li><strong>Phase 2 (l5r4-enhanced):</strong> Upload export, validate, then import</li>
+      <li><strong>Transformations:</strong> Converts snake_case to camelCase, bow → weapon, adds new fields</li>
+      <li><strong>Safety:</strong> Always create backups before migration operations</li>
+    </ul>
+  </section>
+</div>
+
+<style>
+.l5r4-migrator-content {
+  padding: 1em;
+}
+
+.migrator-header {
+  border-bottom: 2px solid #999;
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+}
+
+.migrator-header h2 {
+  margin: 0 0 0.5em 0;
+}
+
+.system-info {
+  font-size: 0.9em;
+  color: #666;
+  margin: 0;
+}
+
+.migrator-status {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.75em;
+  margin-bottom: 1em;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.migrator-workflow {
+  margin-bottom: 1.5em;
+}
+
+.workflow-step {
+  display: flex;
+  gap: 1em;
+  margin-bottom: 1.5em;
+  padding: 1em;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.step-number {
+  flex-shrink: 0;
+  width: 2em;
+  height: 2em;
+  background: #4a90e2;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.step-content {
+  flex-grow: 1;
+}
+
+.step-content h4 {
+  margin: 0 0 0.25em 0;
+}
+
+.step-description {
+  margin: 0 0 0.75em 0;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.step-note {
+  margin: 0.5em 0 0 0;
+  font-size: 0.85em;
+  color: #666;
+}
+
+.step-note.warning {
+  color: #d9534f;
+}
+
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.5em 1em;
+  background: #fff;
+  border: 1px solid #999;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.95em;
+}
+
+.action-button:hover:not(:disabled) {
+  background: #f0f0f0;
+  border-color: #666;
+}
+
+.action-button.primary {
+  background: #4a90e2;
+  color: white;
+  border-color: #357abd;
+}
+
+.action-button.primary:hover:not(:disabled) {
+  background: #357abd;
+}
+
+.action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.migrator-info {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 4px;
+  padding: 1em;
+}
+
+.migrator-info h3 {
+  margin-top: 0;
+}
+
+.migrator-info ul {
+  margin: 0;
+  padding-left: 1.5em;
+}
+
+.migrator-info li {
+  margin-bottom: 0.5em;
+}
+</style>

@@ -1,0 +1,66 @@
+{
+  "id": "l5r4-migrator",
+  "title": "L5R4 World Migrator",
+  "description": "Complete migration tool for transferring worlds from legacy l5r4 system to l5r4-enhanced system. Features backup, export, validation, schema transformation, and import with comprehensive error handling and user-friendly UI.",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Ernie Ayala",
+      "url": "https://github.com/ernieayala"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13",
+    "maximum": "13"
+  },
+  "esmodules": [
+    "l5r4-migrator.js"
+  ],
+  "styles": [
+    "styles/l5r4-migrator.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "l5r4",
+        "type": "system",
+        "compatibility": {},
+        "reason": "Source system for migration - export world data from l5r4"
+      },
+      {
+        "id": "l5r4-enhanced",
+        "type": "system",
+        "compatibility": {},
+        "reason": "Target system for migration - import world data to l5r4-enhanced"
+      }
+    ],
+    "recommends": [
+      {
+        "id": "quench",
+        "type": "module",
+        "reason": "Required for running integration tests in Foundry VTT"
+      }
+    ]
+  },
+  "url": "https://github.com/ernieayala/l5r4-migrator",
+  "manifest": "https://github.com/ernieayala/l5r4-migrator/releases/latest/download/module.json",
+  "download": "https://github.com/ernieayala/l5r4-migrator/releases/latest/download/l5r4-migrator.zip",
+  "bugs": "https://github.com/ernieayala/l5r4-migrator/issues",
+  "license": "MIT",
+  "readme": "README.md",
+  "changelog": "CHANGELOG.md",
+  "media": [
+    {
+      "type": "icon",
+      "url": "https://raw.githubusercontent.com/ernieayala/l5r4-migrator/main/icon.png"
+    }
+  ]
+}

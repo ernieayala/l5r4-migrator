@@ -1,0 +1,27 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <section class="top">
+    <div class="actor-img-box">
+      <img class="actor-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+    </div>
+    <div class="npc-stats">
+      {{> "systems/l5r4/templates/partials/npc-stats.hbs"}}
+    </div>
+  </section>
+  <div class="npc-rings">
+    {{> "systems/l5r4/templates/partials/npc-rings.hbs"}}
+  </div>
+  <section class="bottom">
+    <div class="npc-stats">
+      <div class="npc-skills">
+        {{> "systems/l5r4/templates/partials/npc-skills.hbs"}}
+      </div>
+      <div class="npc-notes">
+        <h2>{{localize "l5r4.sheet.notes"}}</h2>
+        {{editor system.notes target="system.notes" button=true owner=owner editable=true}}
+      </div>
+    </div>
+    <div class="npc-wounds">
+      {{> "systems/l5r4/templates/partials/npc-wounds.hbs"}}
+    </div>
+  </section>
+</form>

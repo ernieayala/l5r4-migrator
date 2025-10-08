@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Coverage
+tests/coverage/
+coverage/
+
+# Cache
+.vitest/
+
+# Documentation
+CHANGELOG.md
+
+# Package locks
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

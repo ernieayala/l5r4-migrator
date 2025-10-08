@@ -1,0 +1,28 @@
+<div class="item-border {{type}}">
+  <div class="tattoo-card item" data-item-id="{{_id}}">
+    <div class="tattoo-info tattoo-name">
+      <h3>
+        {{#if inSheet}}
+        <img width="15px" height="15px" src="{{img}}" />
+        <a title="{{localize "l5r4.sheet.edit"}}" class="item-edit">{{name}}</a>
+        {{else}}
+        {{name}}
+        {{/if}}
+      </h3>
+    </div>
+    <div class="tattoo-info tattoo-stats">
+      <div class="tattoo-effect">
+        {{system.effect}}
+      </div>
+    {{#unless inSheet}}
+      <div class="tattoo-effects">
+        {{{system.specialRules}}}
+      </div>
+      {{/unless}}
+    {{#if inSheet}}
+      <div>
+        <a class="item-edit"  title="{{localize "l5r4.sheet.edit"}}"><i class="fas fa-edit fa-fw"></i></a>
+      </div>
+    {{/if}}
+  </div>
+</div>

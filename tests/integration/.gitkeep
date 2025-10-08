@@ -1,0 +1,3 @@
+# This file keeps the integration directory in git
+# Integration tests are registered in module/testing/quench-tests.js
+# This directory can hold additional test resources if needed

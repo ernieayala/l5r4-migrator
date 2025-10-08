@@ -1,0 +1,86 @@
+{
+  "id": "l5r4",
+  "title": "Legend of the Five Rings 4th Edition",
+  "description": "An unofficial, comprehensive implementation of Legend of the Five Rings 4th Edition for Foundry VTT with complete character management, authentic dice mechanics, and full L5R4e rule support.",
+  "version": "1.1.0",
+  "authors": [
+    {
+      "name": "Ernie Ayala",
+      "url": "https://github.com/ernieayala/l5r4"
+    }
+  ],
+  "url": "https://github.com/ernieayala/l5r4",
+  "manifest": "https://github.com/ernieayala/l5r4/releases/latest/download/system.json",
+  "download": "https://github.com/ernieayala/l5r4/releases/latest/download/l5r4.zip",
+  "compatibility": {
+    "minimum": 13,
+    "verified": 13,
+    "maximum": 13
+  },
+  "esmodules": [
+    "l5r4.js"
+  ],
+  "styles": [
+    "l5r4.css"
+  ],
+  "packs": [],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "es",
+      "name": "Español",
+      "path": "lang/es.json"
+    },
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
+    },
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    },
+    {
+      "lang": "ru",
+      "name": "Русский",
+      "path": "lang/ru.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "pc": {},
+      "npc": {}
+    },
+    "Item": {
+      "advantage": {},
+      "armor": {},
+      "clan": {},
+      "commonItem": {},
+      "disadvantage": {},
+      "family": {},
+      "school": {},
+      "kata": {},
+      "kiho": {},
+      "skill": {},
+      "spell": {},
+      "tattoo": {},
+      "technique": {},
+      "weapon": {}
+    }
+  },
+  "grid": {
+    "distance": 5,
+    "units": "ft"
+  },
+  "license": "GPL v3"
+}

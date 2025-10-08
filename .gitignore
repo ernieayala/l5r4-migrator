@@ -1,0 +1,82 @@
+# Node artifact files
+node_modules/
+dist/
+build/
+
+# Compiled output
+*.class
+
+# Compiled Python bytecode
+*.py[cod]
+
+# Log files
+*.log
+logs/
+
+# Package files
+*.jar
+*.tar.gz
+*.zip
+
+# Maven
+target/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Unit test reports
+TEST*.xml
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Test coverage reports
+tests/coverage/
+coverage/
+.nyc_output/
+
+# Vitest cache
+.vitest/
+
+# Temporary files
+*.tmp
+*.temp
+.temp/
+.tmp/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build artifacts
+*.min.js
+*.min.css
+
+# Lock files (optional - uncomment if you want to exclude)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Release artifacts
+*.zip
+releases/
+
+# Backup files
+*.bak
+*.backup
+backups/
+
+# Documentation build
+docs/_build/
+docs/.buildinfo

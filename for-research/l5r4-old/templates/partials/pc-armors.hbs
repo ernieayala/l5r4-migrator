@@ -1,0 +1,13 @@
+<section class="armors panelBorder">
+  <h2>
+      <div>{{localize "l5r4.sheet.armors"}}</div>
+      <a class="item-create" data-type="armor" title="{{localize "l5r4.sheet.addspell"}}">
+        <i class="fas fa-plus"></i>
+      </a>
+    </h2>
+  <section class="armors-list">
+    {{#each armors as |armor id|}}
+    {{> "systems/l5r4/templates/partials/armor-card.hbs" armor}}
+    {{/each}}
+  </section>
+</section>
