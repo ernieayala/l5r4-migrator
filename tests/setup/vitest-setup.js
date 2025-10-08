@@ -119,7 +119,18 @@ export function setup() {
     applications: {
       api: {
         ApplicationV2: class MockApplicationV2 {},
-        DialogV2: class MockDialogV2 {}
+        DialogV2: class MockDialogV2 {
+          static async confirm(config) {
+            return true; // Default to confirming in tests
+          }
+          constructor(config) {
+            this.config = config;
+          }
+          render() {
+            return this;
+          }
+        },
+        HandlebarsApplicationMixin: (BaseClass) => BaseClass
       }
     }
   };
@@ -235,6 +246,19 @@ export function setup() {
   globalThis.mergeObject = mockFoundry.utils.mergeObject;
   globalThis.duplicate = mockFoundry.utils.duplicate;
   globalThis.randomID = vi.fn(() => Math.random().toString(36).substring(2, 18));
+  
+  // Mock legacy Dialog for backwards compatibility
+  globalThis.Dialog = class MockDialog {
+    static async confirm(config) {
+      return true;
+    }
+    constructor(config) {
+      this.config = config;
+    }
+    render() {
+      return this;
+    }
+  };
   
   console.log('✓ Foundry API mocks initialized for L5R4 Migrator');
 }

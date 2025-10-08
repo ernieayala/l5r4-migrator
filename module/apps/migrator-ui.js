@@ -19,7 +19,7 @@ import { ValidationService } from '../services/validation-service.js';
 import { ImportService } from '../services/import-service.js';
 import { Logger } from '../utils/logger.js';
 
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applications.api;
 
 /**
  * Main migration UI application
@@ -45,11 +45,11 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       height: 'auto'
     },
     actions: {
-      backup: MigratorUI.#onBackup,
-      export: MigratorUI.#onExport,
-      validate: MigratorUI.#onValidate,
-      import: MigratorUI.#onImport,
-      uploadFile: MigratorUI.#onUploadFile
+      backup: MigratorUI.prototype._onBackup,
+      export: MigratorUI.prototype._onExport,
+      validate: MigratorUI.prototype._onValidate,
+      import: MigratorUI.prototype._onImport,
+      uploadFile: MigratorUI.prototype._onUploadFile
     }
   };
   
@@ -89,7 +89,7 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * Handle backup button click
    */
-  static async #onBackup(event, target) {
+  async _onBackup(event, target) {
     Logger.info('Creating backup...');
     ui.notifications.info('Creating world backup...');
     
@@ -111,7 +111,7 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * Handle export button click
    */
-  static async #onExport(event, target) {
+  async _onExport(event, target) {
     Logger.info('Exporting world data...');
     ui.notifications.info('Exporting world data...');
     
@@ -122,12 +122,9 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
         validate: true
       });
       
-      // Store export data in the app instance
-      const app = ui.windows[this.DEFAULT_OPTIONS.id];
-      if (app) {
-        app.exportData = result.data;
-        await app.render();
-      }
+      // Store export data in this instance
+      this.exportData = result.data;
+      await this.render();
       
       // Download export file
       ExportService.downloadExport(result.data);
@@ -147,10 +144,8 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * Handle validate button click
    */
-  static async #onValidate(event, target) {
-    const app = ui.windows[this.DEFAULT_OPTIONS.id];
-    
-    if (!app?.exportData) {
+  async _onValidate(event, target) {
+    if (!this.exportData) {
       ui.notifications.warn('Please export data first, or upload an export file.');
       return;
     }
@@ -159,7 +154,7 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
     ui.notifications.info('Validating migration data...');
     
     try {
-      const validationResult = await ValidationService.validateData(app.exportData, {
+      const validationResult = await ValidationService.validateData(this.exportData, {
         strict: false,
         checkIntegrity: true
       });
@@ -167,11 +162,11 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       const report = ValidationService.generateReadinessReport(validationResult);
       
       // Store validation result
-      app.validationResult = validationResult;
-      await app.render();
+      this.validationResult = validationResult;
+      await this.render();
       
       // Display report
-      this.#showValidationReport(report);
+      this._showValidationReport(report);
       
       if (report.ready) {
         ui.notifications.info('Data validation passed! Ready for import.');
@@ -188,27 +183,26 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * Handle import button click
    */
-  static async #onImport(event, target) {
-    const app = ui.windows[this.DEFAULT_OPTIONS.id];
-    
-    if (!app?.exportData) {
+  async _onImport(event, target) {
+    if (!this.exportData) {
       ui.notifications.warn('Please export or upload data first.');
       return;
     }
     
-    if (!app?.validationResult?.valid) {
-      const confirm = await Dialog.confirm({
-        title: 'Import Warning',
+    if (!this.validationResult?.valid) {
+      const confirm = await DialogV2.confirm({
+        window: { title: 'Import Warning' },
         content: '<p>Data validation has not passed. Importing may cause errors.</p><p>Continue anyway?</p>',
-        defaultYes: false
+        rejectClose: false,
+        modal: true
       });
       
       if (!confirm) return;
     }
     
     // Final confirmation
-    const confirmImport = await Dialog.confirm({
-      title: 'Confirm Import',
+    const confirmImport = await DialogV2.confirm({
+      window: { title: 'Confirm Import' },
       content: `
         <h3>⚠️ Import Confirmation</h3>
         <p>This will import migration data into the current world.</p>
@@ -218,7 +212,8 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
         <p>It is <strong>strongly recommended</strong> to create a backup first.</p>
         <p>Continue with import?</p>
       `,
-      defaultYes: false
+      rejectClose: false,
+      modal: true
     });
     
     if (!confirmImport) return;
@@ -227,7 +222,7 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
     ui.notifications.info('Starting import process...');
     
     try {
-      const result = await ImportService.importWorld(app.exportData, {
+      const result = await ImportService.importWorld(this.exportData, {
         dryRun: false,
         skipFolders: false,
         skipScenes: false,
@@ -242,7 +237,7 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       Logger.info('Import successful:', result.stats);
       
       // Show detailed results
-      this.#showImportResults(result);
+      this._showImportResults(result);
       
     } catch (error) {
       ui.notifications.error('Import failed. See console for details.');
@@ -253,7 +248,7 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * Handle file upload
    */
-  static async #onUploadFile(event, target) {
+  async _onUploadFile(event, target) {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.json';
@@ -269,13 +264,10 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
         const content = await file.text();
         const data = JSON.parse(content);
         
-        // Store in app instance
-        const app = ui.windows[this.DEFAULT_OPTIONS.id];
-        if (app) {
-          app.exportData = data;
-          app.validationResult = null; // Clear old validation
-          await app.render();
-        }
+        // Store in this instance
+        this.exportData = data;
+        this.validationResult = null; // Clear old validation
+        await this.render();
         
         ui.notifications.info('Export file loaded successfully!');
         
@@ -292,7 +284,7 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
    * Show validation report dialog
    * @private
    */
-  static #showValidationReport(report) {
+  _showValidationReport(report) {
     const recommendations = report.recommendations.map(r => {
       const icon = {
         high: '🔴',
@@ -324,15 +316,15 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       </div>
     `;
     
-    new Dialog({
-      title: 'Validation Report',
+    new DialogV2({
+      window: { title: 'Validation Report' },
       content,
-      buttons: {
-        ok: {
-          icon: '<i class="fas fa-check"></i>',
-          label: 'OK'
-        }
-      }
+      buttons: [{
+        action: 'ok',
+        icon: 'fa-check',
+        label: 'OK',
+        default: true
+      }]
     }).render(true);
   }
   
@@ -340,7 +332,7 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
    * Show import results dialog
    * @private
    */
-  static #showImportResults(result) {
+  _showImportResults(result) {
     const stats = result.stats;
     
     const content = `
@@ -360,15 +352,15 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       </div>
     `;
     
-    new Dialog({
-      title: 'Import Results',
+    new DialogV2({
+      window: { title: 'Import Results' },
       content,
-      buttons: {
-        ok: {
-          icon: '<i class="fas fa-check"></i>',
-          label: 'OK'
-        }
-      }
+      buttons: [{
+        action: 'ok',
+        icon: 'fa-check',
+        label: 'OK',
+        default: true
+      }]
     }).render(true);
   }
 }

@@ -56,11 +56,5 @@
   "bugs": "https://github.com/ernieayala/l5r4-migrator/issues",
   "license": "MIT",
   "readme": "README.md",
-  "changelog": "CHANGELOG.md",
-  "media": [
-    {
-      "type": "icon",
-      "url": "https://raw.githubusercontent.com/ernieayala/l5r4-migrator/main/icon.png"
-    }
-  ]
+  "changelog": "CHANGELOG.md"
 }

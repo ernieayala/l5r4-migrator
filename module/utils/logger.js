@@ -58,7 +58,18 @@ export class Logger {
    */
   static #shouldLog(level) {
     const levels = { error: 0, warn: 1, info: 2, debug: 3 };
-    const currentLevel = game?.settings?.get('l5r4-migrator', 'logLevel') || 'info';
+    
+    // Try to get user setting, fallback to 'info' if not available
+    let currentLevel = 'info';
+    try {
+      if (game?.settings?.get) {
+        currentLevel = game.settings.get('l5r4-migrator', 'logLevel') || 'info';
+      }
+    } catch (e) {
+      // Settings not available (e.g., during tests or early init), use default
+      currentLevel = 'info';
+    }
+    
     return levels[level] <= levels[currentLevel];
   }
 }

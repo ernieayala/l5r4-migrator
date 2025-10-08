@@ -336,12 +336,21 @@ export class ImportService {
 
   /**
    * Import folders
+   * Sort by folder path depth to ensure parents are created before children
    * @private
    */
   static async _importFolders(folderData, dryRun) {
     const stats = { attempted: folderData.length, created: 0, failed: 0 };
 
-    for (const folder of folderData) {
+    // Sort folders by depth (parent-first)
+    // Folders without a parent come first, then by folder depth
+    const sortedFolders = [...folderData].sort((a, b) => {
+      const depthA = this._getFolderDepth(a, folderData);
+      const depthB = this._getFolderDepth(b, folderData);
+      return depthA - depthB;
+    });
+
+    for (const folder of sortedFolders) {
       try {
         if (!dryRun) {
           await Folder.create(folder);
@@ -354,6 +363,27 @@ export class ImportService {
     }
 
     return stats;
+  }
+
+  /**
+   * Calculate folder depth (how many parent levels)
+   * @private
+   */
+  static _getFolderDepth(folder, allFolders) {
+    if (!folder.folder) return 0; // Root folder
+    
+    let depth = 1;
+    let currentFolder = folder;
+    
+    // Traverse up to find depth (max 10 levels to prevent infinite loops)
+    for (let i = 0; i < 10; i++) {
+      const parent = allFolders.find(f => f._id === currentFolder.folder);
+      if (!parent) break;
+      depth++;
+      currentFolder = parent;
+    }
+    
+    return depth;
   }
 
   /**
