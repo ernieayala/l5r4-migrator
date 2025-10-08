@@ -1,6 +1,6 @@
 /**
  * @fileoverview Unit Tests for Export Service
- * 
+ *
  * Tests export functionality with mocked Foundry APIs.
  */
 
@@ -39,14 +39,10 @@ describe('Export Service', () => {
           name: 'Test PC',
           type: 'pc',
           system: { traits: { str: 3 } },
-          items: [
-            { _id: 'item1', name: 'Embedded Skill', type: 'skill' }
-          ]
+          items: [{ _id: 'item1', name: 'Embedded Skill', type: 'skill' }]
         }),
         items: {
-          contents: [
-            { toObject: () => ({ _id: 'item1', name: 'Embedded Skill', type: 'skill' }) }
-          ]
+          contents: [{ toObject: () => ({ _id: 'item1', name: 'Embedded Skill', type: 'skill' }) }]
         },
         effects: { contents: [] }
       };
@@ -66,15 +62,11 @@ describe('Export Service', () => {
         toObject: () => ({
           _id: 'actor1',
           name: 'Test Actor',
-          effects: [
-            { _id: 'effect1', label: 'Test Effect' }
-          ]
+          effects: [{ _id: 'effect1', label: 'Test Effect' }]
         }),
         items: { contents: [] },
         effects: {
-          contents: [
-            { toObject: () => ({ _id: 'effect1', label: 'Test Effect' }) }
-          ]
+          contents: [{ toObject: () => ({ _id: 'effect1', label: 'Test Effect' }) }]
         }
       };
 
@@ -132,14 +124,10 @@ describe('Export Service', () => {
         toObject: () => ({
           _id: 'item1',
           name: 'Magic Item',
-          effects: [
-            { _id: 'effect1', label: 'Damage Bonus' }
-          ]
+          effects: [{ _id: 'effect1', label: 'Damage Bonus' }]
         }),
         effects: {
-          contents: [
-            { toObject: () => ({ _id: 'effect1', label: 'Damage Bonus' }) }
-          ]
+          contents: [{ toObject: () => ({ _id: 'effect1', label: 'Damage Bonus' }) }]
         }
       };
 
@@ -227,7 +215,7 @@ describe('Export Service', () => {
             effects: { contents: [] }
           }
         ],
-        get: (id) => game.actors.contents.find(a => a.id === id)
+        get: (id) => game.actors.contents.find((a) => a.id === id)
       };
 
       // Mock items
@@ -261,28 +249,22 @@ describe('Export Service', () => {
             effects: { contents: [] }
           }
         ],
-        get: (id) => game.items.contents.find(i => i.id === id)
+        get: (id) => game.items.contents.find((i) => i.id === id)
       };
 
       // Mock scenes
       game.scenes = {
-        contents: [
-          { toObject: () => ({ _id: 'scene1', name: 'Test Scene' }) }
-        ]
+        contents: [{ toObject: () => ({ _id: 'scene1', name: 'Test Scene' }) }]
       };
 
       // Mock journals
       game.journal = {
-        contents: [
-          { toObject: () => ({ _id: 'journal1', name: 'Test Journal' }) }
-        ]
+        contents: [{ toObject: () => ({ _id: 'journal1', name: 'Test Journal' }) }]
       };
 
       // Mock folders
       game.folders = {
-        contents: [
-          { toObject: () => ({ _id: 'folder1', name: 'Actors Folder' }) }
-        ]
+        contents: [{ toObject: () => ({ _id: 'folder1', name: 'Actors Folder' }) }]
       };
     });
 
@@ -434,7 +416,7 @@ describe('Export Service', () => {
             effects: { contents: [] }
           }
         ],
-        get: (id) => game.actors.contents.find(a => a.id === id)
+        get: (id) => game.actors.contents.find((a) => a.id === id)
       };
     });
 
@@ -495,7 +477,7 @@ describe('Export Service', () => {
             effects: { contents: [] }
           }
         ],
-        get: (id) => game.items.contents.find(i => i.id === id)
+        get: (id) => game.items.contents.find((i) => i.id === id)
       };
     });
 

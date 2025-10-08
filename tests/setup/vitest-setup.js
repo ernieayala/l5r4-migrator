@@ -1,9 +1,9 @@
 /**
  * @fileoverview Vitest Global Setup - Foundry API Mocks
- * 
+ *
  * Sets up global mocks for Foundry VTT APIs to enable unit testing
  * of L5R4 migrator code outside of the Foundry environment.
- * 
+ *
  * **What This Mocks:**
  * - `game` global object
  * - `CONFIG` global object
@@ -13,7 +13,7 @@
  * - Base Document classes
  * - Application classes
  * - Utility functions
- * 
+ *
  * **Usage:**
  * This file is automatically loaded by Vitest before running tests.
  * All mocks are available globally in test files.
@@ -77,7 +77,7 @@ export function setup() {
       get: vi.fn()
     }
   };
-  
+
   // Mock ui object
   const mockUI = {
     notifications: {
@@ -86,7 +86,7 @@ export function setup() {
       error: vi.fn()
     }
   };
-  
+
   // Mock CONFIG object
   const mockCONFIG = {
     Actor: {
@@ -96,7 +96,7 @@ export function setup() {
       documentClass: class MockItemClass {}
     }
   };
-  
+
   // Mock foundry namespace
   const mockFoundry = {
     utils: {
@@ -109,7 +109,9 @@ export function setup() {
         const keys = path.split('.');
         const last = keys.pop();
         const target = keys.reduce((obj, key) => {
-          if (!obj[key]) obj[key] = {};
+          if (!obj[key]) {
+            obj[key] = {};
+          }
           return obj[key];
         }, object);
         target[last] = value;
@@ -134,7 +136,7 @@ export function setup() {
       }
     }
   };
-  
+
   // Mock CONST object
   const mockCONST = {
     DOCUMENT_OWNERSHIP_LEVELS: {
@@ -144,7 +146,7 @@ export function setup() {
       OWNER: 3
     }
   };
-  
+
   // Mock Hooks system
   const mockHooks = {
     on: vi.fn(),
@@ -153,7 +155,7 @@ export function setup() {
     call: vi.fn(),
     callAll: vi.fn()
   };
-  
+
   // Set as globals
   globalThis.game = mockGame;
   globalThis.ui = mockUI;
@@ -161,7 +163,7 @@ export function setup() {
   globalThis.foundry = mockFoundry;
   globalThis.CONST = mockCONST;
   globalThis.Hooks = mockHooks;
-  
+
   // Mock Document classes
   globalThis.Actor = class MockActor {
     constructor(data) {
@@ -177,7 +179,7 @@ export function setup() {
       return { ...this };
     }
   };
-  
+
   globalThis.Item = class MockItem {
     constructor(data) {
       Object.assign(this, data);
@@ -192,7 +194,7 @@ export function setup() {
       return { ...this };
     }
   };
-  
+
   globalThis.Scene = class MockScene {
     constructor(data) {
       Object.assign(this, data);
@@ -207,7 +209,7 @@ export function setup() {
       return { ...this };
     }
   };
-  
+
   globalThis.JournalEntry = class MockJournalEntry {
     constructor(data) {
       Object.assign(this, data);
@@ -222,7 +224,7 @@ export function setup() {
       return { ...this };
     }
   };
-  
+
   globalThis.Folder = class MockFolder {
     constructor(data) {
       Object.assign(this, data);
@@ -237,7 +239,7 @@ export function setup() {
       return { ...this };
     }
   };
-  
+
   // Mock utility functions
   globalThis.fromUuid = vi.fn((uuid) => Promise.resolve(null));
   globalThis.fromUuidSync = vi.fn((uuid) => null);
@@ -246,7 +248,7 @@ export function setup() {
   globalThis.mergeObject = mockFoundry.utils.mergeObject;
   globalThis.duplicate = mockFoundry.utils.duplicate;
   globalThis.randomID = vi.fn(() => Math.random().toString(36).substring(2, 18));
-  
+
   // Mock legacy Dialog for backwards compatibility
   globalThis.Dialog = class MockDialog {
     static async confirm(config) {
@@ -259,7 +261,7 @@ export function setup() {
       return this;
     }
   };
-  
+
   console.log('✓ Foundry API mocks initialized for L5R4 Migrator');
 }
 

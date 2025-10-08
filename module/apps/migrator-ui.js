@@ -1,9 +1,9 @@
 /**
  * @fileoverview Migrator UI Application
- * 
+ *
  * Main UI for the L5R4 world migration tool.
  * Built using Foundry VTT v13+ ApplicationV2 architecture.
- * 
+ *
  * **Features:**
  * - Step-by-step migration workflow
  * - Backup creation before migration
@@ -26,7 +26,6 @@ const { ApplicationV2, HandlebarsApplicationMixin, DialogV2 } = foundry.applicat
  * @extends ApplicationV2
  */
 export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
-  
   /**
    * Default application options
    */
@@ -52,7 +51,7 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       uploadFile: MigratorUI.prototype._onUploadFile
     }
   };
-  
+
   /**
    * Template path for the application
    */
@@ -61,19 +60,19 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       template: 'modules/l5r4-migrator/templates/migrator-ui.hbs'
     }
   };
-  
+
   constructor(options = {}) {
     super(options);
     this.exportData = null;
     this.validationResult = null;
   }
-  
+
   /**
    * Prepare context data for rendering
    */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    
+
     return {
       ...context,
       systemId: game.system.id,
@@ -85,21 +84,21 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       validationReady: this.validationResult?.valid || false
     };
   }
-  
+
   /**
    * Handle backup button click
    */
   async _onBackup(event, target) {
     Logger.info('Creating backup...');
     ui.notifications.info('Creating world backup...');
-    
+
     try {
       const result = await BackupService.createBackup({
         includeSettings: true,
         includeScenes: true,
         includeJournals: true
       });
-      
+
       ui.notifications.info(`Backup created: ${result.filename}`);
       Logger.info(`Backup successful: ${result.filename} (${result.size} bytes)`);
     } catch (error) {
@@ -107,30 +106,30 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       Logger.error('Backup failed:', error);
     }
   }
-  
+
   /**
    * Handle export button click
    */
   async _onExport(event, target) {
     Logger.info('Exporting world data...');
     ui.notifications.info('Exporting world data...');
-    
+
     try {
       const result = await ExportService.exportWorld({
         includeScenes: true,
         includeJournals: true,
         validate: true
       });
-      
+
       // Store export data in this instance
       this.exportData = result.data;
       await this.render();
-      
+
       // Download export file
       ExportService.downloadExport(result.data);
-      
+
       ui.notifications.info(`Exported ${result.stats.actors} actors, ${result.stats.items} items`);
-      
+
       if (result.validation.results.actors.invalid > 0 || result.validation.results.items.invalid > 0) {
         ui.notifications.warn('Some documents have validation warnings. Check console for details.');
         Logger.warn('Validation issues found:', result.validation);
@@ -140,7 +139,7 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       Logger.error('Export failed:', error);
     }
   }
-  
+
   /**
    * Handle validate button click
    */
@@ -149,37 +148,36 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       ui.notifications.warn('Please export data first, or upload an export file.');
       return;
     }
-    
+
     Logger.info('Validating export data...');
     ui.notifications.info('Validating migration data...');
-    
+
     try {
       const validationResult = await ValidationService.validateData(this.exportData, {
         strict: false,
         checkIntegrity: true
       });
-      
+
       const report = ValidationService.generateReadinessReport(validationResult);
-      
+
       // Store validation result
       this.validationResult = validationResult;
       await this.render();
-      
+
       // Display report
       this._showValidationReport(report);
-      
+
       if (report.ready) {
         ui.notifications.info('Data validation passed! Ready for import.');
       } else {
         ui.notifications.warn('Validation found issues. See report for details.');
       }
-      
     } catch (error) {
       ui.notifications.error('Validation failed. See console for details.');
       Logger.error('Validation failed:', error);
     }
   }
-  
+
   /**
    * Handle import button click
    */
@@ -188,7 +186,7 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       ui.notifications.warn('Please export or upload data first.');
       return;
     }
-    
+
     if (!this.validationResult?.valid) {
       const confirm = await DialogV2.confirm({
         window: { title: 'Import Warning' },
@@ -196,10 +194,12 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
         rejectClose: false,
         modal: true
       });
-      
-      if (!confirm) return;
+
+      if (!confirm) {
+        return;
+      }
     }
-    
+
     // Final confirmation
     const confirmImport = await DialogV2.confirm({
       window: { title: 'Confirm Import' },
@@ -215,12 +215,14 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       rejectClose: false,
       modal: true
     });
-    
-    if (!confirmImport) return;
-    
+
+    if (!confirmImport) {
+      return;
+    }
+
     Logger.info('Starting import...');
     ui.notifications.info('Starting import process...');
-    
+
     try {
       const result = await ImportService.importWorld(this.exportData, {
         dryRun: false,
@@ -228,23 +230,25 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
         skipScenes: false,
         skipJournals: false
       });
-      
-      const total = result.stats.actors.created + result.stats.items.created +
-                    result.stats.scenes.created + result.stats.journals.created +
-                    result.stats.folders.created;
-      
+
+      const total =
+        result.stats.actors.created +
+        result.stats.items.created +
+        result.stats.scenes.created +
+        result.stats.journals.created +
+        result.stats.folders.created;
+
       ui.notifications.info(`Import complete! Created ${total} documents.`);
       Logger.info('Import successful:', result.stats);
-      
+
       // Show detailed results
       this._showImportResults(result);
-      
     } catch (error) {
       ui.notifications.error('Import failed. See console for details.');
       Logger.error('Import failed:', error);
     }
   }
-  
+
   /**
    * Handle file upload
    */
@@ -252,50 +256,53 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.json';
-    
+
     input.onchange = async (e) => {
       const file = e.target.files[0];
-      if (!file) return;
-      
+      if (!file) {
+        return;
+      }
+
       try {
         Logger.info(`Loading export file: ${file.name}`);
         ui.notifications.info(`Loading ${file.name}...`);
-        
+
         const content = await file.text();
         const data = JSON.parse(content);
-        
+
         // Store in this instance
         this.exportData = data;
         this.validationResult = null; // Clear old validation
         await this.render();
-        
+
         ui.notifications.info('Export file loaded successfully!');
-        
       } catch (error) {
         ui.notifications.error('Failed to load file. See console for details.');
         Logger.error('File load failed:', error);
       }
     };
-    
+
     input.click();
   }
-  
+
   /**
    * Show validation report dialog
    * @private
    */
   _showValidationReport(report) {
-    const recommendations = report.recommendations.map(r => {
-      const icon = {
-        high: '🔴',
-        medium: '🟡',
-        low: '🔵',
-        info: '✅'
-      }[r.priority];
-      
-      return `<li>${icon} <strong>${r.message}</strong><br><em>${r.action}</em></li>`;
-    }).join('');
-    
+    const recommendations = report.recommendations
+      .map((r) => {
+        const icon = {
+          high: '🔴',
+          medium: '🟡',
+          low: '🔵',
+          info: '✅'
+        }[r.priority];
+
+        return `<li>${icon} <strong>${r.message}</strong><br><em>${r.action}</em></li>`;
+      })
+      .join('');
+
     const content = `
       <div class="l5r4-validation-report">
         <h3>Migration Readiness Report</h3>
@@ -315,26 +322,28 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
         <ul>${recommendations}</ul>
       </div>
     `;
-    
+
     new DialogV2({
       window: { title: 'Validation Report' },
       content,
-      buttons: [{
-        action: 'ok',
-        icon: 'fa-check',
-        label: 'OK',
-        default: true
-      }]
+      buttons: [
+        {
+          action: 'ok',
+          icon: 'fa-check',
+          label: 'OK',
+          default: true
+        }
+      ]
     }).render(true);
   }
-  
+
   /**
    * Show import results dialog
    * @private
    */
   _showImportResults(result) {
     const stats = result.stats;
-    
+
     const content = `
       <div class="l5r4-import-results">
         <h3>Import Complete</h3>
@@ -351,16 +360,18 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
         ${stats.actors.transformed ? `<p><em>Transformed ${stats.actors.transformed} actors and ${stats.items.transformed} items</em></p>` : ''}
       </div>
     `;
-    
+
     new DialogV2({
       window: { title: 'Import Results' },
       content,
-      buttons: [{
-        action: 'ok',
-        icon: 'fa-check',
-        label: 'OK',
-        default: true
-      }]
+      buttons: [
+        {
+          action: 'ok',
+          icon: 'fa-check',
+          label: 'OK',
+          default: true
+        }
+      ]
     }).render(true);
   }
 }

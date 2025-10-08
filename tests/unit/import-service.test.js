@@ -1,6 +1,6 @@
 /**
  * @fileoverview Unit Tests for Import Service
- * 
+ *
  * Tests data transformation and import logic.
  */
 
@@ -37,20 +37,20 @@ describe('Import Service', () => {
       // Check transformations applied
       expect(transformed.system.wounds.healRate).toBe(5);
       expect(transformed.system.wounds.heal_rate).toBeUndefined();
-      
+
       expect(transformed.system.woundLevels).toBeDefined();
       expect(transformed.system.wound_lvl).toBeUndefined();
-      
+
       expect(transformed.system.armor.armorTn).toBe(15);
       expect(transformed.system.armor.armor_tn).toBeUndefined();
-      
+
       expect(transformed.system.armorTn).toBeDefined();
       expect(transformed.system.armor_tn).toBeUndefined();
-      
+
       expect(transformed.system.initiative.rollMod).toBe(2);
       expect(transformed.system.initiative.keepMod).toBe(1);
       expect(transformed.system.initiative.totalMod).toBe(3);
-      
+
       expect(transformed.system.shadowTaint).toBeDefined();
       expect(transformed.system.shadow_taint).toBeUndefined();
     });
@@ -264,9 +264,7 @@ describe('Import Service', () => {
     });
 
     it('should handle import failures gracefully', async () => {
-      Actor.create = vi.fn()
-        .mockResolvedValueOnce({})
-        .mockRejectedValueOnce(new Error('Import failed'));
+      Actor.create = vi.fn().mockResolvedValueOnce({}).mockRejectedValueOnce(new Error('Import failed'));
 
       const actors = [
         { type: 'pc', name: 'PC 1', system: {} },
@@ -281,9 +279,7 @@ describe('Import Service', () => {
     });
 
     it('should skip creation in dry run mode', async () => {
-      const actors = [
-        { type: 'pc', name: 'PC 1', system: {} }
-      ];
+      const actors = [{ type: 'pc', name: 'PC 1', system: {} }];
 
       const stats = await ImportService.importActors(actors, true);
 
@@ -316,9 +312,7 @@ describe('Import Service', () => {
     });
 
     it('should handle import failures gracefully', async () => {
-      Item.create = vi.fn()
-        .mockResolvedValueOnce({})
-        .mockRejectedValueOnce(new Error('Import failed'));
+      Item.create = vi.fn().mockResolvedValueOnce({}).mockRejectedValueOnce(new Error('Import failed'));
 
       const items = [
         { type: 'skill', name: 'Item 1', system: {} },
@@ -333,9 +327,7 @@ describe('Import Service', () => {
     });
 
     it('should skip creation in dry run mode', async () => {
-      const items = [
-        { type: 'skill', name: 'Skill 1', system: {} }
-      ];
+      const items = [{ type: 'skill', name: 'Skill 1', system: {} }];
 
       const stats = await ImportService.importItems(items, true);
 
@@ -422,7 +414,7 @@ describe('Import Service', () => {
       expect(result.dryRun).toBe(true);
       expect(result.stats.actors.created).toBe(1);
       expect(result.stats.items.created).toBe(1);
-      
+
       expect(Actor.create).not.toHaveBeenCalled();
       expect(Item.create).not.toHaveBeenCalled();
     });

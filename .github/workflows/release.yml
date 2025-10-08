@@ -1,0 +1,119 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: npm test
+      
+      - name: Run linter
+        run: npm run lint
+      
+      - name: Check formatting
+        run: npm run format:check
+      
+      - name: Extract version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+      - name: Verify version matches module.json
+        run: |
+          MODULE_VERSION=$(node -p "require('./module.json').version")
+          TAG_VERSION="${{ steps.get_version.outputs.VERSION }}"
+          if [ "$MODULE_VERSION" != "$TAG_VERSION" ]; then
+            echo "❌ Version mismatch: module.json has $MODULE_VERSION but tag is v$TAG_VERSION"
+            exit 1
+          fi
+          echo "✅ Version verified: $MODULE_VERSION"
+      
+      - name: Create release package
+        run: |
+          mkdir -p release/l5r4-migrator
+          
+          # Copy production files
+          cp module.json release/l5r4-migrator/
+          cp l5r4-migrator.js release/l5r4-migrator/
+          cp README.md release/l5r4-migrator/
+          cp CHANGELOG.md release/l5r4-migrator/
+          cp LICENSE release/l5r4-migrator/
+          
+          # Copy directories
+          cp -r module release/l5r4-migrator/
+          cp -r lang release/l5r4-migrator/
+          cp -r styles release/l5r4-migrator/
+          cp -r templates release/l5r4-migrator/
+          
+          # Create zip
+          cd release
+          zip -r ../l5r4-migrator.zip l5r4-migrator
+          cd ..
+          
+          echo "✅ Created l5r4-migrator.zip"
+      
+      - name: Verify package contents
+        run: |
+          echo "📦 Package contents:"
+          unzip -l l5r4-migrator.zip
+      
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          VERSION="${{ steps.get_version.outputs.VERSION }}"
+          # Extract changelog section for this version
+          CHANGELOG=$(awk "/## \[$VERSION\]/,/## \[/" CHANGELOG.md | sed '$d' | sed '1d')
+          
+          # If changelog is empty, use a default message
+          if [ -z "$CHANGELOG" ]; then
+            CHANGELOG="Release version $VERSION. See [CHANGELOG.md](https://github.com/ernieayala/l5r4-migrator/blob/main/CHANGELOG.md) for details."
+          fi
+          
+          # Save to file for use in release notes
+          echo "$CHANGELOG" > release_notes.md
+          echo "✅ Extracted changelog"
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: L5R4 Migrator v${{ steps.get_version.outputs.VERSION }}
+          body_path: release_notes.md
+          files: |
+            l5r4-migrator.zip
+            module.json
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Release summary
+        run: |
+          echo "🎉 Release v${{ steps.get_version.outputs.VERSION }} created successfully!"
+          echo ""
+          echo "📦 Release assets:"
+          echo "  - l5r4-migrator.zip"
+          echo "  - module.json"
+          echo ""
+          echo "🔗 URLs:"
+          echo "  Manifest: https://github.com/ernieayala/l5r4-migrator/releases/latest/download/module.json"
+          echo "  Download: https://github.com/ernieayala/l5r4-migrator/releases/latest/download/l5r4-migrator.zip"

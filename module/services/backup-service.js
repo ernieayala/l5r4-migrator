@@ -1,15 +1,15 @@
 /**
  * @fileoverview Backup Service
- * 
+ *
  * Handles creating timestamped backups of worlds before migration operations.
  * Provides safety net for rollback if migration fails.
- * 
+ *
  * **Backup Strategy:**
  * - Exports all world documents to JSON (actors, items, scenes, journals, etc.)
  * - Saves to timestamped files in user's Downloads folder
  * - Stores metadata for easy identification and restoration
  * - Non-destructive - never modifies original world during backup
- * 
+ *
  * **File Structure:**
  * ```json
  * {
@@ -41,7 +41,7 @@ export class BackupService {
   /**
    * Create a timestamped backup of the current world
    * Exports all world data to a JSON file in user's Downloads
-   * 
+   *
    * @param {Object} options - Backup options
    * @param {boolean} options.includeSettings - Include world settings (default: true)
    * @param {boolean} options.includeScenes - Include scenes (default: true)
@@ -82,9 +82,9 @@ export class BackupService {
       this._downloadFile(fileContent, backupFilename);
 
       const metadata = backupData.metadata;
-      
+
       Logger.info(`Backup created successfully: ${backupFilename}`);
-      
+
       ui.notifications?.info(`Backup created: ${backupFilename}`);
 
       return {
@@ -124,30 +124,30 @@ export class BackupService {
 
     // Always include actors and items (core migration data)
     Logger.debug('Collecting actors...');
-    data.actors = game.actors.contents.map(a => a.toObject());
-    
+    data.actors = game.actors.contents.map((a) => a.toObject());
+
     Logger.debug('Collecting items...');
-    data.items = game.items.contents.map(i => i.toObject());
+    data.items = game.items.contents.map((i) => i.toObject());
 
     // Optional collections
     if (options.includeScenes) {
       Logger.debug('Collecting scenes...');
-      data.scenes = game.scenes.contents.map(s => s.toObject());
+      data.scenes = game.scenes.contents.map((s) => s.toObject());
     }
 
     if (options.includeJournals) {
       Logger.debug('Collecting journal entries...');
-      data.journals = game.journal.contents.map(j => j.toObject());
+      data.journals = game.journal.contents.map((j) => j.toObject());
     }
 
     if (options.includePlaylists) {
       Logger.debug('Collecting playlists...');
-      data.playlists = game.playlists?.contents.map(p => p.toObject()) || [];
+      data.playlists = game.playlists?.contents.map((p) => p.toObject()) || [];
     }
 
     // Always include folders for organization
     Logger.debug('Collecting folders...');
-    data.folders = game.folders.contents.map(f => f.toObject());
+    data.folders = game.folders.contents.map((f) => f.toObject());
 
     // Include world settings if requested
     if (options.includeSettings) {
@@ -175,12 +175,11 @@ export class BackupService {
    */
   static async _collectWorldSettings() {
     const settings = {};
-    
+
     // Get all settings for this module
     try {
-      const moduleSettings = game.settings.storage.get('world')
-        .filter(s => s[0].startsWith('l5r4'));
-      
+      const moduleSettings = game.settings.storage.get('world').filter((s) => s[0].startsWith('l5r4'));
+
       for (const [key, value] of moduleSettings) {
         settings[key] = value;
       }
@@ -213,7 +212,7 @@ export class BackupService {
   /**
    * Parse and validate a backup file
    * User must upload the file via file input
-   * 
+   *
    * @param {File} file - Backup file from file input
    * @returns {Promise<Object>} Parsed and validated backup data
    */
@@ -236,7 +235,7 @@ export class BackupService {
       // Validate version compatibility
       const backupSystem = data.metadata.system;
       const currentSystem = game.system.id;
-      
+
       if (backupSystem !== 'l5r4' && backupSystem !== 'l5r4-enhanced') {
         throw new Error(`Incompatible system: backup is from ${backupSystem}, expected l5r4 or l5r4-enhanced`);
       }
@@ -254,7 +253,7 @@ export class BackupService {
   /**
    * Restore world from backup data
    * WARNING: This will delete ALL existing world data first!
-   * 
+   *
    * @param {Object} backupData - Parsed backup data
    * @param {Object} options - Restore options
    * @param {boolean} options.deleteExisting - Delete existing data first (default: true)
@@ -262,10 +261,7 @@ export class BackupService {
    * @returns {Promise<Object>} Restore result with statistics
    */
   static async restoreBackup(backupData, options = {}) {
-    const {
-      deleteExisting = true,
-      restoreSettings = false
-    } = options;
+    const { deleteExisting = true, restoreSettings = false } = options;
 
     Logger.info('Starting backup restoration...', backupData.metadata);
 
@@ -363,7 +359,7 @@ export class BackupService {
       }
 
       Logger.info('Backup restoration complete', stats);
-      
+
       const errorCount = stats.errors.length;
       if (errorCount > 0) {
         ui.notifications?.warn(`Restore completed with ${errorCount} errors. See console for details.`);
@@ -392,31 +388,31 @@ export class BackupService {
     const stats = { actors: 0, items: 0, scenes: 0, journals: 0, folders: 0 };
 
     // Delete in reverse dependency order
-    const actorIds = game.actors.contents.map(a => a.id);
+    const actorIds = game.actors.contents.map((a) => a.id);
     if (actorIds.length) {
       await Actor.deleteDocuments(actorIds);
       stats.actors = actorIds.length;
     }
 
-    const itemIds = game.items.contents.map(i => i.id);
+    const itemIds = game.items.contents.map((i) => i.id);
     if (itemIds.length) {
       await Item.deleteDocuments(itemIds);
       stats.items = itemIds.length;
     }
 
-    const sceneIds = game.scenes.contents.map(s => s.id);
+    const sceneIds = game.scenes.contents.map((s) => s.id);
     if (sceneIds.length) {
       await Scene.deleteDocuments(sceneIds);
       stats.scenes = sceneIds.length;
     }
 
-    const journalIds = game.journal.contents.map(j => j.id);
+    const journalIds = game.journal.contents.map((j) => j.id);
     if (journalIds.length) {
       await JournalEntry.deleteDocuments(journalIds);
       stats.journals = journalIds.length;
     }
 
-    const folderIds = game.folders.contents.map(f => f.id);
+    const folderIds = game.folders.contents.map((f) => f.id);
     if (folderIds.length) {
       await Folder.deleteDocuments(folderIds);
       stats.folders = folderIds.length;

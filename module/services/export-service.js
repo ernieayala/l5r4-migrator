@@ -1,16 +1,16 @@
 /**
  * @fileoverview Export Service
- * 
+ *
  * Exports world data from legacy l5r4 system for migration.
  * Uses .toObject() to get complete document data including embedded items and effects.
- * 
+ *
  * **Export Strategy:**
  * - Exports complete document data using `.toObject()`
  * - Preserves embedded items on actors
  * - Preserves Active Effects
  * - Preserves all flags and custom data
  * - Returns data ready for validation and transformation
- * 
+ *
  * **Data Integrity:**
  * - No data loss - exports everything
  * - Includes both legacy and migrated field names
@@ -27,7 +27,7 @@ import { validateActorData, validateItemData } from '../utils/validators.js';
 export class ExportService {
   /**
    * Export all world data to a migration-ready format
-   * 
+   *
    * @param {Object} options - Export options
    * @param {boolean} options.includeScenes - Include scenes (default: true)
    * @param {boolean} options.includeJournals - Include journal entries (default: true)
@@ -37,13 +37,7 @@ export class ExportService {
    * @returns {Promise<Object>} Export result with data and metadata
    */
   static async exportWorld(options = {}) {
-    const {
-      includeScenes = true,
-      includeJournals = true,
-      validate = true,
-      actorIds = null,
-      itemIds = null
-    } = options;
+    const { includeScenes = true, includeJournals = true, validate = true, actorIds = null, itemIds = null } = options;
 
     Logger.info('Starting world export for migration...');
 
@@ -73,10 +67,10 @@ export class ExportService {
 
     try {
       // Export actors (always included for migration)
-      const actorsToExport = actorIds 
-        ? actorIds.map(id => game.actors.get(id)).filter(a => a)
+      const actorsToExport = actorIds
+        ? actorIds.map((id) => game.actors.get(id)).filter((a) => a)
         : game.actors.contents;
-      
+
       Logger.info(`Exporting ${actorsToExport.length} actors...`);
       for (const actor of actorsToExport) {
         const actorData = this._exportActor(actor);
@@ -100,10 +94,8 @@ export class ExportService {
       }
 
       // Export world items (always included for migration)
-      const itemsToExport = itemIds
-        ? itemIds.map(id => game.items.get(id)).filter(i => i)
-        : game.items.contents;
-      
+      const itemsToExport = itemIds ? itemIds.map((id) => game.items.get(id)).filter((i) => i) : game.items.contents;
+
       Logger.info(`Exporting ${itemsToExport.length} world items...`);
       for (const item of itemsToExport) {
         const itemData = this._exportItem(item);
@@ -129,18 +121,18 @@ export class ExportService {
       // Export scenes if requested
       if (includeScenes) {
         Logger.info(`Exporting ${game.scenes.contents.length} scenes...`);
-        exportData.scenes = game.scenes.contents.map(s => s.toObject());
+        exportData.scenes = game.scenes.contents.map((s) => s.toObject());
       }
 
       // Export journals if requested
       if (includeJournals) {
         Logger.info(`Exporting ${game.journal.contents.length} journal entries...`);
-        exportData.journals = game.journal.contents.map(j => j.toObject());
+        exportData.journals = game.journal.contents.map((j) => j.toObject());
       }
 
       // Always export folders for organization
       Logger.info(`Exporting ${game.folders.contents.length} folders...`);
-      exportData.folders = game.folders.contents.map(f => f.toObject());
+      exportData.folders = game.folders.contents.map((f) => f.toObject());
 
       // Add statistics to metadata
       exportData.metadata.stats = {
@@ -155,10 +147,10 @@ export class ExportService {
       if (validate) {
         const actorResults = exportData.validation.results.actors;
         const itemResults = exportData.validation.results.items;
-        
+
         Logger.info(`Validation complete: ${actorResults.valid} valid actors, ${actorResults.invalid} invalid`);
         Logger.info(`Validation complete: ${itemResults.valid} valid items, ${itemResults.invalid} invalid`);
-        
+
         if (actorResults.invalid > 0 || itemResults.invalid > 0) {
           Logger.warn('Export contains validation errors. See exportData.validation.results for details.');
         }
@@ -186,18 +178,18 @@ export class ExportService {
    */
   static _exportActor(actor) {
     Logger.debug(`Exporting actor: ${actor.name} (${actor.type})`);
-    
+
     // Get complete actor data including embedded items and effects
     const actorData = actor.toObject();
-    
+
     // Ensure embedded items are included (they should be via toObject, but verify)
     if (!actorData.items) {
-      actorData.items = actor.items?.contents?.map(i => i.toObject()) || [];
+      actorData.items = actor.items?.contents?.map((i) => i.toObject()) || [];
     }
-    
+
     // Ensure effects are included
     if (!actorData.effects) {
-      actorData.effects = actor.effects?.contents?.map(e => e.toObject()) || [];
+      actorData.effects = actor.effects?.contents?.map((e) => e.toObject()) || [];
     }
 
     return actorData;
@@ -211,13 +203,13 @@ export class ExportService {
    */
   static _exportItem(item) {
     Logger.debug(`Exporting item: ${item.name} (${item.type})`);
-    
+
     // Get complete item data including effects
     const itemData = item.toObject();
-    
+
     // Ensure effects are included
     if (!itemData.effects) {
-      itemData.effects = item.effects?.contents?.map(e => e.toObject()) || [];
+      itemData.effects = item.effects?.contents?.map((e) => e.toObject()) || [];
     }
 
     return itemData;
@@ -225,7 +217,7 @@ export class ExportService {
 
   /**
    * Export specific actors by ID
-   * 
+   *
    * @param {Array<string>} actorIds - Actor IDs to export
    * @param {boolean} validate - Validate exported data (default: true)
    * @returns {Promise<Object>} Exported actors with validation results
@@ -277,7 +269,7 @@ export class ExportService {
 
   /**
    * Export specific items by ID
-   * 
+   *
    * @param {Array<string>} itemIds - Item IDs to export
    * @param {boolean} validate - Validate exported data (default: true)
    * @returns {Promise<Object>} Exported items with validation results
@@ -329,7 +321,7 @@ export class ExportService {
 
   /**
    * Download export data as JSON file
-   * 
+   *
    * @param {Object} exportData - Export data to download
    * @param {string} filename - Custom filename (optional)
    */
@@ -339,7 +331,7 @@ export class ExportService {
     const exportFilename = filename || `l5r4-export-${worldId}-${timestamp}.json`;
 
     const content = JSON.stringify(exportData, null, 2);
-    
+
     const blob = new Blob([content], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');

@@ -1,7 +1,7 @@
 {
   "L5R4MIGRATOR": {
     "ButtonOpenMigrator": "L5R4 World Migrator",
-    
+
     "UI": {
       "Title": "L5R4 World Migrator",
       "Heading": "World Migration Tool",
@@ -13,20 +13,20 @@
       "Actions": "Migration Actions",
       "Information": "Information",
       "InfoText": "This tool helps you safely migrate world data between l5r4 systems. Always create a backup before proceeding with any migration operations.",
-      
+
       "BackupWorld": "Create Backup",
       "BackupDescription": "Create a timestamped backup of the current world before any migration operations.",
-      
+
       "ExportData": "Export World Data",
       "ExportDescription": "Export all actors, items, scenes, and journal entries to a migration file.",
-      
+
       "ValidateData": "Validate Migration Data",
       "ValidateDescription": "Check imported data for errors and compatibility issues before applying.",
-      
+
       "ImportData": "Import World Data",
       "ImportDescription": "Import validated data into the current world. This will create new documents."
     },
-    
+
     "Settings": {
       "BackupLocation": {
         "Name": "Backup Location",
@@ -45,20 +45,20 @@
         "Debug": "Debug"
       }
     },
-    
+
     "Notifications": {
       "BackupStarted": "Backup operation started...",
       "BackupComplete": "Backup completed successfully",
       "BackupFailed": "Backup failed: {error}",
-      
+
       "ExportStarted": "Export operation started...",
       "ExportComplete": "Export completed successfully",
       "ExportFailed": "Export failed: {error}",
-      
+
       "ValidationStarted": "Validation started...",
       "ValidationComplete": "Validation completed: {passed} passed, {failed} failed",
       "ValidationFailed": "Validation failed: {error}",
-      
+
       "ImportStarted": "Import operation started...",
       "ImportComplete": "Import completed: {created} documents created",
       "ImportFailed": "Import failed: {error}"

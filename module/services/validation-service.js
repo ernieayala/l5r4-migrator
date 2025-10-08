@@ -1,13 +1,13 @@
 /**
  * @fileoverview Validation Service
- * 
+ *
  * Validates exported data before import to catch errors early.
  * Provides comprehensive validation including:
  * - Individual document validation (actors, items)
  * - Data integrity checks (duplicate IDs, missing references)
  * - Compatibility validation (system version, required fields)
  * - Statistical analysis for migration readiness
- * 
+ *
  * **Validation Strategy:**
  * - Use Phase 1 validators for document-level validation
  * - Add dataset-level integrity checks
@@ -25,7 +25,7 @@ export class ValidationService {
   /**
    * Validate complete export/import data structure
    * Performs comprehensive validation including individual documents and integrity checks
-   * 
+   *
    * @param {Object} data - Export data to validate
    * @param {Object} options - Validation options
    * @param {boolean} options.strict - Enable strict validation (fail on warnings)
@@ -33,10 +33,7 @@ export class ValidationService {
    * @returns {Promise<Object>} Comprehensive validation result
    */
   static async validateData(data, options = {}) {
-    const {
-      strict = false,
-      checkIntegrity = true
-    } = options;
+    const { strict = false, checkIntegrity = true } = options;
 
     Logger.info('Starting comprehensive data validation...');
 
@@ -127,8 +124,10 @@ export class ValidationService {
       }
 
       // Log summary
-      Logger.info(`Validation complete: ${result.metadata.validActors}/${result.metadata.totalActors} actors valid, ${result.metadata.validItems}/${result.metadata.totalItems} items valid`);
-      
+      Logger.info(
+        `Validation complete: ${result.metadata.validActors}/${result.metadata.totalActors} actors valid, ${result.metadata.validItems}/${result.metadata.totalItems} items valid`
+      );
+
       if (!result.valid) {
         Logger.warn(`Validation found ${result.errors.length} errors, ${result.warnings.length} warnings`);
       }
@@ -146,7 +145,7 @@ export class ValidationService {
    */
   static _validateMetadata(metadata, result) {
     const requiredFields = ['sourceSystem', 'worldId', 'worldTitle'];
-    
+
     for (const field of requiredFields) {
       if (!metadata[field]) {
         result.errors.push(`Missing required metadata field: ${field}`);
@@ -173,14 +172,14 @@ export class ValidationService {
     if (data.actors && Array.isArray(data.actors)) {
       const actorIds = new Set();
       const duplicates = [];
-      
+
       for (const actor of data.actors) {
         if (actorIds.has(actor._id)) {
           duplicates.push(actor._id);
         }
         actorIds.add(actor._id);
       }
-      
+
       if (duplicates.length > 0) {
         result.integrityIssues.push({
           type: 'duplicate_actor_ids',
@@ -194,14 +193,14 @@ export class ValidationService {
     if (data.items && Array.isArray(data.items)) {
       const itemIds = new Set();
       const duplicates = [];
-      
+
       for (const item of data.items) {
         if (itemIds.has(item._id)) {
           duplicates.push(item._id);
         }
         itemIds.add(item._id);
       }
-      
+
       if (duplicates.length > 0) {
         result.integrityIssues.push({
           type: 'duplicate_item_ids',
@@ -213,13 +212,13 @@ export class ValidationService {
 
     // Check for legacy bow items
     if (data.items && Array.isArray(data.items)) {
-      const bowItems = data.items.filter(i => i.type === 'bow');
+      const bowItems = data.items.filter((i) => i.type === 'bow');
       if (bowItems.length > 0) {
         result.integrityIssues.push({
           type: 'legacy_bow_items',
           message: `Found ${bowItems.length} legacy bow items that need conversion`,
           count: bowItems.length,
-          items: bowItems.map(b => ({ id: b._id, name: b.name }))
+          items: bowItems.map((b) => ({ id: b._id, name: b.name }))
         });
       }
     }
@@ -250,7 +249,7 @@ export class ValidationService {
   /**
    * Validate a single actor
    * Uses Phase 1 validator
-   * 
+   *
    * @param {Object} actorData - Actor data to validate
    * @returns {Object} Validation result with errors and warnings
    */
@@ -261,7 +260,7 @@ export class ValidationService {
   /**
    * Validate a single item
    * Uses Phase 1 validator
-   * 
+   *
    * @param {Object} itemData - Item data to validate
    * @returns {Object} Validation result with errors and warnings
    */
@@ -272,7 +271,7 @@ export class ValidationService {
   /**
    * Generate a migration readiness report
    * Provides high-level summary of validation results
-   * 
+   *
    * @param {Object} validationResult - Result from validateData()
    * @returns {Object} Migration readiness report
    */
@@ -283,7 +282,8 @@ export class ValidationService {
         totalDocuments: validationResult.metadata.totalActors + validationResult.metadata.totalItems,
         validDocuments: validationResult.metadata.validActors + validationResult.metadata.validItems,
         invalidDocuments: validationResult.metadata.invalidActors + validationResult.metadata.invalidItems,
-        totalErrors: validationResult.errors.length + validationResult.actorErrors.length + validationResult.itemErrors.length,
+        totalErrors:
+          validationResult.errors.length + validationResult.actorErrors.length + validationResult.itemErrors.length,
         totalWarnings: validationResult.warnings.length,
         integrityIssues: validationResult.integrityIssues.length
       },
@@ -300,7 +300,7 @@ export class ValidationService {
     }
 
     if (validationResult.integrityIssues.length > 0) {
-      const bowItems = validationResult.integrityIssues.find(i => i.type === 'legacy_bow_items');
+      const bowItems = validationResult.integrityIssues.find((i) => i.type === 'legacy_bow_items');
       if (bowItems) {
         report.recommendations.push({
           priority: 'medium',
@@ -309,7 +309,7 @@ export class ValidationService {
         });
       }
 
-      const duplicates = validationResult.integrityIssues.filter(i => i.type.includes('duplicate'));
+      const duplicates = validationResult.integrityIssues.filter((i) => i.type.includes('duplicate'));
       if (duplicates.length > 0) {
         report.recommendations.push({
           priority: 'high',
@@ -340,7 +340,7 @@ export class ValidationService {
 
   /**
    * Validate compatibility between source and target systems
-   * 
+   *
    * @param {Object} sourceMetadata - Source system metadata
    * @param {Object} targetMetadata - Target system metadata (from game)
    * @returns {Object} Compatibility result
@@ -369,9 +369,11 @@ export class ValidationService {
     if (sourceMetadata.foundryVersion && target.foundryVersion) {
       const sourceMajor = parseInt(sourceMetadata.foundryVersion.split('.')[0]);
       const targetMajor = parseInt(target.foundryVersion.split('.')[0]);
-      
+
       if (Math.abs(sourceMajor - targetMajor) > 1) {
-        result.warnings.push(`Foundry version mismatch: source ${sourceMetadata.foundryVersion}, target ${target.foundryVersion}`);
+        result.warnings.push(
+          `Foundry version mismatch: source ${sourceMetadata.foundryVersion}, target ${target.foundryVersion}`
+        );
       }
     }
 

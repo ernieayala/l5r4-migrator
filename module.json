@@ -14,12 +14,8 @@
     "verified": "13",
     "maximum": "13"
   },
-  "esmodules": [
-    "l5r4-migrator.js"
-  ],
-  "styles": [
-    "styles/l5r4-migrator.css"
-  ],
+  "esmodules": ["l5r4-migrator.js"],
+  "styles": ["styles/l5r4-migrator.css"],
   "languages": [
     {
       "lang": "en",

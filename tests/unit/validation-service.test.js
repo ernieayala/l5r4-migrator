@@ -1,6 +1,6 @@
 /**
  * @fileoverview Unit Tests for Validation Service
- * 
+ *
  * Tests comprehensive validation including integrity checks and readiness reports.
  */
 
@@ -155,9 +155,9 @@ describe('Validation Service', () => {
 
       const result = await ValidationService.validateData(badData);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('sourceSystem'))).toBe(true);
-      expect(result.errors.some(e => e.includes('worldId'))).toBe(true);
-      expect(result.errors.some(e => e.includes('worldTitle'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('sourceSystem'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('worldId'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('worldTitle'))).toBe(true);
     });
 
     it('should validate actors and items', async () => {
@@ -188,7 +188,7 @@ describe('Validation Service', () => {
 
       const result = await ValidationService.validateData(dataWithDuplicates);
 
-      expect(result.integrityIssues.some(i => i.type === 'duplicate_actor_ids')).toBe(true);
+      expect(result.integrityIssues.some((i) => i.type === 'duplicate_actor_ids')).toBe(true);
     });
 
     it('should skip integrity checks when disabled', async () => {
@@ -237,7 +237,7 @@ describe('Validation Service', () => {
 
       const result = await ValidationService.validateData(data);
 
-      const duplicateIssue = result.integrityIssues.find(i => i.type === 'duplicate_actor_ids');
+      const duplicateIssue = result.integrityIssues.find((i) => i.type === 'duplicate_actor_ids');
       expect(duplicateIssue).toBeDefined();
       expect(duplicateIssue.ids).toEqual(['dup1', 'dup2']);
     });
@@ -254,7 +254,7 @@ describe('Validation Service', () => {
 
       const result = await ValidationService.validateData(data);
 
-      const duplicateIssue = result.integrityIssues.find(i => i.type === 'duplicate_item_ids');
+      const duplicateIssue = result.integrityIssues.find((i) => i.type === 'duplicate_item_ids');
       expect(duplicateIssue).toBeDefined();
       expect(duplicateIssue.ids).toEqual(['dup1']);
     });
@@ -281,7 +281,7 @@ describe('Validation Service', () => {
 
       const result = await ValidationService.validateData(data);
 
-      const bowIssue = result.integrityIssues.find(i => i.type === 'legacy_bow_items');
+      const bowIssue = result.integrityIssues.find((i) => i.type === 'legacy_bow_items');
       expect(bowIssue).toBeDefined();
       expect(bowIssue.count).toBe(2);
       expect(bowIssue.items).toHaveLength(2);
@@ -308,7 +308,7 @@ describe('Validation Service', () => {
 
       const result = await ValidationService.validateData(data);
 
-      const embeddedIssue = result.integrityIssues.find(i => i.type === 'invalid_embedded_item');
+      const embeddedIssue = result.integrityIssues.find((i) => i.type === 'invalid_embedded_item');
       expect(embeddedIssue).toBeDefined();
       expect(embeddedIssue.actorName).toBe('Test PC');
       expect(embeddedIssue.itemName).toBe('Bad Embedded');
@@ -324,7 +324,7 @@ describe('Validation Service', () => {
       expect(report.summary.totalDocuments).toBe(2);
       expect(report.summary.validDocuments).toBe(2);
       expect(report.summary.invalidDocuments).toBe(0);
-      expect(report.recommendations.some(r => r.message.includes('ready for migration'))).toBe(true);
+      expect(report.recommendations.some((r) => r.message.includes('ready for migration'))).toBe(true);
     });
 
     it('should generate recommendations for invalid documents', async () => {
@@ -339,20 +339,27 @@ describe('Validation Service', () => {
 
       expect(report.ready).toBe(false);
       expect(report.summary.invalidDocuments).toBe(1);
-      expect(report.recommendations.some(r => r.priority === 'high' && r.message.includes('Fix'))).toBe(true);
+      expect(report.recommendations.some((r) => r.priority === 'high' && r.message.includes('Fix'))).toBe(true);
     });
 
     it('should recommend bow item conversion', async () => {
       const data = {
         metadata: validExportData.metadata,
         actors: [],
-        items: [{ _id: 'bow1', name: 'Bow', type: 'bow', system: { str: 3, range: 100, damageRoll: 2, damageKeep: 2, explodesOn: 10 } }]
+        items: [
+          {
+            _id: 'bow1',
+            name: 'Bow',
+            type: 'bow',
+            system: { str: 3, range: 100, damageRoll: 2, damageKeep: 2, explodesOn: 10 }
+          }
+        ]
       };
 
       const validation = await ValidationService.validateData(data);
       const report = ValidationService.generateReadinessReport(validation);
 
-      expect(report.recommendations.some(r => r.message.includes('bow items will be converted'))).toBe(true);
+      expect(report.recommendations.some((r) => r.message.includes('bow items will be converted'))).toBe(true);
     });
 
     it('should warn about duplicate IDs', async () => {
@@ -368,7 +375,7 @@ describe('Validation Service', () => {
       const validation = await ValidationService.validateData(data);
       const report = ValidationService.generateReadinessReport(validation);
 
-      expect(report.recommendations.some(r => r.priority === 'high' && r.message.includes('Duplicate'))).toBe(true);
+      expect(report.recommendations.some((r) => r.priority === 'high' && r.message.includes('Duplicate'))).toBe(true);
     });
 
     it('should summarize warnings', async () => {
@@ -385,7 +392,7 @@ describe('Validation Service', () => {
       const report = ValidationService.generateReadinessReport(validation);
 
       expect(report.summary.totalWarnings).toBeGreaterThan(0);
-      expect(report.recommendations.some(r => r.priority === 'low' && r.message.includes('warnings'))).toBe(true);
+      expect(report.recommendations.some((r) => r.priority === 'low' && r.message.includes('warnings'))).toBe(true);
     });
   });
 
@@ -415,7 +422,7 @@ describe('Validation Service', () => {
       const result = ValidationService.validateCompatibility(sourceMetadata, {});
 
       expect(result.compatible).toBe(false);
-      expect(result.errors.some(e => e.includes('Incompatible source system'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('Incompatible source system'))).toBe(true);
     });
 
     it('should accept l5r4-enhanced as source', () => {
@@ -440,7 +447,7 @@ describe('Validation Service', () => {
 
       const result = ValidationService.validateCompatibility(sourceMetadata, targetMetadata);
 
-      expect(result.warnings.some(w => w.includes('version mismatch'))).toBe(true);
+      expect(result.warnings.some((w) => w.includes('version mismatch'))).toBe(true);
     });
 
     it('should not warn for minor version differences', () => {
@@ -477,8 +484,12 @@ describe('Validation Service', () => {
     it('should handle large dataset', async () => {
       const largeData = {
         metadata: validExportData.metadata,
-        actors: Array(100).fill(null).map((_, i) => ({ ...validActorData, _id: `actor${i}` })),
-        items: Array(200).fill(null).map((_, i) => ({ ...validItemData, _id: `item${i}` }))
+        actors: Array(100)
+          .fill(null)
+          .map((_, i) => ({ ...validActorData, _id: `actor${i}` })),
+        items: Array(200)
+          .fill(null)
+          .map((_, i) => ({ ...validItemData, _id: `item${i}` }))
       };
 
       const result = await ValidationService.validateData(largeData);

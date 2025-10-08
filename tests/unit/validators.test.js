@@ -1,6 +1,6 @@
 /**
  * @fileoverview Unit Tests for Data Validators
- * 
+ *
  * Tests validation functions for Actor and Item data structures.
  * Based on l5r4-old schema.
  */
@@ -74,37 +74,37 @@ describe('Actor Data Validators', () => {
       delete validPC.system.traits.str;
       const result = validateActorData(validPC);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('traits.str'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('traits.str'))).toBe(true);
     });
 
     it('should detect invalid trait type', () => {
       validPC.system.traits.str = 'not a number';
       const result = validateActorData(validPC);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('traits.str'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('traits.str'))).toBe(true);
     });
 
     it('should detect missing rings', () => {
       delete validPC.system.rings.fire;
       const result = validateActorData(validPC);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('rings.fire'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('rings.fire'))).toBe(true);
     });
 
     it('should detect missing void ring', () => {
       delete validPC.system.rings.void;
       const result = validateActorData(validPC);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('rings.void'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('rings.void'))).toBe(true);
     });
 
     it('should accept new-style camelCase fields', () => {
       delete validPC.system.shadow_taint;
       validPC.system.shadowTaint = { rank: 0, points: 0 };
-      
+
       delete validPC.system.initiative.roll_mod;
       validPC.system.initiative.rollMod = 0;
-      
+
       const result = validateActorData(validPC);
       expect(result.valid).toBe(true);
     });
@@ -113,11 +113,11 @@ describe('Actor Data Validators', () => {
       delete validPC.system.wound_lvl.healthy;
       const result = validateActorData(validPC);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('healthy'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('healthy'))).toBe(true);
     });
 
     it('should accept string penalties in wound levels', () => {
-      validPC.system.wound_lvl.nicked.penalty = "3";
+      validPC.system.wound_lvl.nicked.penalty = '3';
       const result = validateActorData(validPC);
       expect(result.valid).toBe(true); // Strings are acceptable for migration
     });
@@ -126,27 +126,27 @@ describe('Actor Data Validators', () => {
       delete validPC.system.xp;
       const result = validateActorData(validPC);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('xp'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('xp'))).toBe(true);
     });
 
     it('should detect missing honor/glory/status', () => {
       delete validPC.system.honor;
       const result = validateActorData(validPC);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('honor'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('honor'))).toBe(true);
     });
 
     it('should detect missing wealth', () => {
       delete validPC.system.wealth;
       const result = validateActorData(validPC);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('wealth'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('wealth'))).toBe(true);
     });
 
     it('should warn about missing spell slots', () => {
       delete validPC.system.spellSlots;
       const result = validateActorData(validPC);
-      expect(result.warnings.some(w => w.includes('spellSlots'))).toBe(true);
+      expect(result.warnings.some((w) => w.includes('spellSlots'))).toBe(true);
     });
   });
 
@@ -191,24 +191,24 @@ describe('Actor Data Validators', () => {
       delete validNPC.system.rings.void;
       const result = validateActorData(validNPC);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('rings.void'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('rings.void'))).toBe(true);
     });
 
     it('should detect missing initiative', () => {
       delete validNPC.system.initiative;
       const result = validateActorData(validNPC);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('initiative'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('initiative'))).toBe(true);
     });
 
     it('should warn about missing attack pools', () => {
       delete validNPC.system.attack1;
       const result = validateActorData(validNPC);
-      expect(result.warnings.some(w => w.includes('attack1'))).toBe(true);
+      expect(result.warnings.some((w) => w.includes('attack1'))).toBe(true);
     });
 
     it('should accept string nrWoundLvls', () => {
-      validNPC.system.nrWoundLvls = "3";
+      validNPC.system.nrWoundLvls = '3';
       const result = validateActorData(validNPC);
       expect(result.valid).toBe(true); // Strings acceptable for migration
     });
@@ -216,7 +216,7 @@ describe('Actor Data Validators', () => {
     it('should accept new-style woundLevels field', () => {
       validNPC.system.woundLevels = validNPC.system.wound_lvl;
       delete validNPC.system.wound_lvl;
-      
+
       const result = validateActorData(validNPC);
       expect(result.valid).toBe(true);
     });
@@ -277,24 +277,24 @@ describe('Item Data Validators', () => {
       validSkill.system.rank = 'three';
       const result = validateItemData(validSkill);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('rank'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('rank'))).toBe(true);
     });
 
     it('should warn about invalid trait', () => {
       validSkill.system.trait = 'invalid';
       const result = validateItemData(validSkill);
-      expect(result.warnings.some(w => w.includes('trait'))).toBe(true);
+      expect(result.warnings.some((w) => w.includes('trait'))).toBe(true);
     });
 
     it('should accept new-style camelCase fields', () => {
       delete validSkill.system.roll_bonus;
       delete validSkill.system.keep_bonus;
       delete validSkill.system.total_bonus;
-      
+
       validSkill.system.rollBonus = 5;
       validSkill.system.keepBonus = 2;
       validSkill.system.totalBonus = 7;
-      
+
       const result = validateItemData(validSkill);
       expect(result.valid).toBe(true);
     });
@@ -307,9 +307,9 @@ describe('Item Data Validators', () => {
       delete validSkill.system.rollBonus;
       delete validSkill.system.keepBonus;
       delete validSkill.system.totalBonus;
-      
+
       const result = validateItemData(validSkill);
-      expect(result.warnings.some(w => w.includes('bonus fields'))).toBe(true);
+      expect(result.warnings.some((w) => w.includes('bonus fields'))).toBe(true);
     });
   });
 
@@ -338,21 +338,21 @@ describe('Item Data Validators', () => {
       delete validWeapon.system.damageRoll;
       const result = validateItemData(validWeapon);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('damageRoll'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('damageRoll'))).toBe(true);
     });
 
     it('should detect invalid explodesOn type', () => {
       validWeapon.system.explodesOn = '10';
       const result = validateItemData(validWeapon);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('explodesOn'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('explodesOn'))).toBe(true);
     });
 
     it('should accept different size casings', () => {
       validWeapon.system.size = 'medium';
       let result = validateItemData(validWeapon);
       expect(result.valid).toBe(true);
-      
+
       validWeapon.system.size = 'Large';
       result = validateItemData(validWeapon);
       expect(result.valid).toBe(true);
@@ -384,21 +384,21 @@ describe('Item Data Validators', () => {
 
     it('should warn that bow needs conversion', () => {
       const result = validateItemData(validBow);
-      expect(result.warnings.some(w => w.includes('Bow item detected'))).toBe(true);
+      expect(result.warnings.some((w) => w.includes('Bow item detected'))).toBe(true);
     });
 
     it('should detect missing str', () => {
       delete validBow.system.str;
       const result = validateItemData(validBow);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('str'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('str'))).toBe(true);
     });
 
     it('should detect missing range', () => {
       delete validBow.system.range;
       const result = validateItemData(validBow);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('range'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('range'))).toBe(true);
     });
   });
 
@@ -424,19 +424,19 @@ describe('Item Data Validators', () => {
 
     it('should warn about specialRues typo', () => {
       const result = validateItemData(validArmor);
-      expect(result.warnings.some(w => w.includes('specialRues'))).toBe(true);
+      expect(result.warnings.some((w) => w.includes('specialRues'))).toBe(true);
     });
 
     it('should accept equipped or equiped', () => {
       validArmor.system.equipped = true;
       delete validArmor.system.equiped;
-      
+
       let result = validateItemData(validArmor);
       expect(result.valid).toBe(true);
-      
+
       validArmor.system.equiped = true;
       delete validArmor.system.equipped;
-      
+
       result = validateItemData(validArmor);
       expect(result.valid).toBe(true);
     });
@@ -445,7 +445,7 @@ describe('Item Data Validators', () => {
       validArmor.system.bonus = '5';
       const result = validateItemData(validArmor);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('bonus'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('bonus'))).toBe(true);
     });
   });
 
@@ -476,20 +476,20 @@ describe('Item Data Validators', () => {
       validSpell.system.ring = 'invalid';
       const result = validateItemData(validSpell);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('ring'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('ring'))).toBe(true);
     });
 
     it('should detect invalid mastery type', () => {
       validSpell.system.mastery = 'three';
       const result = validateItemData(validSpell);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('mastery'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('mastery'))).toBe(true);
     });
 
     it('should warn if keywords not array', () => {
       validSpell.system.keywords = 'Thunder, Craft';
       const result = validateItemData(validSpell);
-      expect(result.warnings.some(w => w.includes('keywords'))).toBe(true);
+      expect(result.warnings.some((w) => w.includes('keywords'))).toBe(true);
     });
   });
 
@@ -502,7 +502,7 @@ describe('Item Data Validators', () => {
           type: 'physical'
         }
       };
-      
+
       const result = validateItemData(advantage);
       expect(result.valid).toBe(true);
     });
@@ -515,7 +515,7 @@ describe('Item Data Validators', () => {
           type: 'mental'
         }
       };
-      
+
       const result = validateItemData(disadvantage);
       expect(result.valid).toBe(true);
     });
@@ -525,10 +525,10 @@ describe('Item Data Validators', () => {
         type: 'advantage',
         system: { cost: 'five', type: 'physical' }
       };
-      
+
       const result = validateItemData(advantage);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('cost'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('cost'))).toBe(true);
     });
   });
 
@@ -543,7 +543,7 @@ describe('Item Data Validators', () => {
           deficiency: 'air'
         }
       };
-      
+
       const result = validateItemData(technique);
       expect(result.valid).toBe(true);
     });
@@ -553,10 +553,10 @@ describe('Item Data Validators', () => {
         type: 'technique',
         system: { rank: 'two', shugenja: false }
       };
-      
+
       const result = validateItemData(technique);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('rank'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('rank'))).toBe(true);
     });
   });
 
@@ -569,7 +569,7 @@ describe('Item Data Validators', () => {
           mastery: 3
         }
       };
-      
+
       const result = validateItemData(kata);
       expect(result.valid).toBe(true);
     });
@@ -583,7 +583,7 @@ describe('Item Data Validators', () => {
           type: 'internal'
         }
       };
-      
+
       const result = validateItemData(kiho);
       expect(result.valid).toBe(true);
     });
@@ -593,10 +593,10 @@ describe('Item Data Validators', () => {
         type: 'kata',
         system: { ring: 'invalid', mastery: 1 }
       };
-      
+
       const result = validateItemData(kata);
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('ring'))).toBe(true);
+      expect(result.errors.some((e) => e.includes('ring'))).toBe(true);
     });
   });
 
@@ -608,7 +608,7 @@ describe('Item Data Validators', () => {
           effect: '+1k0 to Strength rolls'
         }
       };
-      
+
       const result = validateItemData(tattoo);
       expect(result.valid).toBe(true);
     });
@@ -618,9 +618,9 @@ describe('Item Data Validators', () => {
         type: 'tattoo',
         system: { effect: 123 }
       };
-      
+
       const result = validateItemData(tattoo);
-      expect(result.warnings.some(w => w.includes('effect'))).toBe(true);
+      expect(result.warnings.some((w) => w.includes('effect'))).toBe(true);
     });
   });
 
@@ -633,7 +633,7 @@ describe('Item Data Validators', () => {
           specialRules: ''
         }
       };
-      
+
       const result = validateItemData(item);
       expect(result.valid).toBe(true);
     });

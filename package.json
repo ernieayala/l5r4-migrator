@@ -22,7 +22,12 @@
     "lint:fix": "eslint module/ tests/ --fix",
     "format": "prettier --write \"**/*.{js,json,md}\"",
     "format:check": "prettier --check \"**/*.{js,json,md}\"",
-    "validate": "npm run lint && npm run format:check && npm test"
+    "validate": "npm run lint && npm run format:check && npm test",
+    "version:patch": "npm version patch --no-git-tag-version",
+    "version:minor": "npm version minor --no-git-tag-version",
+    "version:major": "npm version major --no-git-tag-version",
+    "prepare-release": "node scripts/prepare-release.js",
+    "validate-only": "node scripts/prepare-release.js --validate-only"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^1.0.0",

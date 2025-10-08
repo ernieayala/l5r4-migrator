@@ -24,6 +24,7 @@ target/
 # IDEs
 .idea/
 .vscode/
+.windsurf/
 *.swp
 *.swo
 *~
@@ -80,3 +81,6 @@ backups/
 # Documentation build
 docs/_build/
 docs/.buildinfo
+
+# Research and development
+for-research/

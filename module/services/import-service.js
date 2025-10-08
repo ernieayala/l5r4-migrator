@@ -1,9 +1,9 @@
 /**
  * @fileoverview Import Service
- * 
+ *
  * Imports validated data into l5r4-enhanced system with transformations.
  * Performs schema migrations, converts legacy data, and creates documents.
- * 
+ *
  * **Import Strategy:**
  * - Apply schema transformations (snake_case → camelCase)
  * - Convert bow items to weapon items with isBow flag
@@ -11,7 +11,7 @@
  * - Create documents in target world
  * - Handle individual failures gracefully
  * - Provide comprehensive statistics
- * 
+ *
  * **Transformation Pipeline:**
  * 1. Apply SCHEMA_MAP transformations
  * 2. Convert bow → weapon
@@ -29,32 +29,32 @@ import { copyPath, getByPath, setByPath } from '../utils/path-utils.js';
  */
 const SCHEMA_MAP = [
   // Actor migrations: Universal rules
-  { docType: "Actor", type: "*", from: "system.wounds.heal_rate", to: "system.wounds.healRate" },
-  { docType: "Actor", type: "*", from: "system.wound_lvl", to: "system.woundLevels" },
-  { docType: "Actor", type: "*", from: "system.armor.armor_tn", to: "system.armor.armorTn" },
-  
+  { docType: 'Actor', type: '*', from: 'system.wounds.heal_rate', to: 'system.wounds.healRate' },
+  { docType: 'Actor', type: '*', from: 'system.wound_lvl', to: 'system.woundLevels' },
+  { docType: 'Actor', type: '*', from: 'system.armor.armor_tn', to: 'system.armor.armorTn' },
+
   // Actor migrations: PC specific
-  { docType: "Actor", type: "pc", from: "system.armor_tn", to: "system.armorTn" },
-  { docType: "Actor", type: "pc", from: "system.initiative.roll_mod", to: "system.initiative.rollMod" },
-  { docType: "Actor", type: "pc", from: "system.initiative.keep_mod", to: "system.initiative.keepMod" },
-  { docType: "Actor", type: "pc", from: "system.initiative.total_mod", to: "system.initiative.totalMod" },
-  { docType: "Actor", type: "pc", from: "system.shadow_taint", to: "system.shadowTaint" },
-  
+  { docType: 'Actor', type: 'pc', from: 'system.armor_tn', to: 'system.armorTn' },
+  { docType: 'Actor', type: 'pc', from: 'system.initiative.roll_mod', to: 'system.initiative.rollMod' },
+  { docType: 'Actor', type: 'pc', from: 'system.initiative.keep_mod', to: 'system.initiative.keepMod' },
+  { docType: 'Actor', type: 'pc', from: 'system.initiative.total_mod', to: 'system.initiative.totalMod' },
+  { docType: 'Actor', type: 'pc', from: 'system.shadow_taint', to: 'system.shadowTaint' },
+
   // Actor migrations: NPC specific
-  { docType: "Actor", type: "npc", from: "system.armor.armor_tn", to: "system.armor.armorTn" },
-  
+  { docType: 'Actor', type: 'npc', from: 'system.armor.armor_tn', to: 'system.armor.armorTn' },
+
   // Item migrations: Skill specific
-  { docType: "Item", type: "skill", from: "system.mastery_3", to: "system.mastery3" },
-  { docType: "Item", type: "skill", from: "system.mastery_5", to: "system.mastery5" },
-  { docType: "Item", type: "skill", from: "system.mastery_7", to: "system.mastery7" },
-  { docType: "Item", type: "skill", from: "system.insight_bonus", to: "system.insightBonus" },
-  { docType: "Item", type: "skill", from: "system.roll_bonus", to: "system.rollBonus" },
-  { docType: "Item", type: "skill", from: "system.keep_bonus", to: "system.keepBonus" },
-  { docType: "Item", type: "skill", from: "system.total_bonus", to: "system.totalBonus" },
-  
+  { docType: 'Item', type: 'skill', from: 'system.mastery_3', to: 'system.mastery3' },
+  { docType: 'Item', type: 'skill', from: 'system.mastery_5', to: 'system.mastery5' },
+  { docType: 'Item', type: 'skill', from: 'system.mastery_7', to: 'system.mastery7' },
+  { docType: 'Item', type: 'skill', from: 'system.insight_bonus', to: 'system.insightBonus' },
+  { docType: 'Item', type: 'skill', from: 'system.roll_bonus', to: 'system.rollBonus' },
+  { docType: 'Item', type: 'skill', from: 'system.keep_bonus', to: 'system.keepBonus' },
+  { docType: 'Item', type: 'skill', from: 'system.total_bonus', to: 'system.totalBonus' },
+
   // Item migrations: Armor specific
-  { docType: "Item", type: "armor", from: "system.equiped", to: "system.equipped" },
-  { docType: "Item", type: "armor", from: "system.specialRues", to: "system.specialRules" }
+  { docType: 'Item', type: 'armor', from: 'system.equiped', to: 'system.equipped' },
+  { docType: 'Item', type: 'armor', from: 'system.specialRues', to: 'system.specialRules' }
 ];
 
 /**
@@ -63,7 +63,7 @@ const SCHEMA_MAP = [
 export class ImportService {
   /**
    * Import complete world data from migration file
-   * 
+   *
    * @param {Object} data - Validated export data
    * @param {Object} options - Import options
    * @param {boolean} options.dryRun - Simulate import without creating documents
@@ -73,12 +73,7 @@ export class ImportService {
    * @returns {Promise<Object>} Import result with statistics
    */
   static async importWorld(data, options = {}) {
-    const {
-      dryRun = false,
-      skipFolders = false,
-      skipScenes = false,
-      skipJournals = false
-    } = options;
+    const { dryRun = false, skipFolders = false, skipScenes = false, skipJournals = false } = options;
 
     Logger.info('Starting world import...');
 
@@ -148,7 +143,7 @@ export class ImportService {
 
   /**
    * Import actors with transformations
-   * 
+   *
    * @param {Array<Object>} actorData - Actor data to import
    * @param {boolean} dryRun - Simulate without creating
    * @returns {Promise<Object>} Import statistics
@@ -171,7 +166,7 @@ export class ImportService {
         if (!dryRun) {
           await Actor.create(transformed);
         }
-        
+
         stats.created++;
         Logger.debug(`Imported actor: ${actor.name}`);
       } catch (error) {
@@ -185,7 +180,7 @@ export class ImportService {
 
   /**
    * Import items with transformations
-   * 
+   *
    * @param {Array<Object>} itemData - Item data to import
    * @param {boolean} dryRun - Simulate without creating
    * @returns {Promise<Object>} Import statistics
@@ -208,7 +203,7 @@ export class ImportService {
         if (!dryRun) {
           await Item.create(transformed);
         }
-        
+
         stats.created++;
         Logger.debug(`Imported item: ${item.name}`);
       } catch (error) {
@@ -228,8 +223,8 @@ export class ImportService {
     const transformed = foundry.utils.duplicate(actorData);
 
     // Apply schema transformations
-    const actorRules = SCHEMA_MAP.filter(rule => 
-      rule.docType === 'Actor' && (rule.type === '*' || rule.type === transformed.type)
+    const actorRules = SCHEMA_MAP.filter(
+      (rule) => rule.docType === 'Actor' && (rule.type === '*' || rule.type === transformed.type)
     );
 
     for (const rule of actorRules) {
@@ -265,7 +260,7 @@ export class ImportService {
 
     // Transform embedded items
     if (transformed.items && Array.isArray(transformed.items)) {
-      transformed.items = transformed.items.map(item => this._transformItem(item));
+      transformed.items = transformed.items.map((item) => this._transformItem(item));
     }
 
     return transformed;
@@ -283,7 +278,7 @@ export class ImportService {
     if (transformed.type === 'bow') {
       transformed.type = 'weapon';
       setByPath(transformed, 'system.isBow', true);
-      
+
       // Normalize size casing
       if (transformed.system.size) {
         transformed.system.size = transformed.system.size.toLowerCase();
@@ -293,8 +288,8 @@ export class ImportService {
     }
 
     // Apply schema transformations
-    const itemRules = SCHEMA_MAP.filter(rule =>
-      rule.docType === 'Item' && (rule.type === '*' || rule.type === transformed.type)
+    const itemRules = SCHEMA_MAP.filter(
+      (rule) => rule.docType === 'Item' && (rule.type === '*' || rule.type === transformed.type)
     );
 
     for (const rule of itemRules) {
@@ -370,19 +365,23 @@ export class ImportService {
    * @private
    */
   static _getFolderDepth(folder, allFolders) {
-    if (!folder.folder) return 0; // Root folder
-    
+    if (!folder.folder) {
+      return 0;
+    } // Root folder
+
     let depth = 1;
     let currentFolder = folder;
-    
+
     // Traverse up to find depth (max 10 levels to prevent infinite loops)
     for (let i = 0; i < 10; i++) {
-      const parent = allFolders.find(f => f._id === currentFolder.folder);
-      if (!parent) break;
+      const parent = allFolders.find((f) => f._id === currentFolder.folder);
+      if (!parent) {
+        break;
+      }
       depth++;
       currentFolder = parent;
     }
-    
+
     return depth;
   }
 

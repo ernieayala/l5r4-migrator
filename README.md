@@ -17,6 +17,18 @@ A Foundry VTT v13+ module for migrating worlds from the legacy **l5r4** system t
 
 ## Installation
 
+### From Manifest URL (Recommended)
+
+1. Open Foundry VTT
+2. Go to **Add-on Modules** tab
+3. Click **Install Module**
+4. Paste this URL in the **Manifest URL** field:
+   ```
+   https://github.com/ernieayala/l5r4-migrator/releases/latest/download/module.json
+   ```
+5. Click **Install**
+6. Enable the module in your world
+
 ### Foundry VTT Module Browser
 
 1. Open Foundry VTT
@@ -27,7 +39,7 @@ A Foundry VTT v13+ module for migrating worlds from the legacy **l5r4** system t
 
 ### Manual Installation
 
-1. Download the module from [GitHub Releases](https://github.com/ernieayala/l5r4-migrator/releases)
+1. Download the latest `l5r4-migrator.zip` from [GitHub Releases](https://github.com/ernieayala/l5r4-migrator/releases/latest)
 2. Extract to `Data/modules/l5r4-migrator/`
 3. Restart Foundry VTT
 4. Enable the module in your world
@@ -66,7 +78,7 @@ A Foundry VTT v13+ module for migrating worlds from the legacy **l5r4** system t
    - Review the migration readiness report
    - Address any errors if shown
 
-6. **Import**  
+6. **Import**
    - Click **Import Data** button
    - Confirm the operation
    - Review import statistics
@@ -110,6 +122,7 @@ Access module settings in **Configure Settings > Module Settings**:
 The migrator handles these transformations automatically:
 
 **Field Renames** (snake_case → camelCase):
+
 - `system.wounds.heal_rate` → `system.wounds.healRate`
 - `system.shadow_taint` → `system.shadowTaint`
 - `system.initiative.roll_mod` → `system.initiative.rollMod`
@@ -118,16 +131,19 @@ The migrator handles these transformations automatically:
 - Armor: `equiped` → `equipped` (typo fix)
 
 **Item Type Conversions**:
+
 - `bow` → `weapon` with `system.isBow: true` flag
 - Size normalization: `Large` → `large`
 
 **New Fields Added**:
+
 - PC actors: `bonuses`, `woundsPenaltyMod`
 - NPC actors: `woundMode`, `fear`
 - Skills: `freeRanks`, `freeEmphasis`
 - Weapons: `associatedSkill`, `fallbackTrait`, `isBow`
 
 **Preserved**:
+
 - All embedded items on actors
 - Active Effects
 - Folder structure
@@ -143,6 +159,7 @@ The migrator handles these transformations automatically:
 ## Development
 
 See [DEVELOPERS.md](DEVELOPERS.md) for complete development documentation, including:
+
 - Development setup and workflow
 - Project structure and architecture
 - Testing guide (unit and integration tests)

@@ -1,6 +1,6 @@
 /**
  * @fileoverview Unit Tests for Path Utilities
- * 
+ *
  * Tests safe nested property access and manipulation functions.
  */
 
@@ -293,7 +293,7 @@ describe('Path Utilities', () => {
       };
 
       copyPath(actor, 'system.wound_lvl', 'system.woundLevels', true);
-      
+
       expect(actor.system.woundLevels).toEqual({
         healthy: { value: 10, penalty: 0 },
         nicked: { value: 15, penalty: 3 }

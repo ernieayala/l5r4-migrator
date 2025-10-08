@@ -1,6 +1,6 @@
 /**
  * @fileoverview Logger Utility
- * 
+ *
  * Centralized logging for migration operations.
  * Respects user log level settings.
  */
@@ -17,7 +17,7 @@ export class Logger {
   static error(message, ...args) {
     console.error(`L5R4 Migrator | ERROR: ${message}`, ...args);
   }
-  
+
   /**
    * Log a warning message
    * @param {string} message - Message to log
@@ -28,7 +28,7 @@ export class Logger {
       console.warn(`L5R4 Migrator | WARN: ${message}`, ...args);
     }
   }
-  
+
   /**
    * Log an info message
    * @param {string} message - Message to log
@@ -39,7 +39,7 @@ export class Logger {
       console.log(`L5R4 Migrator | INFO: ${message}`, ...args);
     }
   }
-  
+
   /**
    * Log a debug message
    * @param {string} message - Message to log
@@ -50,7 +50,7 @@ export class Logger {
       console.log(`L5R4 Migrator | DEBUG: ${message}`, ...args);
     }
   }
-  
+
   /**
    * Check if log level should be logged
    * @param {string} level - Log level to check
@@ -58,7 +58,7 @@ export class Logger {
    */
   static #shouldLog(level) {
     const levels = { error: 0, warn: 1, info: 2, debug: 3 };
-    
+
     // Try to get user setting, fallback to 'info' if not available
     let currentLevel = 'info';
     try {
@@ -69,7 +69,7 @@ export class Logger {
       // Settings not available (e.g., during tests or early init), use default
       currentLevel = 'info';
     }
-    
+
     return levels[level] <= levels[currentLevel];
   }
 }

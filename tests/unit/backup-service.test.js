@@ -1,6 +1,6 @@
 /**
  * @fileoverview Unit Tests for Backup Service
- * 
+ *
  * Tests backup creation and restoration logic with mocked Foundry APIs.
  */
 
@@ -31,37 +31,27 @@ describe('Backup Service', () => {
 
       // Mock items
       game.items = {
-        contents: [
-          { toObject: () => ({ _id: 'item1', name: 'Test Skill', type: 'skill' }) }
-        ]
+        contents: [{ toObject: () => ({ _id: 'item1', name: 'Test Skill', type: 'skill' }) }]
       };
 
       // Mock scenes
       game.scenes = {
-        contents: [
-          { toObject: () => ({ _id: 'scene1', name: 'Test Scene' }) }
-        ]
+        contents: [{ toObject: () => ({ _id: 'scene1', name: 'Test Scene' }) }]
       };
 
       // Mock journals
       game.journal = {
-        contents: [
-          { toObject: () => ({ _id: 'journal1', name: 'Test Journal' }) }
-        ]
+        contents: [{ toObject: () => ({ _id: 'journal1', name: 'Test Journal' }) }]
       };
 
       // Mock folders
       game.folders = {
-        contents: [
-          { toObject: () => ({ _id: 'folder1', name: 'Test Folder', type: 'Actor' }) }
-        ]
+        contents: [{ toObject: () => ({ _id: 'folder1', name: 'Test Folder', type: 'Actor' }) }]
       };
 
       // Mock playlists
       game.playlists = {
-        contents: [
-          { toObject: () => ({ _id: 'playlist1', name: 'Test Playlist' }) }
-        ]
+        contents: [{ toObject: () => ({ _id: 'playlist1', name: 'Test Playlist' }) }]
       };
     });
 
@@ -77,11 +67,11 @@ describe('Backup Service', () => {
       expect(data.metadata.worldId).toBe('test-world');
       expect(data.metadata.worldTitle).toBe('Test World');
       expect(data.metadata.system).toBe('l5r4');
-      
+
       expect(data.actors).toHaveLength(2);
       expect(data.items).toHaveLength(1);
       expect(data.folders).toHaveLength(1);
-      
+
       expect(data.scenes).toBeUndefined();
       expect(data.journals).toBeUndefined();
       expect(data.playlists).toBeUndefined();
@@ -167,14 +157,10 @@ describe('Backup Service', () => {
         items: []
       };
 
-      const file = new File(
-        [JSON.stringify(validBackup)],
-        'backup.json',
-        { type: 'application/json' }
-      );
+      const file = new File([JSON.stringify(validBackup)], 'backup.json', { type: 'application/json' });
 
       const data = await BackupService.parseBackupFile(file);
-      
+
       expect(data.metadata).toBeDefined();
       expect(data.actors).toHaveLength(1);
     });
@@ -184,15 +170,9 @@ describe('Backup Service', () => {
         actors: [{ _id: 'actor1' }]
       };
 
-      const file = new File(
-        [JSON.stringify(invalidBackup)],
-        'backup.json',
-        { type: 'application/json' }
-      );
+      const file = new File([JSON.stringify(invalidBackup)], 'backup.json', { type: 'application/json' });
 
-      await expect(BackupService.parseBackupFile(file))
-        .rejects
-        .toThrow('missing metadata');
+      await expect(BackupService.parseBackupFile(file)).rejects.toThrow('missing metadata');
     });
 
     it('should reject backup without world data', async () => {
@@ -200,15 +180,9 @@ describe('Backup Service', () => {
         metadata: { worldId: 'test', system: 'l5r4' }
       };
 
-      const file = new File(
-        [JSON.stringify(invalidBackup)],
-        'backup.json',
-        { type: 'application/json' }
-      );
+      const file = new File([JSON.stringify(invalidBackup)], 'backup.json', { type: 'application/json' });
 
-      await expect(BackupService.parseBackupFile(file))
-        .rejects
-        .toThrow('no world data');
+      await expect(BackupService.parseBackupFile(file)).rejects.toThrow('no world data');
     });
 
     it('should reject incompatible system', async () => {
@@ -220,15 +194,9 @@ describe('Backup Service', () => {
         actors: [{ _id: 'actor1' }]
       };
 
-      const file = new File(
-        [JSON.stringify(invalidBackup)],
-        'backup.json',
-        { type: 'application/json' }
-      );
+      const file = new File([JSON.stringify(invalidBackup)], 'backup.json', { type: 'application/json' });
 
-      await expect(BackupService.parseBackupFile(file))
-        .rejects
-        .toThrow('Incompatible system');
+      await expect(BackupService.parseBackupFile(file)).rejects.toThrow('Incompatible system');
     });
 
     it('should accept l5r4-enhanced system', async () => {
@@ -240,26 +208,16 @@ describe('Backup Service', () => {
         actors: [{ _id: 'actor1' }]
       };
 
-      const file = new File(
-        [JSON.stringify(validBackup)],
-        'backup.json',
-        { type: 'application/json' }
-      );
+      const file = new File([JSON.stringify(validBackup)], 'backup.json', { type: 'application/json' });
 
       const data = await BackupService.parseBackupFile(file);
       expect(data.metadata.system).toBe('l5r4-enhanced');
     });
 
     it('should reject malformed JSON', async () => {
-      const file = new File(
-        ['{ invalid json }'],
-        'backup.json',
-        { type: 'application/json' }
-      );
+      const file = new File(['{ invalid json }'], 'backup.json', { type: 'application/json' });
 
-      await expect(BackupService.parseBackupFile(file))
-        .rejects
-        .toThrow();
+      await expect(BackupService.parseBackupFile(file)).rejects.toThrow();
     });
   });
 
@@ -272,11 +230,11 @@ describe('Backup Service', () => {
         style: {},
         click: vi.fn()
       };
-      
+
       const createElementSpy = vi.spyOn(document, 'createElement').mockReturnValue(mockLink);
       const appendChildSpy = vi.spyOn(document.body, 'appendChild').mockImplementation(() => {});
       const removeChildSpy = vi.spyOn(document.body, 'removeChild').mockImplementation(() => {});
-      
+
       const createObjectURLSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url');
       const revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
 
@@ -301,30 +259,19 @@ describe('Backup Service', () => {
     beforeEach(() => {
       // Mock document collections
       game.actors = {
-        contents: [
-          { id: 'actor1' },
-          { id: 'actor2' }
-        ]
+        contents: [{ id: 'actor1' }, { id: 'actor2' }]
       };
       game.items = {
-        contents: [
-          { id: 'item1' }
-        ]
+        contents: [{ id: 'item1' }]
       };
       game.scenes = {
-        contents: [
-          { id: 'scene1' }
-        ]
+        contents: [{ id: 'scene1' }]
       };
       game.journal = {
-        contents: [
-          { id: 'journal1' }
-        ]
+        contents: [{ id: 'journal1' }]
       };
       game.folders = {
-        contents: [
-          { id: 'folder1' }
-        ]
+        contents: [{ id: 'folder1' }]
       };
 
       // Mock delete methods
@@ -429,9 +376,7 @@ describe('Backup Service', () => {
       };
 
       game.actors = {
-        contents: [
-          { toObject: () => actorData }
-        ]
+        contents: [{ toObject: () => actorData }]
       };
       game.items = { contents: [] };
       game.folders = { contents: [] };
