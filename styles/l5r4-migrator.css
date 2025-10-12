@@ -1,152 +1,71 @@
 /**
  * L5R4 Migrator Styles
- * Styling for the migration UI and components
+ * Minimal custom styling - leverages Foundry v13 native classes
  */
 
-/* Settings Button */
-.l5r4-migrator-settings-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  margin: 0.5rem 0;
-  width: 100%;
-  font-size: 1rem;
-  border: 1px solid var(--color-border-dark);
+/* Step Number Badge */
+.step-label .step-number {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
   background: var(--color-bg-btn);
-  color: var(--color-text-dark);
-  cursor: pointer;
+  color: var(--color-text-light-highlight);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 1.5em;
+  font-weight: bold;
+  margin-right: 0.5em;
+}
+
+/* Hint Text Variants */
+.hint.success {
+  color: var(--color-text-positive);
+}
+
+.hint.warning {
+  color: var(--color-text-warning);
+}
+
+/* Schema State Tags */
+.tag.state-original {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 0.25em 0.5em;
   border-radius: 3px;
-  transition: all 0.2s ease;
 }
 
-.l5r4-migrator-settings-button:hover {
-  background: var(--color-bg-btn-hover);
-  border-color: var(--color-border-highlight);
-  box-shadow: 0 0 5px var(--color-shadow-primary);
+.tag.state-new-v13 {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 0.25em 0.5em;
+  border-radius: 3px;
 }
 
-/* Main UI Container */
-.l5r4-migrator-content {
-  padding: 1rem;
+.tag.state-mixed {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 0.25em 0.5em;
+  border-radius: 3px;
 }
 
-.migrator-header {
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--color-border-dark);
-  padding-bottom: 1rem;
+/* Confidence Tags */
+.tag.confidence-high {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 0.25em 0.5em;
+  border-radius: 3px;
 }
 
-.migrator-header h2 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--color-text-dark);
+.tag.confidence-medium {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 0.25em 0.5em;
+  border-radius: 3px;
 }
 
-.system-info {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--color-text-light-2);
-}
-
-/* Status Indicator */
-.migrator-status {
-  background: var(--color-bg-option);
-  border: 1px solid var(--color-border-light);
-  border-radius: 4px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.status-indicator {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 1rem;
-}
-
-.status-indicator i {
-  font-size: 1.5rem;
-}
-
-/* Action Groups */
-.migrator-actions {
-  margin-bottom: 1.5rem;
-}
-
-.migrator-actions h3 {
-  margin: 0 0 1rem 0;
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: var(--color-text-dark);
-}
-
-.action-group {
-  margin-bottom: 1.5rem;
-}
-
-.action-button {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1.5rem;
-  width: 100%;
-  font-size: 1rem;
-  font-weight: bold;
-  border: 2px solid var(--color-border-dark);
-  background: var(--color-bg-btn);
-  color: var(--color-text-dark);
-  cursor: pointer;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-
-.action-button:hover {
-  background: var(--color-bg-btn-hover);
-  border-color: var(--color-border-highlight);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.action-button.primary {
-  background: var(--color-bg-btn-major);
-  border-color: var(--color-border-highlight);
-}
-
-.action-button.primary:hover {
-  background: var(--color-bg-btn-major-hover);
-}
-
-.action-button i {
-  font-size: 1.25rem;
-}
-
-.action-description {
-  margin: 0.5rem 0 0 0;
-  font-size: 0.85rem;
-  color: var(--color-text-light-2);
-  font-style: italic;
-}
-
-/* Information Section */
-.migrator-info {
-  background: var(--color-bg-option);
-  border: 1px solid var(--color-border-light);
-  border-radius: 4px;
-  padding: 1rem;
-}
-
-.migrator-info h3 {
-  margin: 0 0 0.75rem 0;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: var(--color-text-dark);
-}
-
-.migrator-info p {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--color-text-light-1);
-  line-height: 1.5;
+.tag.confidence-low {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 0.25em 0.5em;
+  border-radius: 3px;
 }

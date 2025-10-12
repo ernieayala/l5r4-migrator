@@ -49,6 +49,4 @@ export function registerSettings() {
     default: 'info',
     requiresReload: false
   });
-
-  console.log('L5R4 Migrator | Settings registered');
 }

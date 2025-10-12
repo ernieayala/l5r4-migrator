@@ -178,7 +178,7 @@ export class BackupService {
 
     // Get all settings for this module
     try {
-      const moduleSettings = game.settings.storage.get('world').filter((s) => s[0].startsWith('l5r4'));
+      const moduleSettings = game.settings.storage.get('world').filter((s) => s[0] && typeof s[0] === 'string' && s[0].startsWith('l5r4'));
 
       for (const [key, value] of moduleSettings) {
         settings[key] = value;
@@ -192,21 +192,14 @@ export class BackupService {
 
   /**
    * Trigger browser download of backup file
+   * Uses Foundry's built-in saveDataToFile for better compatibility
    * @private
    * @param {string} content - File content
    * @param {string} filename - Filename
    */
   static _downloadFile(content, filename) {
-    const blob = new Blob([content], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    // Use Foundry's built-in method which handles file downloads properly
+    saveDataToFile(content, 'application/json', filename);
   }
 
   /**

@@ -349,7 +349,7 @@ describe('Import Service', () => {
         journals: [{ name: 'Journal 1' }]
       };
 
-      const result = await ImportService.importWorld(data, { dryRun: false });
+      const result = await ImportService.importWorld(data, { dryRun: false, skipDetection: true });
 
       expect(result.success).toBe(true);
       expect(result.stats.folders.created).toBe(1);
@@ -367,7 +367,7 @@ describe('Import Service', () => {
         items: []
       };
 
-      const result = await ImportService.importWorld(data, { skipFolders: true });
+      const result = await ImportService.importWorld(data, { skipFolders: true, skipDetection: true });
 
       expect(result.stats.folders.attempted).toBe(0);
       expect(Folder.create).not.toHaveBeenCalled();
@@ -381,7 +381,7 @@ describe('Import Service', () => {
         scenes: [{ name: 'Scene 1' }]
       };
 
-      const result = await ImportService.importWorld(data, { skipScenes: true });
+      const result = await ImportService.importWorld(data, { skipScenes: true, skipDetection: true });
 
       expect(result.stats.scenes.attempted).toBe(0);
       expect(Scene.create).not.toHaveBeenCalled();
@@ -395,7 +395,7 @@ describe('Import Service', () => {
         journals: [{ name: 'Journal 1' }]
       };
 
-      const result = await ImportService.importWorld(data, { skipJournals: true });
+      const result = await ImportService.importWorld(data, { skipJournals: true, skipDetection: true });
 
       expect(result.stats.journals.attempted).toBe(0);
       expect(JournalEntry.create).not.toHaveBeenCalled();
@@ -408,7 +408,7 @@ describe('Import Service', () => {
         items: [{ type: 'skill', name: 'Item 1', system: {} }]
       };
 
-      const result = await ImportService.importWorld(data, { dryRun: true });
+      const result = await ImportService.importWorld(data, { dryRun: true, skipDetection: true });
 
       expect(result.success).toBe(true);
       expect(result.dryRun).toBe(true);
@@ -426,7 +426,7 @@ describe('Import Service', () => {
         items: []
       };
 
-      const result = await ImportService.importWorld(data);
+      const result = await ImportService.importWorld(data, { skipDetection: true });
 
       expect(result.success).toBe(true);
       expect(result.stats.actors.created).toBe(0);

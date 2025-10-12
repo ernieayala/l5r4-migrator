@@ -332,16 +332,8 @@ export class ExportService {
 
     const content = JSON.stringify(exportData, null, 2);
 
-    const blob = new Blob([content], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = exportFilename;
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    // Use Foundry's built-in method for better compatibility across platforms
+    saveDataToFile(content, 'application/json', exportFilename);
 
     Logger.info(`Export downloaded: ${exportFilename}`);
     ui.notifications?.info(`Export saved: ${exportFilename}`);

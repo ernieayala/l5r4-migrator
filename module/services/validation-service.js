@@ -17,6 +17,7 @@
 
 import { Logger } from '../utils/logger.js';
 import { validateActorData, validateItemData } from '../utils/validators.js';
+import { SchemaStateDetectionService } from './schema-state-detection-service.js';
 
 /**
  * Service for validating migration data
@@ -51,10 +52,33 @@ export class ValidationService {
       warnings: [],
       actorErrors: [],
       itemErrors: [],
-      integrityIssues: []
+      integrityIssues: [],
+      schemaDetection: null
     };
 
     try {
+      // NEW: Schema state detection
+      const schemaDetection = SchemaStateDetectionService.detectState(data);
+      result.schemaDetection = schemaDetection;
+
+      // Warn on low confidence
+      if (schemaDetection.confidence < 0.7) {
+        result.warnings.push(
+          `Low confidence (${Math.round(schemaDetection.confidence * 100)}%) in schema detection. ` +
+            `Detected as: ${schemaDetection.state}`
+        );
+      }
+
+      // Error on unknown
+      if (schemaDetection.state === 'unknown') {
+        result.errors.push('Unable to determine schema state. Export may be empty or corrupted.');
+      }
+
+      // Error on mixed (partial migration)
+      if (schemaDetection.state === 'mixed') {
+        result.errors.push('Mixed schema detected. World appears to be partially migrated.');
+      }
+
       // Validate metadata
       if (!data.metadata) {
         result.errors.push('Missing metadata object');
@@ -114,12 +138,14 @@ export class ValidationService {
       }
 
       // Determine overall validity
-      if (result.errors.length > 0 || result.actorErrors.length > 0 || result.itemErrors.length > 0) {
+      // Only block on critical errors (metadata, schema issues)
+      // Actor/item validation errors are informational only - they'll be fixed during import
+      if (result.errors.length > 0) {
         result.valid = false;
       }
 
-      // In strict mode, warnings also invalidate
-      if (strict && (result.warnings.length > 0 || result.integrityIssues.length > 0)) {
+      // In strict mode, actor/item errors and warnings also invalidate
+      if (strict && (result.actorErrors.length > 0 || result.itemErrors.length > 0 || result.warnings.length > 0 || result.integrityIssues.length > 0)) {
         result.valid = false;
       }
 
@@ -291,19 +317,21 @@ export class ValidationService {
     };
 
     // Generate recommendations
-    if (report.summary.invalidDocuments > 0) {
+    // Check for critical errors (blocking)
+    if (validationResult.errors.length > 0) {
       report.recommendations.push({
         priority: 'high',
-        message: `Fix ${report.summary.invalidDocuments} invalid documents before migration`,
-        action: 'Review actor and item validation errors'
+        message: `${validationResult.errors.length} critical errors must be fixed`,
+        action: 'Review metadata and schema errors before proceeding'
       });
     }
 
+    // Check for integrity issues
     if (validationResult.integrityIssues.length > 0) {
       const bowItems = validationResult.integrityIssues.find((i) => i.type === 'legacy_bow_items');
       if (bowItems) {
         report.recommendations.push({
-          priority: 'medium',
+          priority: 'info',
           message: `${bowItems.count} bow items will be converted to weapons with isBow flag`,
           action: 'This will be handled automatically during import'
         });
@@ -319,6 +347,25 @@ export class ValidationService {
       }
     }
 
+    // Actor/item validation errors - only informational if ready
+    if (report.summary.invalidDocuments > 0) {
+      if (report.ready) {
+        // Non-blocking: informational only
+        report.recommendations.push({
+          priority: 'info',
+          message: `${report.summary.invalidDocuments} documents have legacy field issues`,
+          action: 'Will be fixed automatically during import (no action needed)'
+        });
+      } else {
+        // Blocking: needs user action
+        report.recommendations.push({
+          priority: 'high',
+          message: `Fix ${report.summary.invalidDocuments} invalid documents before migration`,
+          action: 'Review actor and item validation errors'
+        });
+      }
+    }
+
     if (report.summary.totalWarnings > 0) {
       report.recommendations.push({
         priority: 'low',
@@ -329,7 +376,7 @@ export class ValidationService {
 
     if (report.ready) {
       report.recommendations.push({
-        priority: 'info',
+        priority: 'success',
         message: 'Data is ready for migration',
         action: 'Proceed with import operation'
       });

@@ -7,15 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing currently in development.
+### Added
+- **Asset Migration** - Automatic icon migration from PNG to WEBP format
+  - Migrates default system icons (actors and items)
+  - Type-aware icon mapping (e.g., `tori.png` → `family.webp` or `kiho.webp` based on type)
+  - Protects custom/external icons from modification
+  - Applies to both document icons and token images
+  - Smart detection: only migrates known system defaults
 
-## [1.0.0] - 2025-10-07
+## [1.0.0] - 2025-10-11
 
 **Initial Release** - Complete migration tool for L5R4 → L5R4-Enhanced system migration.
 
 ### Added
 
-#### Core Infrastructure (Phase 1)
+#### Core Infrastructure
 - **Path Utilities** - Helper functions for nested object manipulation (`getByPath`, `setByPath`, `copyPath`)
 - **Logger** - Structured logging system with configurable log levels
 - **Data Validators** - Comprehensive validation for actors and items
@@ -23,10 +29,10 @@ Nothing currently in development.
   - Item validation for all types (skill, weapon, bow, armor, spell, etc.)
   - Legacy field detection and warnings
   - Embedded item validation
-- **Test Infrastructure** - Vitest unit testing with 200 passing tests
+- **Test Infrastructure** - Vitest unit testing with 260 passing tests
 - **Vitest Setup** - Complete Foundry VTT mocks for testing
 
-#### Backup Service (Phase 2)
+#### Backup Service
 - **Create Backup** - Browser download of world data as timestamped JSON
 - **Backup Metadata** - Includes world info, system version, statistics
 - **Selective Backup** - Options for scenes, journals, playlists, settings
@@ -35,7 +41,7 @@ Nothing currently in development.
 - **Settings Collection** - Export/restore module settings
 - 19 unit tests covering all backup operations
 
-#### Export Service (Phase 3)
+#### Export Service
 - **World Export** - Complete data export from l5r4 system
 - **Selective Export** - Export specific actors/items or entire world
 - **Embedded Data** - Preserves embedded items and Active Effects
@@ -44,8 +50,24 @@ Nothing currently in development.
 - **Export Metadata** - Source system, versions, timestamps, statistics
 - 24 unit tests covering export functionality
 
-#### Validation Service (Phase 4)
+#### Schema State Detection
+- **SchemaStateDetectionService** - Automatically detects Original v12/v13 vs New v13 schemas
+  - Analyzes field patterns (snake_case vs camelCase)
+  - Checks for new fields (bonuses, woundMode, freeRanks, isBow)
+  - Samples first 10 actors/items for efficient detection
+  - Calculates confidence scores (0.3, 0.75, 0.95)
+  - Returns state ('original', 'new-v13', 'mixed', 'unknown')
+- 20 comprehensive tests for schema detection
+  - All schema states covered
+  - Edge cases (empty data, sparse data, minimal data)
+  - Confidence calculation verification
+
+#### Validation Service
 - **Data Validation** - Comprehensive validation of export data
+- **Schema Detection Integration** - Automatic schema detection during validation
+  - Warns on low confidence (<0.7)
+  - Errors on unknown or mixed schemas
+  - Detection results included in validation report
 - **Integrity Checks** - Detects duplicate IDs, legacy items, invalid embedded documents
 - **Metadata Validation** - Verifies required fields and system compatibility
 - **Readiness Reports** - Migration readiness with prioritized recommendations
@@ -53,39 +75,68 @@ Nothing currently in development.
 - **Strict Mode** - Optional strict validation (fail on warnings)
 - 28 unit tests covering all validation scenarios
 
-#### Import Service (Phase 5)
-- **Schema Transformations** - Automatic field renames (snake_case → camelCase)
+#### Import Service with Dual Paths
+- **Intelligent Routing** - Routes imports based on schema detection
+  - `_importWithTransform()` - Original v12/v13 → Enhanced (with transformation)
+  - `_importAsIs()` - New v13 → Enhanced (preserves customizations)
+  - Automatic detection and routing
+  - `skipDetection` option to force transformation path
+- **Schema Transformations** (With-Transform Path) - Automatic field renames (snake_case → camelCase)
   - `heal_rate` → `healRate`
   - `shadow_taint` → `shadowTaint`
   - `roll_mod` → `rollMod`, `keep_mod` → `keepMod`
   - `armor_tn` → `armorTn`
   - Skill fields: `mastery_3` → `mastery3`, `roll_bonus` → `rollBonus`, etc.
   - Armor typo fix: `equiped` → `equipped`
-- **Bow Conversion** - Converts `bow` items to `weapon` with `isBow` flag
-- **New Fields** - Adds l5r4-enhanced fields:
+- **As-Is Import** (New Path) - For New v13 data
+  - No schema transformation applied
+  - Preserves all user customizations
+  - No default values added
+  - Perfect data fidelity
+- **Bow Conversion** - Converts `bow` items to `weapon` with `isBow` flag (with-transform only)
+- **New Fields** - Adds l5r4-enhanced fields (with-transform only):
   - PC: `bonuses`, `woundsPenaltyMod`
   - NPC: `woundMode`, `fear`
   - Skills: `freeRanks`, `freeEmphasis`
   - Weapons: `associatedSkill`, `fallbackTrait`, `isBow`
 - **Embedded Item Transformation** - Recursive transformation of actor items
 - **Dry Run Mode** - Test transformations without creating documents
-- **Import Statistics** - Detailed success/failure counts
+- **Import Statistics** - Detailed success/failure counts with path information
 - **Error Isolation** - Individual failures don't stop import
-- 25 unit tests covering transformations and import
+- **Comprehensive Testing** - 65 unit tests covering:
+  - 25 transformation and import tests
+  - 18 dual path routing tests
+  - 22 robustness tests (corrupted data, edge cases, large datasets)
 
-#### User Interface (Phase 6)
+#### User Interface
 - **ApplicationV2 Dialog** - Modern Foundry v13+ architecture
 - **System-Aware UI** - Different workflow for l5r4 vs l5r4-enhanced
 - **Step-by-Step Workflow** - Numbered steps with visual indicators
+- **Schema Detection Display** - Visual feedback after validation
+  - Blue detection box in status section
+  - Shows schema state, confidence, and import strategy
+  - Color-coded confidence (green/orange/red)
+  - State-based styling (Original/New v13/Mixed)
 - **File Upload** - Upload export JSON files
-- **Status Tracking** - Shows export data loaded, validation status
-- **Validation Report Dialog** - Detailed readiness report with recommendations
-- **Import Results Dialog** - Statistics table with transformation counts
+- **Status Tracking** - Shows export data loaded, validation status, schema detection
+- **Enhanced Validation Report** - Detailed readiness report with schema detection section
+  - Dedicated Schema Detection section
+  - Full detection details before summary
+  - Recommendations based on detected state
+- **Enhanced Confirmation Dialog** - Import confirmation shows detection
+  - Schema state with label
+  - Confidence score with color coding
+  - Import strategy clearly stated
+  - Strong backup warnings
+- **Import Results Dialog** - Statistics with path information
+  - Shows which path was taken (with-transform or as-is)
+  - Transformation counts when applicable
+  - Preservation confirmation for as-is imports
 - **Double Confirmation** - Safety checks before destructive operations
 - **Progress Feedback** - Toast notifications and status indicators
-- **Inline Styles** - Self-contained component with professional design
+- **Professional Design** - Self-contained component with inline styles
 
-#### Integration Testing (Phase 7)
+#### Integration Testing
 - **Quench Integration** - 23 integration tests in running Foundry environment
 - **Module Tests** - Verify module loading and API exposure
 - **Export Integration** - Test real document export
@@ -95,8 +146,20 @@ Nothing currently in development.
 - **Error Handling** - Test invalid data and edge cases
 - **Automatic Cleanup** - Test data creation and deletion
 
-#### Documentation (Phase 8)
+#### Documentation
 - **README** - Comprehensive usage guide with workflow steps
+  - "Why Do I Need This Module?" section explaining namespace issue
+  - Automatic schema detection described
+  - Both migration paths documented
+  - Updated workflow steps with schema validation checkpoints
+- **MIGRATION_GUIDE** - 500+ line comprehensive guide
+  - Complete step-by-step instructions (7 detailed steps)
+  - Schema detection deep dive with examples
+  - Troubleshooting section (20+ scenarios with solutions)
+  - FAQ (20+ questions with detailed answers)
+  - Emergency recovery procedures
+  - Support information
+- **DEVELOPERS** - Technical documentation with schema detection architecture
 - **CHANGELOG** - Complete version history (this file)
 - **SCHEMA_DIFF** - Documented field transformations
 - **Code Comments** - JSDoc comments throughout codebase
@@ -112,7 +175,11 @@ Nothing currently in development.
 - **Data Integrity** - Non-destructive operations, validation at every step
 
 #### Testing
-- **200 Unit Tests** - Vitest tests with complete coverage
+- **260 Unit Tests** - Vitest tests with complete coverage
+  - 20 schema detection tests
+  - 18 import path tests
+  - 22 robustness tests
+  - 200 existing service/utility tests
 - **23 Integration Tests** - Quench tests in Foundry environment
 - **100% Service Coverage** - All services fully tested
 - **Mock Infrastructure** - Complete Foundry API mocks
@@ -229,5 +296,5 @@ Security-related changes and fixes
 
 ---
 
-[Unreleased]: https://github.com/ernieayala/l5r4-migrator/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/ernieayala/l5r4-migrator/releases/tag/v0.1.0
+[Unreleased]: https://github.com/ernieayala/l5r4-migrator/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/ernieayala/l5r4-migrator/releases/tag/v1.0.0

@@ -76,10 +76,11 @@ l5r4-migrator/
 │   ├── config/            # Configuration and settings
 │   │   └── settings.js    # Module settings registration
 │   ├── services/          # Business logic services
-│   │   ├── backup-service.js      # World backup functionality
-│   │   ├── export-service.js      # Data export from l5r4
-│   │   ├── validation-service.js  # Data validation
-│   │   └── import-service.js      # Data import to l5r4-enhanced
+│   │   ├── backup-service.js                    # World backup functionality
+│   │   ├── export-service.js                    # Data export from l5r4
+│   │   ├── validation-service.js                # Data validation with schema detection
+│   │   ├── import-service.js                    # Data import with dual paths
+│   │   └── schema-state-detection-service.js    # Schema detection (Original vs New v13)
 │   ├── utils/             # Utility functions
 │   │   ├── logger.js      # Logging utility
 │   │   ├── path-utils.js  # Nested object helpers
@@ -124,8 +125,9 @@ l5r4-migrator/
 
 - **BackupService**: Create/restore world backups
 - **ExportService**: Export actors, items, scenes from l5r4
-- **ValidationService**: Validate data structure and integrity
-- **ImportService**: Import data into l5r4-enhanced with transformations
+- **SchemaStateDetectionService**: Detect Original vs New v13 schemas
+- **ValidationService**: Validate data structure and integrity with schema detection
+- **ImportService**: Import data with dual paths (with-transform or as-is)
 
 **Configuration** (`module/config/`):
 
@@ -266,12 +268,25 @@ quench.registerBatch('l5r4-migrator.export', (context) => {
 
 ### Test Coverage
 
+**Current Test Suite:**
+
+- **260 Tests Total** - All passing ✅
+  - Schema detection: 20 tests
+  - Import paths: 18 tests
+  - Robustness: 22 tests
+  - Export service: 24 tests
+  - Validation service: 28 tests
+  - Import service: 25 tests
+  - Backup service: 15 tests
+  - Path utilities: 45 tests
+  - Validators: 63 tests
+
 **Coverage Goals:**
 
-- **Services**: 80%+ coverage
-- **Utilities**: 90%+ coverage
+- **Services**: 80%+ coverage ✅
+- **Utilities**: 90%+ coverage ✅
 - **UI Components**: 60%+ coverage
-- **Overall**: 70%+ coverage
+- **Overall**: 70%+ coverage ✅
 
 View coverage:
 
@@ -362,6 +377,53 @@ The module handles automatic transformation of data from the legacy l5r4 system 
 
 - **Critical**: `bow` type converted to `weapon` with `isBow: true`
 
+### Asset Migration
+
+**Icon Path Migration (PNG → WEBP):**
+
+The module automatically migrates default system icons from old PNG format to new WEBP format.
+
+**Migration Logic (Extremely Conservative):**
+1. Check for null/empty, external URLs, or Foundry core icons → preserve
+2. Check for non-system paths (tokenizer, modules, worlds) → preserve
+3. Extract filename and strip query parameters
+4. **Check file extension** → only process `.png` files (preserve all `.webp`)
+5. Check if filename matches exact system defaults
+6. Apply type-specific overrides where needed (e.g., `tori.png` → `family.webp` or `kiho.webp` based on item type)
+7. Replace with new WEBP path: `systems/l5r4-enhanced/assets/icons/{new-name}.webp`
+8. Preserve all non-matching files
+
+**Protected Paths:**
+- All `.webp` files (already new format or custom)
+- External URLs (`http://`, `https://`, `data:`)
+- Foundry core icons (`icons/...`)
+- Non-system paths (`tokenizer/...`, `modules/...`, `worlds/...`)
+- Custom PNG files (any filename not in default list)
+
+**Actor Icons:**
+- `helm.png` → `pc.webp`
+- `ninja.png` → `npc.webp`
+- Applied to both `actor.img` and `prototypeToken.texture.src`
+
+**Item Icons:**
+- `yin-yang.png` → `advantage.webp` or `disadvantage.webp` (type-specific)
+- `hat.png` → `armor.webp`
+- `bow.png` → `bow.webp`
+- `bamboo.png` → `clan.webp`
+- `tori.png` → `family.webp` or `kiho.webp` (type-specific)
+- `coins.png` → `item.webp`
+- `scroll.png` → `kata.webp` or `school.webp` (type-specific)
+- `flower.png` → `skill.webp`
+- `scroll2.png` → `spell.webp`
+- `tattoo.png` → `tattoo.webp`
+- `kanji.png` → `technique.webp`
+- `sword.png` → `weapon.webp`
+
+**Implementation:**
+- See `ImportService._migrateIconPath()` method
+- Constants: `ICON_MIGRATION_MAP`, `ICON_TYPE_OVERRIDES`
+- Applied in both `_transformActor()` and `_transformItem()`
+
 ### Migration Strategy
 
 **Export Phase:**
@@ -373,23 +435,131 @@ The module handles automatic transformation of data from the legacy l5r4 system 
 
 **Validation Phase:**
 
-1. Check required fields exist
-2. Validate data types
-3. Flag legacy patterns (snake_case, bow items, etc.)
+1. Run schema state detection (Original vs New v13)
+2. Calculate confidence score based on field patterns
+3. Check required fields exist
+4. Validate data types
+5. Flag legacy patterns (snake_case, bow items, etc.)
+6. Warn on low confidence (<0.7)
+7. Error on mixed or unknown schemas
 
-**Import Phase:**
+**Import Phase (Dual Paths):**
 
-1. Apply field renames using transformation rules
+**Path A: With Transformation (Original v12/v13 → Enhanced):**
+1. Apply field renames using SCHEMA_MAP
 2. Convert bow → weapon with `isBow: true`
 3. Add new fields with defaults
 4. Normalize casing (weapon size to lowercase)
 5. Transform embedded items recursively
+
+**Path B: As-Is (New v13 → Enhanced):**
+1. NO transformation applied
+2. NO field renames
+3. NO defaults added
+4. Preserve ALL data exactly as-is
+5. Import documents directly
+
+**Routing Logic:**
+- Automatic detection runs on validation
+- ImportService routes based on `needsTransform` flag
+- Original schema → _importWithTransform()
+- New v13 schema → _importAsIs()
+- `skipDetection: true` forces transformation path
 
 ### Reference Files
 
 - **Old Schema**: Located in l5r4 system `template.json`
 - **New Schema**: Located in l5r4-enhanced system `template.json`
 - **Migration Rules**: Check l5r4-enhanced `module/setup/schema-map.js`
+
+---
+
+## Schema Detection Architecture
+
+### Detection Algorithm
+
+**Purpose**: Automatically identify whether export data comes from Original v12/v13 (snake_case) or New v13 (camelCase) schemas.
+
+**Process**:
+
+1. **Sampling**: Extracts first 10 actors and first 10 items for analysis (performance optimization)
+2. **Pattern Analysis**: Checks for specific field indicators in actor.system and item.system
+3. **Counting**: Tallies occurrences of snake_case, camelCase, and new fields
+4. **State Determination**: Decides schema state based on patterns
+5. **Confidence Calculation**: Assigns confidence score (0.3, 0.75, 0.95)
+
+### Field Indicators
+
+**Snake Case Indicators (Original):**
+- `actor.system.wounds.heal_rate`
+- `actor.system.wound_lvl`
+- `actor.system.armor.armor_tn`
+- `actor.system.shadow_taint`
+- `actor.system.initiative.roll_mod`
+- `item.system.mastery_3`
+- `item.system.equiped`
+
+**Camel Case Indicators (New v13):**
+- `actor.system.wounds.healRate`
+- `actor.system.woundLevels`
+- `actor.system.armor.armorTn`
+- `actor.system.shadowTaint`
+- `actor.system.initiative.rollMod`
+- `item.system.mastery3`
+- `item.system.equipped`
+
+**New Field Indicators (New v13):**
+- `actor.system.bonuses`
+- `actor.system.woundMode`
+- `actor.system.fear`
+- `item.system.freeRanks`
+- `item.system.isBow`
+
+### Detection States
+
+**original**: snake_case > 0, camelCase = 0
+- **Action**: Apply full transformation
+- **Confidence**: 0.95 if strong pattern (>3 indicators), 0.75 otherwise
+
+**new-v13**: camelCase > 0, newFields > 0, snake_case = 0
+- **Action**: Import as-is (no transformation)
+- **Confidence**: 0.95 if strong pattern (>3 camelCase, >2 newFields), 0.75 otherwise
+
+**mixed**: snake_case > 0 AND camelCase > 0
+- **Action**: Error - cannot safely import
+- **Confidence**: 0.3 (low)
+
+**unknown**: No clear indicators found
+- **Action**: Error - indeterminate schema
+- **Confidence**: 0.3 (low)
+
+### Confidence Thresholds
+
+- **High (≥0.9)**: Strong, clear pattern - proceed with confidence
+- **Medium (0.7-0.89)**: Reasonable confidence - warn user but allow
+- **Low (<0.7)**: Weak pattern - warn user, review recommended
+
+### Integration Points
+
+**ValidationService**:
+```javascript
+const detection = SchemaStateDetectionService.detectState(data);
+result.schemaDetection = detection;
+```
+
+**ImportService**:
+```javascript
+if (detection.needsTransform) {
+  return await this._importWithTransform(data, options);
+} else {
+  return await this._importAsIs(data, options);
+}
+```
+
+**MigratorUI**:
+- Displays detection in status box after validation
+- Shows detection in confirmation dialog before import
+- Includes detection in validation report dialog
 
 ---
 
@@ -460,6 +630,59 @@ if (bowIssue) {
 }
 ```
 
+### Schema Detection Examples
+
+**Detect Schema State:**
+
+```javascript
+const { SchemaStateDetectionService } = game.modules.get('l5r4-migrator').api;
+
+const detection = SchemaStateDetectionService.detectState(exportData);
+
+console.log(`State: ${detection.state}`);
+console.log(`Confidence: ${Math.round(detection.confidence * 100)}%`);
+console.log(`Needs Transform: ${detection.needsTransform}`);
+
+// States: 'original', 'new-v13', 'mixed', 'unknown'
+if (detection.state === 'original') {
+  console.log('Will apply full transformation');
+} else if (detection.state === 'new-v13') {
+  console.log('Will import as-is (no transformation)');
+}
+```
+
+**Check Detection Indicators:**
+
+```javascript
+const detection = SchemaStateDetectionService.detectState(exportData);
+
+console.log('Snake case fields found:', detection.indicators.snakeCaseTotal);
+console.log('Camel case fields found:', detection.indicators.camelCaseTotal);
+console.log('New fields found:', detection.indicators.newFieldsTotal);
+
+// Detailed breakdown
+console.log('Snake case breakdown:', detection.indicators.snakeCase);
+console.log('Camel case breakdown:', detection.indicators.camelCase);
+console.log('New fields breakdown:', detection.indicators.newFields);
+```
+
+**Access Detection from Validation:**
+
+```javascript
+const validation = await ValidationService.validateData(exportData);
+
+// Schema detection is included in validation results
+const detection = validation.schemaDetection;
+
+if (detection.confidence < 0.7) {
+  console.warn('Low confidence in detection!');
+}
+
+if (detection.state === 'mixed') {
+  console.error('Mixed schema detected - cannot safely import');
+}
+```
+
 ### Import Examples
 
 **Dry Run (Test Transformations):**
@@ -477,16 +700,36 @@ console.log(`  Items: ${result.stats.items.created}`);
 console.log(`  Transformed: ${result.stats.actors.transformed} actors`);
 ```
 
-**Actual Import:**
+**Actual Import (Automatic Routing):**
 
 ```javascript
 // CAUTION: This creates documents!
+// Automatically detects schema and routes to appropriate path
 const result = await ImportService.importWorld(exportData, {
   dryRun: false
 });
 
+console.log(`Import Path: ${result.path}`); // 'with-transform' or 'as-is'
 console.log(`Created: ${result.stats.actors.created} actors, ${result.stats.items.created} items`);
 console.log(`Failed: ${result.stats.actors.failed} actors, ${result.stats.items.failed} items`);
+
+if (result.path === 'with-transform') {
+  console.log(`Transformed: ${result.stats.actors.transformed} actors, ${result.stats.items.transformed} items`);
+}
+```
+
+**Force Transformation Path:**
+
+```javascript
+// Skip detection and force transformation
+// Use this if you're certain data needs transformation
+const result = await ImportService.importWorld(exportData, {
+  dryRun: false,
+  skipDetection: true
+});
+
+// Will always use with-transform path
+console.log(`Import Path: ${result.path}`); // 'with-transform'
 ```
 
 ### Backup Examples
@@ -647,6 +890,7 @@ How has this been tested?
 **User Documentation:**
 
 - Update **README.md** for user-facing changes
+- Update **MIGRATION_GUIDE.md** for workflow or troubleshooting changes
 - Add to **CHANGELOG.md** under "Unreleased" section
 - Update localization files (`lang/en.json`) for UI changes
 

@@ -73,6 +73,29 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
 
+    // Prepare schema detection display data
+    let schemaDisplay = null;
+    if (this.validationResult?.schemaDetection) {
+      const detection = this.validationResult.schemaDetection;
+      const confidencePercent = Math.round(detection.confidence * 100);
+      
+      schemaDisplay = {
+        state: detection.state,
+        stateLabel: {
+          'original': 'Original v12/v13 (snake_case)',
+          'new-v13': 'New v13 (camelCase)',
+          'mixed': 'Mixed (Partially migrated)',
+          'unknown': 'Unknown'
+        }[detection.state] || detection.state,
+        confidence: confidencePercent,
+        confidenceClass: detection.confidence >= 0.9 ? 'high' : detection.confidence >= 0.7 ? 'medium' : 'low',
+        needsTransform: detection.needsTransform,
+        strategyLabel: detection.needsTransform 
+          ? '🔄 Schema transformation will be applied'
+          : '✓ Data will be imported as-is'
+      };
+    }
+
     return {
       ...context,
       systemId: game.system.id,
@@ -81,7 +104,8 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       isL5R4Enhanced: game.system.id === 'l5r4-enhanced',
       hasExportData: !!this.exportData,
       hasValidation: !!this.validationResult,
-      validationReady: this.validationResult?.valid || false
+      validationReady: this.validationResult?.valid || false,
+      schemaDetection: schemaDisplay
     };
   }
 
@@ -162,6 +186,8 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
 
       // Store validation result
       this.validationResult = validationResult;
+      // Also store globally for console debugging
+      game.modules.get('l5r4-migrator').api.lastValidation = validationResult;
       await this.render();
 
       // Display report
@@ -200,6 +226,35 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       }
     }
 
+    // Get schema detection info
+    const detection = this.validationResult?.schemaDetection;
+    let detectionInfo = '';
+    
+    if (detection) {
+      const stateLabel = {
+        'original': 'Original v12/v13 (snake_case)',
+        'new-v13': 'New v13 (camelCase)',
+        'mixed': 'Mixed (Partially migrated)',
+        'unknown': 'Unknown'
+      }[detection.state] || detection.state;
+      
+      const actionLabel = detection.needsTransform 
+        ? '✓ Schema transformation will be applied'
+        : '✓ Data will be imported as-is (no transformation)';
+      
+      const confidencePercent = Math.round(detection.confidence * 100);
+      const confidenceColor = detection.confidence >= 0.9 ? 'green' : detection.confidence >= 0.7 ? 'orange' : 'red';
+      
+      detectionInfo = `
+        <div style="background: #f5f5f5; padding: 1em; margin: 1em 0; border-radius: 4px;">
+          <h4 style="margin-top: 0;">📊 Detected Schema</h4>
+          <p><strong>Schema State:</strong> ${stateLabel}</p>
+          <p><strong>Confidence:</strong> <span style="color: ${confidenceColor}; font-weight: bold;">${confidencePercent}%</span></p>
+          <p><strong>Import Strategy:</strong> ${actionLabel}</p>
+        </div>
+      `;
+    }
+
     // Final confirmation
     const confirmImport = await DialogV2.confirm({
       window: { title: 'Confirm Import' },
@@ -208,8 +263,9 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
         <p>This will import migration data into the current world.</p>
         <p><strong>World:</strong> ${game.world.title}</p>
         <p><strong>System:</strong> ${game.system.id}</p>
-        <br>
-        <p>It is <strong>strongly recommended</strong> to create a backup first.</p>
+        ${detectionInfo}
+        <hr>
+        <p style="color: #d9534f;"><strong>⚠️ Important:</strong> It is <strong>strongly recommended</strong> to create a backup first.</p>
         <p>Continue with import?</p>
       `,
       rejectClose: false,
@@ -303,10 +359,41 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
       })
       .join('');
 
+    // Add schema detection info
+    let schemaDetectionHtml = '';
+    const detection = this.validationResult?.schemaDetection;
+    
+    if (detection) {
+      const stateLabel = {
+        'original': 'Original v12/v13 (snake_case)',
+        'new-v13': 'New v13 (camelCase)',
+        'mixed': 'Mixed (Partially migrated)',
+        'unknown': 'Unknown'
+      }[detection.state] || detection.state;
+      
+      const actionLabel = detection.needsTransform 
+        ? 'Schema transformation will be applied'
+        : 'Data will be imported as-is (no transformation)';
+      
+      const confidencePercent = Math.round(detection.confidence * 100);
+      const confidenceColor = detection.confidence >= 0.9 ? 'green' : detection.confidence >= 0.7 ? 'orange' : 'red';
+      
+      schemaDetectionHtml = `
+        <h4>📊 Schema Detection</h4>
+        <ul>
+          <li><strong>Detected State:</strong> ${stateLabel}</li>
+          <li><strong>Confidence:</strong> <span style="color: ${confidenceColor}; font-weight: bold;">${confidencePercent}%</span></li>
+          <li><strong>Import Strategy:</strong> ${actionLabel}</li>
+        </ul>
+      `;
+    }
+
     const content = `
       <div class="l5r4-validation-report">
         <h3>Migration Readiness Report</h3>
         <p><strong>Status:</strong> ${report.ready ? '✅ Ready' : '❌ Not Ready'}</p>
+        
+        ${schemaDetectionHtml}
         
         <h4>Summary</h4>
         <ul>
@@ -343,10 +430,18 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   _showImportResults(result) {
     const stats = result.stats;
+    
+    // Show import path taken
+    const pathLabel = {
+      'with-transform': '🔄 With Transformation (Original → Enhanced)',
+      'as-is': '✓ As-Is (New v13 → Enhanced, no transformation)'
+    }[result.path] || result.path;
 
     const content = `
       <div class="l5r4-import-results">
-        <h3>Import Complete</h3>
+        <h3>✅ Import Complete</h3>
+        
+        <p><strong>Import Path:</strong> ${pathLabel}</p>
         
         <table>
           <tr><th>Type</th><th>Attempted</th><th>Created</th><th>Failed</th></tr>
@@ -357,7 +452,8 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
           <tr><td>Journals</td><td>${stats.journals.attempted}</td><td>${stats.journals.created}</td><td>${stats.journals.failed}</td></tr>
         </table>
         
-        ${stats.actors.transformed ? `<p><em>Transformed ${stats.actors.transformed} actors and ${stats.items.transformed} items</em></p>` : ''}
+        ${stats.actors.transformed ? `<p style="margin-top: 1em;"><em>✓ Transformed ${stats.actors.transformed} actors and ${stats.items.transformed} items</em></p>` : ''}
+        ${result.path === 'as-is' ? `<p style="margin-top: 1em;"><em>✓ Data imported as-is, preserving all customizations</em></p>` : ''}
       </div>
     `;
 

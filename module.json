@@ -37,13 +37,6 @@
         "compatibility": {},
         "reason": "Target system for migration - import world data to l5r4-enhanced"
       }
-    ],
-    "recommends": [
-      {
-        "id": "quench",
-        "type": "module",
-        "reason": "Required for running integration tests in Foundry VTT"
-      }
     ]
   },
   "url": "https://github.com/ernieayala/l5r4-migrator",

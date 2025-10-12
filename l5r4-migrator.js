@@ -19,13 +19,8 @@ import { registerQuenchTests } from './module/testing/quench-tests.js';
  * Runs once when Foundry VTT loads
  */
 Hooks.once('init', async () => {
-  console.log('L5R4 Migrator | Initializing migration module');
-
   // Register module settings
   registerSettings();
-
-  // Log initialization complete
-  console.log('L5R4 Migrator | Initialization complete');
 });
 
 /**
@@ -33,8 +28,6 @@ Hooks.once('init', async () => {
  * Adds UI controls and buttons
  */
 Hooks.once('ready', async () => {
-  console.log('L5R4 Migrator | Module ready');
-
   // Check if we're using the correct system
   const systemId = game.system.id;
   if (systemId !== 'l5r4' && systemId !== 'l5r4-enhanced') {
@@ -51,27 +44,52 @@ Hooks.once('ready', async () => {
     MigratorUI,
     openMigrator: () => new MigratorUI().render(true)
   };
-
-  console.log('L5R4 Migrator | Ready - Access via game.modules.get("l5r4-migrator").api');
 });
 
 /**
  * Add button to settings sidebar
+ * Note: This may not work in all Foundry v13 versions due to Settings dialog changes.
+ * Users can always use the console command: game.modules.get('l5r4-migrator').api.openMigrator()
  */
 Hooks.on('renderSettings', (app, html) => {
+  // Handle both jQuery (v12) and HTMLElement (v13)
+  const element = html instanceof jQuery ? html[0] : html;
+  
   // Create migration button
-  const button = $(`
-    <button id="l5r4-migrator-button" class="l5r4-migrator-settings-button">
-      <i class="fas fa-exchange-alt"></i>
-      ${game.i18n.localize('L5R4MIGRATOR.ButtonOpenMigrator')}
-    </button>
-  `);
-
+  const button = document.createElement('button');
+  button.id = 'l5r4-migrator-button';
+  button.className = 'l5r4-migrator-settings-button';
+  button.innerHTML = `
+    <i class="fas fa-exchange-alt"></i>
+    ${game.i18n.localize('L5R4MIGRATOR.ButtonOpenMigrator')}
+  `;
+  
   // Add click handler
-  button.on('click', () => {
+  button.addEventListener('click', () => {
     new MigratorUI().render(true);
   });
-
-  // Insert after game settings button
-  html.find('#settings-game').after(button);
+  
+  // Try multiple insertion strategies for v13 compatibility
+  // Strategy 1: After game settings button
+  let gameSettingsButton = element.querySelector('#settings-game');
+  if (gameSettingsButton) {
+    gameSettingsButton.insertAdjacentElement('afterend', button);
+    return;
+  }
+  
+  // Strategy 2: In the game settings section
+  const gameSection = element.querySelector('section.game-settings');
+  if (gameSection) {
+    gameSection.appendChild(button);
+    return;
+  }
+  
+  // Strategy 3: Find any settings section
+  const sections = element.querySelectorAll('section');
+  if (sections.length > 0) {
+    sections[0].appendChild(button);
+    return;
+  }
+  
+  console.warn('L5R4 Migrator | Could not find suitable location for settings button. Use console command instead.');
 });

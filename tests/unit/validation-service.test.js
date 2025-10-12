@@ -476,9 +476,12 @@ describe('Validation Service', () => {
 
       const result = await ValidationService.validateData(emptyData);
 
-      expect(result.valid).toBe(true);
+      // Empty datasets now fail validation due to unknown schema state
+      expect(result.valid).toBe(false);
       expect(result.metadata.totalActors).toBe(0);
       expect(result.metadata.totalItems).toBe(0);
+      expect(result.schemaDetection.state).toBe('unknown');
+      expect(result.errors).toContain('Unable to determine schema state. Export may be empty or corrupted.');
     });
 
     it('should handle large dataset', async () => {

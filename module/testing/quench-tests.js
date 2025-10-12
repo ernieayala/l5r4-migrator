@@ -398,6 +398,4 @@ export function registerQuenchTests() {
       preSelected: true
     }
   );
-
-  console.log('L5R4 Migrator | Quench integration tests registered');
 }

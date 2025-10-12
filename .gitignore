@@ -71,7 +71,7 @@ coverage/
 
 # Release artifacts
 *.zip
-releases/
+# releases/
 
 # Backup files
 *.bak
