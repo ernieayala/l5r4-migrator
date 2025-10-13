@@ -248,6 +248,10 @@ export function setup() {
   globalThis.mergeObject = mockFoundry.utils.mergeObject;
   globalThis.duplicate = mockFoundry.utils.duplicate;
   globalThis.randomID = vi.fn(() => Math.random().toString(36).substring(2, 18));
+  globalThis.saveDataToFile = vi.fn((content, type, filename) => {
+    // Mock file download - just return success in tests
+    return true;
+  });
 
   // Mock legacy Dialog for backwards compatibility
   globalThis.Dialog = class MockDialog {

@@ -508,18 +508,7 @@ describe('Export Service', () => {
 
   describe('downloadExport', () => {
     it('should trigger download', () => {
-      const mockLink = {
-        href: '',
-        download: '',
-        style: {},
-        click: vi.fn()
-      };
-
-      const createElementSpy = vi.spyOn(document, 'createElement').mockReturnValue(mockLink);
-      const appendChildSpy = vi.spyOn(document.body, 'appendChild').mockImplementation(() => {});
-      const removeChildSpy = vi.spyOn(document.body, 'removeChild').mockImplementation(() => {});
-      const createObjectURLSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url');
-      const revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+      const saveDataToFileSpy = vi.spyOn(globalThis, 'saveDataToFile');
 
       const exportData = {
         metadata: { worldId: 'test' },
@@ -529,36 +518,25 @@ describe('Export Service', () => {
 
       ExportService.downloadExport(exportData);
 
-      expect(createElementSpy).toHaveBeenCalledWith('a');
-      expect(mockLink.click).toHaveBeenCalled();
-      expect(revokeObjectURLSpy).toHaveBeenCalled();
+      expect(saveDataToFileSpy).toHaveBeenCalled();
+      expect(saveDataToFileSpy.mock.calls[0][1]).toBe('application/json');
+      expect(saveDataToFileSpy.mock.calls[0][2]).toContain('l5r4-export-test-');
 
-      createElementSpy.mockRestore();
-      appendChildSpy.mockRestore();
-      removeChildSpy.mockRestore();
-      createObjectURLSpy.mockRestore();
-      revokeObjectURLSpy.mockRestore();
+      saveDataToFileSpy.mockRestore();
     });
 
     it('should use custom filename', () => {
-      const mockLink = {
-        href: '',
-        download: '',
-        style: {},
-        click: vi.fn()
-      };
-
-      vi.spyOn(document, 'createElement').mockReturnValue(mockLink);
-      vi.spyOn(document.body, 'appendChild').mockImplementation(() => {});
-      vi.spyOn(document.body, 'removeChild').mockImplementation(() => {});
-      vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url');
-      vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+      const saveDataToFileSpy = vi.spyOn(globalThis, 'saveDataToFile');
 
       ExportService.downloadExport({}, 'custom-export.json');
 
-      expect(mockLink.download).toBe('custom-export.json');
+      expect(saveDataToFileSpy).toHaveBeenCalledWith(
+        expect.any(String),
+        'application/json',
+        'custom-export.json'
+      );
 
-      vi.restoreAllMocks();
+      saveDataToFileSpy.mockRestore();
     });
   });
 

@@ -222,36 +222,14 @@ describe('Backup Service', () => {
   });
 
   describe('_downloadFile', () => {
-    it('should create download link', () => {
-      // Mock DOM methods
-      const mockLink = {
-        href: '',
-        download: '',
-        style: {},
-        click: vi.fn()
-      };
-
-      const createElementSpy = vi.spyOn(document, 'createElement').mockReturnValue(mockLink);
-      const appendChildSpy = vi.spyOn(document.body, 'appendChild').mockImplementation(() => {});
-      const removeChildSpy = vi.spyOn(document.body, 'removeChild').mockImplementation(() => {});
-
-      const createObjectURLSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url');
-      const revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    it('should call saveDataToFile', () => {
+      const saveDataToFileSpy = vi.spyOn(globalThis, 'saveDataToFile');
 
       BackupService._downloadFile('test content', 'test.json');
 
-      expect(createElementSpy).toHaveBeenCalledWith('a');
-      expect(mockLink.download).toBe('test.json');
-      expect(mockLink.click).toHaveBeenCalled();
-      expect(appendChildSpy).toHaveBeenCalled();
-      expect(removeChildSpy).toHaveBeenCalled();
-      expect(revokeObjectURLSpy).toHaveBeenCalled();
+      expect(saveDataToFileSpy).toHaveBeenCalledWith('test content', 'application/json', 'test.json');
 
-      createElementSpy.mockRestore();
-      appendChildSpy.mockRestore();
-      removeChildSpy.mockRestore();
-      createObjectURLSpy.mockRestore();
-      revokeObjectURLSpy.mockRestore();
+      saveDataToFileSpy.mockRestore();
     });
   });
 
