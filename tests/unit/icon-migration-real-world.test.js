@@ -55,22 +55,30 @@ describe('Real-World Icon Migration from Export', () => {
   describe('Item images from actual export', () => {
     it('should migrate default flower.png (skill)', () => {
       const defaultIcon = 'systems/l5r4/assets/icons/flower.png';
-      expect(ImportService._migrateIconPath(defaultIcon, 'skill')).toBe('systems/l5r4-enhanced/assets/icons/skill.webp');
+      expect(ImportService._migrateIconPath(defaultIcon, 'skill')).toBe(
+        'systems/l5r4-enhanced/assets/icons/skill.webp'
+      );
     });
 
     it('should migrate default yin-yang.png (disadvantage)', () => {
       const defaultIcon = 'systems/l5r4/assets/icons/yin-yang.png';
-      expect(ImportService._migrateIconPath(defaultIcon, 'disadvantage')).toBe('systems/l5r4-enhanced/assets/icons/disadvantage.webp');
+      expect(ImportService._migrateIconPath(defaultIcon, 'disadvantage')).toBe(
+        'systems/l5r4-enhanced/assets/icons/disadvantage.webp'
+      );
     });
 
     it('should migrate default kanji.png (technique)', () => {
       const defaultIcon = 'systems/l5r4/assets/icons/kanji.png';
-      expect(ImportService._migrateIconPath(defaultIcon, 'technique')).toBe('systems/l5r4-enhanced/assets/icons/technique.webp');
+      expect(ImportService._migrateIconPath(defaultIcon, 'technique')).toBe(
+        'systems/l5r4-enhanced/assets/icons/technique.webp'
+      );
     });
 
     it('should migrate default hat.png (armor)', () => {
       const defaultIcon = 'systems/l5r4/assets/icons/hat.png';
-      expect(ImportService._migrateIconPath(defaultIcon, 'armor')).toBe('systems/l5r4-enhanced/assets/icons/armor.webp');
+      expect(ImportService._migrateIconPath(defaultIcon, 'armor')).toBe(
+        'systems/l5r4-enhanced/assets/icons/armor.webp'
+      );
     });
 
     it('should preserve Foundry core item-bag.svg', () => {

@@ -530,11 +530,7 @@ describe('Export Service', () => {
 
       ExportService.downloadExport({}, 'custom-export.json');
 
-      expect(saveDataToFileSpy).toHaveBeenCalledWith(
-        expect.any(String),
-        'application/json',
-        'custom-export.json'
-      );
+      expect(saveDataToFileSpy).toHaveBeenCalledWith(expect.any(String), 'application/json', 'custom-export.json');
 
       saveDataToFileSpy.mockRestore();
     });

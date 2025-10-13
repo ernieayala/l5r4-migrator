@@ -265,9 +265,7 @@ describe('Import Service - Robustness Tests', () => {
     it('should detect when only items have indicators', async () => {
       const itemOnlyData = {
         actors: [], // No actors
-        items: [
-          { _id: 'i1', name: 'Item', type: 'skill', system: { mastery_3: 'test' } }
-        ]
+        items: [{ _id: 'i1', name: 'Item', type: 'skill', system: { mastery_3: 'test' } }]
       };
 
       const result = await ImportService.importWorld(itemOnlyData, { dryRun: true });

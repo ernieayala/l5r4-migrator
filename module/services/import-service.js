@@ -32,19 +32,19 @@ import { SchemaStateDetectionService } from './schema-state-detection-service.js
  */
 const ICON_MIGRATION_MAP = {
   // Item type icons
-  'yin-yang.png': 'advantage.webp',     // advantage & disadvantage
+  'yin-yang.png': 'advantage.webp', // advantage & disadvantage
   'hat.png': 'armor.webp',
   'bow.png': 'bow.webp',
   'bamboo.png': 'clan.webp',
-  'tori.png': 'family.webp',            // Also used for kiho in old system
+  'tori.png': 'family.webp', // Also used for kiho in old system
   'coins.png': 'item.webp',
-  'scroll.png': 'kata.webp',            // Also used for school in old system
+  'scroll.png': 'kata.webp', // Also used for school in old system
   'flower.png': 'skill.webp',
   'scroll2.png': 'spell.webp',
   'tattoo.png': 'tattoo.webp',
   'kanji.png': 'technique.webp',
   'sword.png': 'weapon.webp',
-  
+
   // Actor type icons
   'helm.png': 'pc.webp',
   'ninja.png': 'npc.webp'
@@ -56,16 +56,16 @@ const ICON_MIGRATION_MAP = {
  */
 const ICON_TYPE_OVERRIDES = {
   'tori.png': {
-    'kiho': 'kiho.webp',
-    'family': 'family.webp'
+    kiho: 'kiho.webp',
+    family: 'family.webp'
   },
   'scroll.png': {
-    'kata': 'kata.webp',
-    'school': 'school.webp'
+    kata: 'kata.webp',
+    school: 'school.webp'
   },
   'yin-yang.png': {
-    'advantage': 'advantage.webp',
-    'disadvantage': 'disadvantage.webp'
+    advantage: 'advantage.webp',
+    disadvantage: 'disadvantage.webp'
   }
 };
 
@@ -132,9 +132,7 @@ export class ImportService {
       detection = { state: 'original', needsTransform: true, confidence: 1.0 };
     } else {
       detection = SchemaStateDetectionService.detectState(data);
-      Logger.info(
-        `Schema state: ${detection.state} (confidence: ${Math.round(detection.confidence * 100)}%)`
-      );
+      Logger.info(`Schema state: ${detection.state} (confidence: ${Math.round(detection.confidence * 100)}%)`);
     }
 
     // Validate detection
@@ -417,17 +415,14 @@ export class ImportService {
     }
 
     // Don't touch external URLs or Foundry core icons
-    if (oldPath.startsWith('http') || 
-        oldPath.startsWith('data:') || 
-        oldPath.startsWith('icons/')) {
+    if (oldPath.startsWith('http') || oldPath.startsWith('data:') || oldPath.startsWith('icons/')) {
       // Logger.info(`Icon preserved (external/core): ${oldPath}`);
       return oldPath;
     }
 
     // Don't touch non-system paths (modules, tokenizer, etc.)
     // Only process paths that are bare filenames or old system paths
-    if (oldPath.includes('/') && 
-        !oldPath.startsWith('systems/l5r4/')) {
+    if (oldPath.includes('/') && !oldPath.startsWith('systems/l5r4/')) {
       Logger.info(`Icon preserved (non-system path): ${oldPath}`);
       return oldPath;
     }
@@ -435,7 +430,7 @@ export class ImportService {
     // Extract filename from path and strip query parameters
     const parts = oldPath.split('/');
     let filename = parts[parts.length - 1];
-    
+
     // Strip query parameters (e.g., "image.png?12345" -> "image.png")
     const queryIndex = filename.indexOf('?');
     if (queryIndex !== -1) {
@@ -450,7 +445,7 @@ export class ImportService {
 
     // Check if this is a default icon we should migrate
     let newFilename = null;
-    
+
     // Check type-specific override first
     if (docType && ICON_TYPE_OVERRIDES[filename]?.[docType]) {
       newFilename = ICON_TYPE_OVERRIDES[filename][docType];
@@ -506,7 +501,7 @@ export class ImportService {
 
       // Fix wealth fields
       if (transformed.system.wealth) {
-        ['koku', 'bu', 'zeni'].forEach(field => {
+        ['koku', 'bu', 'zeni'].forEach((field) => {
           if (typeof transformed.system.wealth[field] === 'string') {
             const num = parseInt(transformed.system.wealth[field], 10);
             if (!isNaN(num)) {

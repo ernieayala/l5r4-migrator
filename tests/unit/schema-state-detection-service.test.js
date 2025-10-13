@@ -20,9 +20,7 @@ describe('SchemaStateDetectionService', () => {
             }
           }
         ],
-        items: [
-          { system: { mastery_3: '', equiped: false } }
-        ]
+        items: [{ system: { mastery_3: '', equiped: false } }]
       };
 
       const result = SchemaStateDetectionService.detectState(data);
@@ -49,9 +47,7 @@ describe('SchemaStateDetectionService', () => {
             }
           }
         ],
-        items: [
-          { system: { mastery3: '', equipped: true, freeRanks: 0 } }
-        ]
+        items: [{ system: { mastery3: '', equipped: true, freeRanks: 0 } }]
       };
 
       const result = SchemaStateDetectionService.detectState(data);
@@ -195,12 +191,7 @@ describe('SchemaStateDetectionService', () => {
 
     it('should handle actors with missing system data', () => {
       const data = {
-        actors: [
-          { name: 'No System' },
-          { system: null },
-          { system: {} },
-          { system: { wounds: { heal_rate: 1 } } }
-        ],
+        actors: [{ name: 'No System' }, { system: null }, { system: {} }, { system: { wounds: { heal_rate: 1 } } }],
         items: []
       };
 
@@ -221,9 +212,7 @@ describe('SchemaStateDetectionService', () => {
             }
           }
         ],
-        items: [
-          { system: { mastery3: '', equipped: true } }
-        ]
+        items: [{ system: { mastery3: '', equipped: true } }]
       };
 
       const result = SchemaStateDetectionService.detectState(data);
@@ -267,9 +256,7 @@ describe('SchemaStateDetectionService', () => {
 
     it('should calculate medium confidence for weak pattern', () => {
       const data = {
-        actors: [
-          { system: { wounds: { heal_rate: 0 } } }
-        ],
+        actors: [{ system: { wounds: { heal_rate: 0 } } }],
         items: []
       };
 
@@ -280,9 +267,7 @@ describe('SchemaStateDetectionService', () => {
 
     it('should calculate low confidence for mixed pattern', () => {
       const data = {
-        actors: [
-          { system: { wounds: { heal_rate: 0, healRate: 0 } } }
-        ],
+        actors: [{ system: { wounds: { heal_rate: 0, healRate: 0 } } }],
         items: []
       };
 
@@ -294,9 +279,7 @@ describe('SchemaStateDetectionService', () => {
     it('should detect isBow as new field indicator', () => {
       const data = {
         actors: [],
-        items: [
-          { system: { isBow: true, equipped: true } }
-        ]
+        items: [{ system: { isBow: true, equipped: true } }]
       };
 
       const result = SchemaStateDetectionService.detectState(data);
@@ -307,9 +290,7 @@ describe('SchemaStateDetectionService', () => {
 
     it('should detect fear as new field indicator', () => {
       const data = {
-        actors: [
-          { system: { fear: 3, woundLevels: {} } }
-        ],
+        actors: [{ system: { fear: 3, woundLevels: {} } }],
         items: []
       };
 
@@ -358,9 +339,7 @@ describe('SchemaStateDetectionService', () => {
 
     it('should detect with minimal data', () => {
       const data = {
-        actors: [
-          { system: { wounds: { heal_rate: 0 } } }
-        ],
+        actors: [{ system: { wounds: { heal_rate: 0 } } }],
         items: []
       };
 

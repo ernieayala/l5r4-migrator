@@ -145,7 +145,13 @@ export class ValidationService {
       }
 
       // In strict mode, actor/item errors and warnings also invalidate
-      if (strict && (result.actorErrors.length > 0 || result.itemErrors.length > 0 || result.warnings.length > 0 || result.integrityIssues.length > 0)) {
+      if (
+        strict &&
+        (result.actorErrors.length > 0 ||
+          result.itemErrors.length > 0 ||
+          result.warnings.length > 0 ||
+          result.integrityIssues.length > 0)
+      ) {
         result.valid = false;
       }
 

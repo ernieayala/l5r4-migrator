@@ -31,6 +31,7 @@ Complete step-by-step guide for migrating your world from the legacy **l5r4** sy
 Foundry VTT does not allow changing a world to a different system ID. Since the Enhanced system uses `l5r4-enhanced` instead of `l5r4`, you cannot simply "switch system" in your world settings.
 
 This module provides a safe migration path by:
+
 1. Exporting your data from the l5r4 world
 2. Creating a NEW world with the l5r4-enhanced system
 3. Importing your data into the new world
@@ -46,6 +47,7 @@ This module provides a safe migration path by:
 ### What Gets Migrated
 
 ✅ **Included**:
+
 - All actors (PCs and NPCs) with complete system data
 - All items with embedded items and active effects
 - Scenes with tokens, walls, lighting, and notes
@@ -54,6 +56,7 @@ This module provides a safe migration path by:
 - Document permissions and ownership
 
 ❌ **Not Included**:
+
 - Compendium packs (must be exported/imported manually)
 - Module settings (reconfigure in new world)
 - World-level settings (reconfigure in new world)
@@ -71,12 +74,14 @@ The module automatically detects which version of l5r4 your world is using:
 #### Original v12/v13 Schema (snake_case)
 
 **Characteristics**:
+
 - Uses snake_case field names: `heal_rate`, `shadow_taint`, `armor_tn`
 - Missing modern fields: `bonuses`, `woundMode`, `freeRanks`
 - Bow items have type `bow`
 - Armor items use `equiped` (typo)
 
 **Migration Path**: Full transformation applied
+
 - Field renames: snake_case → camelCase
 - Bow conversion: `bow` → `weapon` with `isBow: true`
 - Icon migration: PNG → WEBP (default icons only)
@@ -86,12 +91,14 @@ The module automatically detects which version of l5r4 your world is using:
 #### New v13 Schema (camelCase)
 
 **Characteristics**:
+
 - Uses camelCase field names: `healRate`, `shadowTaint`, `armorTn`
 - Has modern fields: `bonuses`, `woundMode`, `freeRanks`
 - Bow items already `weapon` type with `isBow: true`
 - Armor items use `equipped` (correct)
 
 **Migration Path**: As-is import
+
 - NO transformation applied
 - NO field renames
 - NO defaults added
@@ -100,6 +107,7 @@ The module automatically detects which version of l5r4 your world is using:
 ### Schema Detection Process
 
 The module automatically:
+
 1. Samples your export data (first 10 actors and items)
 2. Analyzes field patterns and naming conventions
 3. Calculates a confidence score (0.3 to 0.95)
@@ -107,6 +115,7 @@ The module automatically:
 5. Routes to the appropriate import path
 
 **Confidence Levels**:
+
 - **High (≥0.9)**: Strong pattern detected, proceed with confidence
 - **Medium (0.7-0.89)**: Reasonable confidence, safe to proceed
 - **Low (<0.7)**: Weak pattern, manual review recommended
@@ -189,6 +198,7 @@ The module automatically:
 #### Step 8: Verify Your Data
 
 Manually check your imported world:
+
 - Open several actors, verify attributes and items
 - Check scenes and tokens
 - Verify journal entries
@@ -208,12 +218,15 @@ Manually check your imported world:
 ### Field Indicators
 
 **Snake Case (Original)**:
+
 - `heal_rate`, `armor_tn`, `roll_mod`, `mastery_3`, `equiped`
 
 **Camel Case (New v13)**:
+
 - `healRate`, `armorTn`, `rollMod`, `mastery3`, `equipped`
 
 **New Fields (New v13)**:
+
 - `bonuses`, `woundMode`, `fear`, `freeRanks`, `isBow`
 
 ### Detection States
@@ -230,16 +243,19 @@ Manually check your imported world:
 ### Export Issues
 
 **Export button does nothing**:
+
 - Check browser console (F12) for errors
 - Verify module is enabled
 - Refresh page
 
 **Export file is very small**:
+
 - World may have no data
 - Verify actors/items exist
 - Try exporting again
 
 **Export freezes**:
+
 - Large worlds take 5-10 minutes
 - Close other browser tabs
 - Be patient
@@ -247,23 +263,27 @@ Manually check your imported world:
 ### Validation Issues
 
 **"Unknown schema" error**:
+
 - World may have minimal data
 - Check if actors have system data
 - Contact support if persists
 
 **"Mixed schema" error**:
+
 - Data may be corrupted
 - DO NOT proceed
 - Restore from backup
 - Contact support
 
 **Low confidence (<70%)**:
+
 - Small worlds may have few indicators
 - Review indicators manually
 - Verify schema in source world
 - Proceed if confident
 
 **Invalid data errors**:
+
 - Check problematic documents
 - Fill in missing data
 - Re-export
@@ -271,21 +291,25 @@ Manually check your imported world:
 ### Import Issues
 
 **Import fails**:
+
 - Check console for errors
 - Verify target system is l5r4-enhanced
 - Try dry run mode
 
 **Missing actors after import**:
+
 - Check import statistics
 - Review console errors
 - Manually re-create if needed
 
 **Embedded items missing**:
+
 - Verify source had embedded items
 - Check validation report
 - Re-export if needed
 
 **Folder structure broken**:
+
 - May conflict with existing folders
 - Manually reorganize
 
@@ -347,6 +371,7 @@ Active Effects migrate, but may need manual adjustment if they reference old fie
 ### Q13: Can I test without creating documents?
 
 Yes! Use dry run mode:
+
 ```javascript
 const result = await game.modules.get('l5r4-migrator').api.ImportService.importWorld(exportData, { dryRun: true });
 ```
@@ -364,12 +389,14 @@ No. Requires Foundry VTT v13 or higher.
 **Automatic Migration**: Default system icons are automatically migrated from PNG to WEBP format.
 
 **Preserved**:
+
 - Custom/external icons (remain unchanged)
 - Module icons (remain unchanged)
 - URLs and data URIs (remain unchanged)
 - Foundry core icons (remain unchanged)
 
 **Migrated Icons**:
+
 - Actor defaults: `helm.png` → `pc.webp`, `ninja.png` → `npc.webp`
 - Item defaults: `yin-yang.png` → `advantage.webp`, `sword.png` → `weapon.webp`, etc.
 - Token images (if using default system icons)
@@ -422,6 +449,7 @@ The migration is **extremely conservative**: it only changes exact default PNG f
 ### When Reporting Issues
 
 Include:
+
 1. Foundry VTT version
 2. Module version
 3. Source system version
@@ -438,4 +466,3 @@ Include:
 ---
 
 **Always back up your worlds before migration. This module is provided as-is without warranty. Test thoroughly with a copy of your world first.**
-

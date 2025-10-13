@@ -78,19 +78,20 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
     if (this.validationResult?.schemaDetection) {
       const detection = this.validationResult.schemaDetection;
       const confidencePercent = Math.round(detection.confidence * 100);
-      
+
       schemaDisplay = {
         state: detection.state,
-        stateLabel: {
-          'original': 'Original v12/v13 (snake_case)',
-          'new-v13': 'New v13 (camelCase)',
-          'mixed': 'Mixed (Partially migrated)',
-          'unknown': 'Unknown'
-        }[detection.state] || detection.state,
+        stateLabel:
+          {
+            original: 'Original v12/v13 (snake_case)',
+            'new-v13': 'New v13 (camelCase)',
+            mixed: 'Mixed (Partially migrated)',
+            unknown: 'Unknown'
+          }[detection.state] || detection.state,
         confidence: confidencePercent,
         confidenceClass: detection.confidence >= 0.9 ? 'high' : detection.confidence >= 0.7 ? 'medium' : 'low',
         needsTransform: detection.needsTransform,
-        strategyLabel: detection.needsTransform 
+        strategyLabel: detection.needsTransform
           ? '🔄 Schema transformation will be applied'
           : '✓ Data will be imported as-is'
       };
@@ -229,22 +230,23 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
     // Get schema detection info
     const detection = this.validationResult?.schemaDetection;
     let detectionInfo = '';
-    
+
     if (detection) {
-      const stateLabel = {
-        'original': 'Original v12/v13 (snake_case)',
-        'new-v13': 'New v13 (camelCase)',
-        'mixed': 'Mixed (Partially migrated)',
-        'unknown': 'Unknown'
-      }[detection.state] || detection.state;
-      
-      const actionLabel = detection.needsTransform 
+      const stateLabel =
+        {
+          original: 'Original v12/v13 (snake_case)',
+          'new-v13': 'New v13 (camelCase)',
+          mixed: 'Mixed (Partially migrated)',
+          unknown: 'Unknown'
+        }[detection.state] || detection.state;
+
+      const actionLabel = detection.needsTransform
         ? '✓ Schema transformation will be applied'
         : '✓ Data will be imported as-is (no transformation)';
-      
+
       const confidencePercent = Math.round(detection.confidence * 100);
       const confidenceColor = detection.confidence >= 0.9 ? 'green' : detection.confidence >= 0.7 ? 'orange' : 'red';
-      
+
       detectionInfo = `
         <div style="background: #f5f5f5; padding: 1em; margin: 1em 0; border-radius: 4px;">
           <h4 style="margin-top: 0;">📊 Detected Schema</h4>
@@ -362,22 +364,23 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
     // Add schema detection info
     let schemaDetectionHtml = '';
     const detection = this.validationResult?.schemaDetection;
-    
+
     if (detection) {
-      const stateLabel = {
-        'original': 'Original v12/v13 (snake_case)',
-        'new-v13': 'New v13 (camelCase)',
-        'mixed': 'Mixed (Partially migrated)',
-        'unknown': 'Unknown'
-      }[detection.state] || detection.state;
-      
-      const actionLabel = detection.needsTransform 
+      const stateLabel =
+        {
+          original: 'Original v12/v13 (snake_case)',
+          'new-v13': 'New v13 (camelCase)',
+          mixed: 'Mixed (Partially migrated)',
+          unknown: 'Unknown'
+        }[detection.state] || detection.state;
+
+      const actionLabel = detection.needsTransform
         ? 'Schema transformation will be applied'
         : 'Data will be imported as-is (no transformation)';
-      
+
       const confidencePercent = Math.round(detection.confidence * 100);
       const confidenceColor = detection.confidence >= 0.9 ? 'green' : detection.confidence >= 0.7 ? 'orange' : 'red';
-      
+
       schemaDetectionHtml = `
         <h4>📊 Schema Detection</h4>
         <ul>
@@ -430,12 +433,13 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   _showImportResults(result) {
     const stats = result.stats;
-    
+
     // Show import path taken
-    const pathLabel = {
-      'with-transform': '🔄 With Transformation (Original → Enhanced)',
-      'as-is': '✓ As-Is (New v13 → Enhanced, no transformation)'
-    }[result.path] || result.path;
+    const pathLabel =
+      {
+        'with-transform': '🔄 With Transformation (Original → Enhanced)',
+        'as-is': '✓ As-Is (New v13 → Enhanced, no transformation)'
+      }[result.path] || result.path;
 
     const content = `
       <div class="l5r4-import-results">
@@ -453,7 +457,7 @@ export class MigratorUI extends HandlebarsApplicationMixin(ApplicationV2) {
         </table>
         
         ${stats.actors.transformed ? `<p style="margin-top: 1em;"><em>✓ Transformed ${stats.actors.transformed} actors and ${stats.items.transformed} items</em></p>` : ''}
-        ${result.path === 'as-is' ? `<p style="margin-top: 1em;"><em>✓ Data imported as-is, preserving all customizations</em></p>` : ''}
+        ${result.path === 'as-is' ? '<p style="margin-top: 1em;"><em>✓ Data imported as-is, preserving all customizations</em></p>' : ''}
       </div>
     `;
 

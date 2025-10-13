@@ -21,28 +21,48 @@ describe('Icon Migration', () => {
 
     it('should migrate item default icons', () => {
       expect(ImportService._migrateIconPath('hat.png', 'armor')).toBe('systems/l5r4-enhanced/assets/icons/armor.webp');
-      expect(ImportService._migrateIconPath('sword.png', 'weapon')).toBe('systems/l5r4-enhanced/assets/icons/weapon.webp');
+      expect(ImportService._migrateIconPath('sword.png', 'weapon')).toBe(
+        'systems/l5r4-enhanced/assets/icons/weapon.webp'
+      );
       expect(ImportService._migrateIconPath('bow.png', 'bow')).toBe('systems/l5r4-enhanced/assets/icons/bow.webp');
-      expect(ImportService._migrateIconPath('flower.png', 'skill')).toBe('systems/l5r4-enhanced/assets/icons/skill.webp');
-      expect(ImportService._migrateIconPath('scroll2.png', 'spell')).toBe('systems/l5r4-enhanced/assets/icons/spell.webp');
-      expect(ImportService._migrateIconPath('coins.png', 'commonItem')).toBe('systems/l5r4-enhanced/assets/icons/item.webp');
-      expect(ImportService._migrateIconPath('tattoo.png', 'tattoo')).toBe('systems/l5r4-enhanced/assets/icons/tattoo.webp');
-      expect(ImportService._migrateIconPath('kanji.png', 'technique')).toBe('systems/l5r4-enhanced/assets/icons/technique.webp');
+      expect(ImportService._migrateIconPath('flower.png', 'skill')).toBe(
+        'systems/l5r4-enhanced/assets/icons/skill.webp'
+      );
+      expect(ImportService._migrateIconPath('scroll2.png', 'spell')).toBe(
+        'systems/l5r4-enhanced/assets/icons/spell.webp'
+      );
+      expect(ImportService._migrateIconPath('coins.png', 'commonItem')).toBe(
+        'systems/l5r4-enhanced/assets/icons/item.webp'
+      );
+      expect(ImportService._migrateIconPath('tattoo.png', 'tattoo')).toBe(
+        'systems/l5r4-enhanced/assets/icons/tattoo.webp'
+      );
+      expect(ImportService._migrateIconPath('kanji.png', 'technique')).toBe(
+        'systems/l5r4-enhanced/assets/icons/technique.webp'
+      );
       expect(ImportService._migrateIconPath('bamboo.png', 'clan')).toBe('systems/l5r4-enhanced/assets/icons/clan.webp');
     });
 
     it('should apply type-specific overrides for ambiguous icons', () => {
       // tori.png is used for both family and kiho
-      expect(ImportService._migrateIconPath('tori.png', 'family')).toBe('systems/l5r4-enhanced/assets/icons/family.webp');
+      expect(ImportService._migrateIconPath('tori.png', 'family')).toBe(
+        'systems/l5r4-enhanced/assets/icons/family.webp'
+      );
       expect(ImportService._migrateIconPath('tori.png', 'kiho')).toBe('systems/l5r4-enhanced/assets/icons/kiho.webp');
 
       // scroll.png is used for both kata and school
       expect(ImportService._migrateIconPath('scroll.png', 'kata')).toBe('systems/l5r4-enhanced/assets/icons/kata.webp');
-      expect(ImportService._migrateIconPath('scroll.png', 'school')).toBe('systems/l5r4-enhanced/assets/icons/school.webp');
+      expect(ImportService._migrateIconPath('scroll.png', 'school')).toBe(
+        'systems/l5r4-enhanced/assets/icons/school.webp'
+      );
 
       // yin-yang.png is used for both advantage and disadvantage
-      expect(ImportService._migrateIconPath('yin-yang.png', 'advantage')).toBe('systems/l5r4-enhanced/assets/icons/advantage.webp');
-      expect(ImportService._migrateIconPath('yin-yang.png', 'disadvantage')).toBe('systems/l5r4-enhanced/assets/icons/disadvantage.webp');
+      expect(ImportService._migrateIconPath('yin-yang.png', 'advantage')).toBe(
+        'systems/l5r4-enhanced/assets/icons/advantage.webp'
+      );
+      expect(ImportService._migrateIconPath('yin-yang.png', 'disadvantage')).toBe(
+        'systems/l5r4-enhanced/assets/icons/disadvantage.webp'
+      );
     });
 
     it('should preserve external URLs', () => {
@@ -76,7 +96,7 @@ describe('Icon Migration', () => {
       const tokenizerPath = 'tokenizer/npc-images/futs_uma.Avatar.webp';
       const modulePath = 'modules/my-module/custom-icon.png';
       const worldPath = 'worlds/my-world/images/custom.png';
-      
+
       expect(ImportService._migrateIconPath(tokenizerPath)).toBe(tokenizerPath);
       expect(ImportService._migrateIconPath(modulePath)).toBe(modulePath);
       expect(ImportService._migrateIconPath(worldPath)).toBe(worldPath);
@@ -86,7 +106,7 @@ describe('Icon Migration', () => {
       // Query parameter path should be preserved if not a default
       const customWithQuery = 'tokenizer/npc-images/futs_uma.Avatar.webp?1755639518334';
       expect(ImportService._migrateIconPath(customWithQuery)).toBe(customWithQuery);
-      
+
       // Query parameter on default should still migrate
       const defaultWithQuery = 'systems/l5r4/assets/icons/helm.png?12345';
       expect(ImportService._migrateIconPath(defaultWithQuery, 'pc')).toBe('systems/l5r4-enhanced/assets/icons/pc.webp');
@@ -110,7 +130,9 @@ describe('Icon Migration', () => {
     });
 
     it('should handle bare filenames', () => {
-      expect(ImportService._migrateIconPath('sword.png', 'weapon')).toBe('systems/l5r4-enhanced/assets/icons/weapon.webp');
+      expect(ImportService._migrateIconPath('sword.png', 'weapon')).toBe(
+        'systems/l5r4-enhanced/assets/icons/weapon.webp'
+      );
     });
   });
 

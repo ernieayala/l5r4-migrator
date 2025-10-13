@@ -145,7 +145,7 @@ describe('ImportService - Dual Import Paths', () => {
       };
 
       const result = await ImportService.importWorld(dualSchemaData, { dryRun: true });
-      
+
       expect(result.path).toBe('as-is');
       expect(result.detection.state).toBe('new-v13');
       expect(result.detection.needsTransform).toBe(false);
@@ -347,9 +347,7 @@ describe('ImportService - Dual Import Paths', () => {
             },
             flags: {
               l5r4: {
-                xpSpent: [
-                  { id: 'xp1', type: 'manual', change: 10, note: 'Test XP', timestamp: Date.now() }
-                ],
+                xpSpent: [{ id: 'xp1', type: 'manual', change: 10, note: 'Test XP', timestamp: Date.now() }],
                 customData: 'preserved'
               }
             },
@@ -386,9 +384,7 @@ describe('ImportService - Dual Import Paths', () => {
     it('should create documents when dryRun=false (as-is)', async () => {
       const newV13Data = {
         metadata: { sourceSystem: 'l5r4', worldId: 'test', worldTitle: 'Test World' },
-        actors: [
-          { _id: 'a1', name: 'Actor', type: 'pc', system: { wounds: { healRate: 0 }, bonuses: {} }, items: [] }
-        ],
+        actors: [{ _id: 'a1', name: 'Actor', type: 'pc', system: { wounds: { healRate: 0 }, bonuses: {} }, items: [] }],
         items: []
       };
 
@@ -455,9 +451,7 @@ describe('ImportService - Dual Import Paths', () => {
     it('should include path in result (as-is)', async () => {
       const newV13Data = {
         metadata: { sourceSystem: 'l5r4', worldId: 'test', worldTitle: 'Test World' },
-        actors: [
-          { _id: 'a1', name: 'Actor', type: 'pc', system: { wounds: { healRate: 0 }, bonuses: {} }, items: [] }
-        ],
+        actors: [{ _id: 'a1', name: 'Actor', type: 'pc', system: { wounds: { healRate: 0 }, bonuses: {} }, items: [] }],
         items: []
       };
 

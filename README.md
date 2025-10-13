@@ -7,11 +7,13 @@ A Foundry VTT v13+ module for migrating worlds from the legacy **l5r4** system t
 **The Problem:** Foundry VTT does not allow changing a world to a different system ID. Since the Enhanced system uses `l5r4-enhanced` instead of `l5r4`, you cannot simply "switch system" in your world settings.
 
 **The Solution:** This module provides a safe migration path:
+
 1. Export your data from the l5r4 world
 2. Create a NEW world with the l5r4-enhanced system
 3. Import your data into the new world
 
 The module automatically detects whether your world is from:
+
 - **Original v12/v13** (snake_case fields) → Applies full schema transformation
 - **New v13** (camelCase fields) → Imports data as-is without transformation
 

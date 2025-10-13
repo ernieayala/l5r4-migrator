@@ -333,6 +333,7 @@ export class ExportService {
     const content = JSON.stringify(exportData, null, 2);
 
     // Use Foundry's built-in method for better compatibility across platforms
+    // eslint-disable-next-line no-undef
     saveDataToFile(content, 'application/json', exportFilename);
 
     Logger.info(`Export downloaded: ${exportFilename}`);

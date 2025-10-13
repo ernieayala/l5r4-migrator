@@ -54,7 +54,7 @@ Hooks.once('ready', async () => {
 Hooks.on('renderSettings', (app, html) => {
   // Handle both jQuery (v12) and HTMLElement (v13)
   const element = html instanceof jQuery ? html[0] : html;
-  
+
   // Create migration button
   const button = document.createElement('button');
   button.id = 'l5r4-migrator-button';
@@ -63,12 +63,12 @@ Hooks.on('renderSettings', (app, html) => {
     <i class="fas fa-exchange-alt"></i>
     ${game.i18n.localize('L5R4MIGRATOR.ButtonOpenMigrator')}
   `;
-  
+
   // Add click handler
   button.addEventListener('click', () => {
     new MigratorUI().render(true);
   });
-  
+
   // Try multiple insertion strategies for v13 compatibility
   // Strategy 1: After game settings button
   let gameSettingsButton = element.querySelector('#settings-game');
@@ -76,20 +76,20 @@ Hooks.on('renderSettings', (app, html) => {
     gameSettingsButton.insertAdjacentElement('afterend', button);
     return;
   }
-  
+
   // Strategy 2: In the game settings section
   const gameSection = element.querySelector('section.game-settings');
   if (gameSection) {
     gameSection.appendChild(button);
     return;
   }
-  
+
   // Strategy 3: Find any settings section
   const sections = element.querySelectorAll('section');
   if (sections.length > 0) {
     sections[0].appendChild(button);
     return;
   }
-  
+
   console.warn('L5R4 Migrator | Could not find suitable location for settings button. Use console command instead.');
 });

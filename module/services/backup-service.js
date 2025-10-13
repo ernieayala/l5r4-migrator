@@ -178,7 +178,9 @@ export class BackupService {
 
     // Get all settings for this module
     try {
-      const moduleSettings = game.settings.storage.get('world').filter((s) => s[0] && typeof s[0] === 'string' && s[0].startsWith('l5r4'));
+      const moduleSettings = game.settings.storage
+        .get('world')
+        .filter((s) => s[0] && typeof s[0] === 'string' && s[0].startsWith('l5r4'));
 
       for (const [key, value] of moduleSettings) {
         settings[key] = value;
@@ -199,6 +201,7 @@ export class BackupService {
    */
   static _downloadFile(content, filename) {
     // Use Foundry's built-in method which handles file downloads properly
+    // eslint-disable-next-line no-undef
     saveDataToFile(content, 'application/json', filename);
   }
 

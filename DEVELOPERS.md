@@ -384,6 +384,7 @@ The module handles automatic transformation of data from the legacy l5r4 system 
 The module automatically migrates default system icons from old PNG format to new WEBP format.
 
 **Migration Logic (Extremely Conservative):**
+
 1. Check for null/empty, external URLs, or Foundry core icons → preserve
 2. Check for non-system paths (tokenizer, modules, worlds) → preserve
 3. Extract filename and strip query parameters
@@ -394,6 +395,7 @@ The module automatically migrates default system icons from old PNG format to ne
 8. Preserve all non-matching files
 
 **Protected Paths:**
+
 - All `.webp` files (already new format or custom)
 - External URLs (`http://`, `https://`, `data:`)
 - Foundry core icons (`icons/...`)
@@ -401,11 +403,13 @@ The module automatically migrates default system icons from old PNG format to ne
 - Custom PNG files (any filename not in default list)
 
 **Actor Icons:**
+
 - `helm.png` → `pc.webp`
 - `ninja.png` → `npc.webp`
 - Applied to both `actor.img` and `prototypeToken.texture.src`
 
 **Item Icons:**
+
 - `yin-yang.png` → `advantage.webp` or `disadvantage.webp` (type-specific)
 - `hat.png` → `armor.webp`
 - `bow.png` → `bow.webp`
@@ -420,6 +424,7 @@ The module automatically migrates default system icons from old PNG format to ne
 - `sword.png` → `weapon.webp`
 
 **Implementation:**
+
 - See `ImportService._migrateIconPath()` method
 - Constants: `ICON_MIGRATION_MAP`, `ICON_TYPE_OVERRIDES`
 - Applied in both `_transformActor()` and `_transformItem()`
@@ -446,6 +451,7 @@ The module automatically migrates default system icons from old PNG format to ne
 **Import Phase (Dual Paths):**
 
 **Path A: With Transformation (Original v12/v13 → Enhanced):**
+
 1. Apply field renames using SCHEMA_MAP
 2. Convert bow → weapon with `isBow: true`
 3. Add new fields with defaults
@@ -453,6 +459,7 @@ The module automatically migrates default system icons from old PNG format to ne
 5. Transform embedded items recursively
 
 **Path B: As-Is (New v13 → Enhanced):**
+
 1. NO transformation applied
 2. NO field renames
 3. NO defaults added
@@ -460,10 +467,11 @@ The module automatically migrates default system icons from old PNG format to ne
 5. Import documents directly
 
 **Routing Logic:**
+
 - Automatic detection runs on validation
 - ImportService routes based on `needsTransform` flag
-- Original schema → _importWithTransform()
-- New v13 schema → _importAsIs()
+- Original schema → \_importWithTransform()
+- New v13 schema → \_importAsIs()
 - `skipDetection: true` forces transformation path
 
 ### Reference Files
@@ -491,6 +499,7 @@ The module automatically migrates default system icons from old PNG format to ne
 ### Field Indicators
 
 **Snake Case Indicators (Original):**
+
 - `actor.system.wounds.heal_rate`
 - `actor.system.wound_lvl`
 - `actor.system.armor.armor_tn`
@@ -500,6 +509,7 @@ The module automatically migrates default system icons from old PNG format to ne
 - `item.system.equiped`
 
 **Camel Case Indicators (New v13):**
+
 - `actor.system.wounds.healRate`
 - `actor.system.woundLevels`
 - `actor.system.armor.armorTn`
@@ -509,6 +519,7 @@ The module automatically migrates default system icons from old PNG format to ne
 - `item.system.equipped`
 
 **New Field Indicators (New v13):**
+
 - `actor.system.bonuses`
 - `actor.system.woundMode`
 - `actor.system.fear`
@@ -518,18 +529,22 @@ The module automatically migrates default system icons from old PNG format to ne
 ### Detection States
 
 **original**: snake_case > 0, camelCase = 0
+
 - **Action**: Apply full transformation
 - **Confidence**: 0.95 if strong pattern (>3 indicators), 0.75 otherwise
 
 **new-v13**: camelCase > 0, newFields > 0, snake_case = 0
+
 - **Action**: Import as-is (no transformation)
 - **Confidence**: 0.95 if strong pattern (>3 camelCase, >2 newFields), 0.75 otherwise
 
 **mixed**: snake_case > 0 AND camelCase > 0
+
 - **Action**: Error - cannot safely import
 - **Confidence**: 0.3 (low)
 
 **unknown**: No clear indicators found
+
 - **Action**: Error - indeterminate schema
 - **Confidence**: 0.3 (low)
 
@@ -542,12 +557,14 @@ The module automatically migrates default system icons from old PNG format to ne
 ### Integration Points
 
 **ValidationService**:
+
 ```javascript
 const detection = SchemaStateDetectionService.detectState(data);
 result.schemaDetection = detection;
 ```
 
 **ImportService**:
+
 ```javascript
 if (detection.needsTransform) {
   return await this._importWithTransform(data, options);
@@ -557,6 +574,7 @@ if (detection.needsTransform) {
 ```
 
 **MigratorUI**:
+
 - Displays detection in status box after validation
 - Shows detection in confirmation dialog before import
 - Includes detection in validation report dialog

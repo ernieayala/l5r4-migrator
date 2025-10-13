@@ -85,29 +85,67 @@ export class SchemaStateDetectionService {
 
     // Check actors
     for (const actor of sample.actors) {
-      if (actor.system?.wounds?.heal_rate !== undefined) indicators.snakeCase.heal_rate++;
-      if (actor.system?.wounds?.healRate !== undefined) indicators.camelCase.healRate++;
-      if (actor.system?.wound_lvl) indicators.snakeCase.wound_lvl++;
-      if (actor.system?.woundLevels) indicators.camelCase.woundLevels++;
-      if (actor.system?.armor?.armor_tn !== undefined) indicators.snakeCase.armor_tn++;
-      if (actor.system?.armor?.armorTn !== undefined) indicators.camelCase.armorTn++;
-      if (actor.system?.shadow_taint !== undefined) indicators.snakeCase.shadow_taint++;
-      if (actor.system?.shadowTaint !== undefined) indicators.camelCase.shadowTaint++;
-      if (actor.system?.initiative?.roll_mod !== undefined) indicators.snakeCase.roll_mod++;
-      if (actor.system?.initiative?.rollMod !== undefined) indicators.camelCase.rollMod++;
-      if (actor.system?.bonuses) indicators.newFields.bonuses++;
-      if (actor.system?.woundMode) indicators.newFields.woundMode++;
-      if (actor.system?.fear) indicators.newFields.fear++;
+      if (actor.system?.wounds?.heal_rate !== undefined) {
+        indicators.snakeCase.heal_rate++;
+      }
+      if (actor.system?.wounds?.healRate !== undefined) {
+        indicators.camelCase.healRate++;
+      }
+      if (actor.system?.wound_lvl) {
+        indicators.snakeCase.wound_lvl++;
+      }
+      if (actor.system?.woundLevels) {
+        indicators.camelCase.woundLevels++;
+      }
+      if (actor.system?.armor?.armor_tn !== undefined) {
+        indicators.snakeCase.armor_tn++;
+      }
+      if (actor.system?.armor?.armorTn !== undefined) {
+        indicators.camelCase.armorTn++;
+      }
+      if (actor.system?.shadow_taint !== undefined) {
+        indicators.snakeCase.shadow_taint++;
+      }
+      if (actor.system?.shadowTaint !== undefined) {
+        indicators.camelCase.shadowTaint++;
+      }
+      if (actor.system?.initiative?.roll_mod !== undefined) {
+        indicators.snakeCase.roll_mod++;
+      }
+      if (actor.system?.initiative?.rollMod !== undefined) {
+        indicators.camelCase.rollMod++;
+      }
+      if (actor.system?.bonuses) {
+        indicators.newFields.bonuses++;
+      }
+      if (actor.system?.woundMode) {
+        indicators.newFields.woundMode++;
+      }
+      if (actor.system?.fear) {
+        indicators.newFields.fear++;
+      }
     }
 
     // Check items
     for (const item of sample.items) {
-      if (item.system?.mastery_3 !== undefined) indicators.snakeCase.mastery_3++;
-      if (item.system?.mastery3 !== undefined) indicators.camelCase.mastery3++;
-      if (item.system?.equiped !== undefined) indicators.snakeCase.equiped++;
-      if (item.system?.equipped !== undefined) indicators.camelCase.equipped++;
-      if (item.system?.freeRanks !== undefined) indicators.newFields.freeRanks++;
-      if (item.system?.isBow !== undefined) indicators.newFields.isBow++;
+      if (item.system?.mastery_3 !== undefined) {
+        indicators.snakeCase.mastery_3++;
+      }
+      if (item.system?.mastery3 !== undefined) {
+        indicators.camelCase.mastery3++;
+      }
+      if (item.system?.equiped !== undefined) {
+        indicators.snakeCase.equiped++;
+      }
+      if (item.system?.equipped !== undefined) {
+        indicators.camelCase.equipped++;
+      }
+      if (item.system?.freeRanks !== undefined) {
+        indicators.newFields.freeRanks++;
+      }
+      if (item.system?.isBow !== undefined) {
+        indicators.newFields.isBow++;
+      }
     }
 
     // Count totals
@@ -187,16 +225,28 @@ export class SchemaStateDetectionService {
     const { snakeCaseTotal, camelCaseTotal, newFieldsTotal } = indicators;
 
     // High confidence for dual-schema documents (new v13 with legacy fields)
-    if (snakeCaseTotal > 0 && camelCaseTotal > 0 && newFieldsTotal > 2) return 0.95;
+    if (snakeCaseTotal > 0 && camelCaseTotal > 0 && newFieldsTotal > 2) {
+      return 0.95;
+    }
 
     // High confidence if clear pattern with multiple indicators
-    if (snakeCaseTotal > 3 && camelCaseTotal === 0) return 0.95;
-    if (camelCaseTotal > 3 && newFieldsTotal > 2 && snakeCaseTotal === 0) return 0.95;
+    if (snakeCaseTotal > 3 && camelCaseTotal === 0) {
+      return 0.95;
+    }
+    if (camelCaseTotal > 3 && newFieldsTotal > 2 && snakeCaseTotal === 0) {
+      return 0.95;
+    }
 
     // Medium confidence with some indicators
-    if (snakeCaseTotal > 0 && camelCaseTotal === 0) return 0.75;
-    if (camelCaseTotal > 0 && snakeCaseTotal === 0) return 0.75;
-    if (snakeCaseTotal > 0 && camelCaseTotal > 0 && newFieldsTotal > 0) return 0.75;
+    if (snakeCaseTotal > 0 && camelCaseTotal === 0) {
+      return 0.75;
+    }
+    if (camelCaseTotal > 0 && snakeCaseTotal === 0) {
+      return 0.75;
+    }
+    if (snakeCaseTotal > 0 && camelCaseTotal > 0 && newFieldsTotal > 0) {
+      return 0.75;
+    }
 
     // Low confidence (true mixed state or sparse data)
     return 0.3;
