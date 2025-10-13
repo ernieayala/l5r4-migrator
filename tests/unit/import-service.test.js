@@ -145,6 +145,71 @@ describe('Import Service', () => {
       expect(transformed.items[1].system.isBow).toBe(true);
       expect(transformed.items[1].system.size).toBe('large');
     });
+
+    it('should preserve actor flags including xpSpent and xpManual', () => {
+      const oldPC = {
+        type: 'pc',
+        name: 'Test PC',
+        system: { wounds: { heal_rate: 5 } },
+        flags: {
+          l5r4: {
+            xpSpent: [
+              {
+                id: 'test-xp-1',
+                type: 'manual',
+                timestamp: Date.now(),
+                change: 10,
+                note: 'Advancement',
+                fromValue: 0,
+                toValue: 10
+              },
+              {
+                id: 'test-xp-2',
+                type: 'skill',
+                timestamp: Date.now(),
+                xpCost: 5,
+                item: 'Athletics',
+                note: 'Skill rank increase',
+                fromValue: 1,
+                toValue: 2
+              }
+            ],
+            xpManual: [
+              {
+                id: 'jS7NdVuDBIoaLwNd',
+                delta: 4,
+                note: 'Session 1',
+                ts: 1758998801356
+              },
+              {
+                id: 'g64zl49sSbnTW9qn',
+                delta: 4,
+                note: 'Session 2',
+                ts: 1758998805232
+              }
+            ],
+            customFlag: 'test-value'
+          },
+          'some-module': {
+            data: 'module-data'
+          }
+        }
+      };
+
+      const transformed = ImportService._transformActor(oldPC);
+
+      // Flags should be preserved completely
+      expect(transformed.flags).toBeDefined();
+      expect(transformed.flags.l5r4).toBeDefined();
+      expect(transformed.flags.l5r4.xpSpent).toHaveLength(2);
+      expect(transformed.flags.l5r4.xpSpent[0].note).toBe('Advancement');
+      expect(transformed.flags.l5r4.xpSpent[1].item).toBe('Athletics');
+      expect(transformed.flags.l5r4.xpManual).toHaveLength(2);
+      expect(transformed.flags.l5r4.xpManual[0].note).toBe('Session 1');
+      expect(transformed.flags.l5r4.xpManual[1].delta).toBe(4);
+      expect(transformed.flags.l5r4.customFlag).toBe('test-value');
+      expect(transformed.flags['some-module'].data).toBe('module-data');
+    });
   });
 
   describe('_transformItem', () => {
@@ -500,6 +565,61 @@ describe('Import Service', () => {
       expect(transformed.system.wounds.healRate).toBe(5);
       expect(transformed.system.shadowTaint).toBeDefined();
       expect(transformed.system.bonuses.skill.athletics).toBe(2);
+    });
+
+    it('should preserve flags with xpManual when importing via as-is path', async () => {
+      // Simulate new-v13 dual-schema export with xpManual
+      const dualSchemaData = {
+        metadata: { worldId: 'test' },
+        actors: [
+          {
+            type: 'pc',
+            name: 'Character with XP',
+            system: {
+              wounds: { healRate: 5, heal_rate: null }, // Dual schema
+              woundLevels: {},
+              bonuses: { skill: {}, trait: {}, ring: {} } // New field
+            },
+            flags: {
+              l5r4: {
+                xpManual: [
+                  {
+                    id: 'jS7NdVuDBIoaLwNd',
+                    delta: 4,
+                    note: 'Session 1',
+                    ts: 1758998801356
+                  },
+                  {
+                    id: 'g64zl49sSbnTW9qn',
+                    delta: 4,
+                    note: 'Session 2',
+                    ts: 1758998805232
+                  }
+                ],
+                xpSpent: []
+              }
+            }
+          }
+        ],
+        items: []
+      };
+
+      // Import via as-is path (no skipDetection)
+      const result = await ImportService.importWorld(dualSchemaData, { dryRun: false });
+
+      // Verify import succeeded
+      expect(result.success).toBe(true);
+      expect(result.path).toBe('as-is');
+      expect(result.stats.actors.created).toBe(1);
+
+      // Verify Actor.create was called with flags intact
+      expect(Actor.create).toHaveBeenCalledTimes(1);
+      const createdActorData = Actor.create.mock.calls[0][0];
+      expect(createdActorData.flags).toBeDefined();
+      expect(createdActorData.flags.l5r4).toBeDefined();
+      expect(createdActorData.flags.l5r4.xpManual).toHaveLength(2);
+      expect(createdActorData.flags.l5r4.xpManual[0].note).toBe('Session 1');
+      expect(createdActorData.flags.l5r4.xpManual[1].delta).toBe(4);
     });
   });
 });

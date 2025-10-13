@@ -150,13 +150,21 @@ export class SchemaStateDetectionService {
       return 'original';
     }
 
+    // Dual-schema documents (new v13 with legacy compatibility)
+    // When BOTH camelCase AND snake_case exist together WITH new fields,
+    // this indicates new v13 exporting both formats for backward compatibility
+    if (snakeCaseTotal > 0 && camelCaseTotal > 0 && newFieldsTotal > 0) {
+      return 'new-v13';
+    }
+
     // Clear New v13 (has camelCase + new fields, no snake_case)
     if (camelCaseTotal > 0 && newFieldsTotal > 0 && snakeCaseTotal === 0) {
       return 'new-v13';
     }
 
-    // Mixed or unclear (partial migration)
-    if (snakeCaseTotal > 0 && camelCaseTotal > 0) {
+    // True mixed state (partial migration) - has both schemas but NO new fields
+    // This indicates documents in transition between versions
+    if (snakeCaseTotal > 0 && camelCaseTotal > 0 && newFieldsTotal === 0) {
       return 'mixed';
     }
 
@@ -178,6 +186,9 @@ export class SchemaStateDetectionService {
   static _calculateConfidence(indicators) {
     const { snakeCaseTotal, camelCaseTotal, newFieldsTotal } = indicators;
 
+    // High confidence for dual-schema documents (new v13 with legacy fields)
+    if (snakeCaseTotal > 0 && camelCaseTotal > 0 && newFieldsTotal > 2) return 0.95;
+
     // High confidence if clear pattern with multiple indicators
     if (snakeCaseTotal > 3 && camelCaseTotal === 0) return 0.95;
     if (camelCaseTotal > 3 && newFieldsTotal > 2 && snakeCaseTotal === 0) return 0.95;
@@ -185,8 +196,9 @@ export class SchemaStateDetectionService {
     // Medium confidence with some indicators
     if (snakeCaseTotal > 0 && camelCaseTotal === 0) return 0.75;
     if (camelCaseTotal > 0 && snakeCaseTotal === 0) return 0.75;
+    if (snakeCaseTotal > 0 && camelCaseTotal > 0 && newFieldsTotal > 0) return 0.75;
 
-    // Low confidence (mixed or sparse data)
+    // Low confidence (true mixed state or sparse data)
     return 0.3;
   }
 }

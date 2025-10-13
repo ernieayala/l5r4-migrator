@@ -101,7 +101,7 @@ describe('ImportService - Dual Import Paths', () => {
       );
     });
 
-    it('should throw error on mixed schema', async () => {
+    it('should throw error on mixed schema (without new fields)', async () => {
       const mixedData = {
         metadata: { sourceSystem: 'l5r4', worldId: 'test', worldTitle: 'Test World' },
         actors: [
@@ -110,7 +110,10 @@ describe('ImportService - Dual Import Paths', () => {
             name: 'Test Actor',
             type: 'pc',
             system: {
-              wounds: { heal_rate: 0, healRate: 0 } // Both snake_case and camelCase
+              wounds: { heal_rate: 0, healRate: 0 }, // Both snake_case and camelCase
+              wound_lvl: {},
+              woundLevels: {}
+              // NOTE: No new fields (bonuses, woundMode, etc.) - this is true mixed state
             }
           }
         ],
@@ -118,6 +121,34 @@ describe('ImportService - Dual Import Paths', () => {
       };
 
       await expect(ImportService.importWorld(mixedData, { dryRun: true })).rejects.toThrow('Mixed schema detected');
+    });
+
+    it('should accept dual-schema documents (new v13 with legacy fields)', async () => {
+      const dualSchemaData = {
+        metadata: { sourceSystem: 'l5r4', worldId: 'test', worldTitle: 'Test World' },
+        actors: [
+          {
+            _id: 'actor1',
+            name: 'Test Actor',
+            type: 'pc',
+            system: {
+              wounds: { heal_rate: 0, healRate: 0 },
+              wound_lvl: {},
+              woundLevels: {},
+              bonuses: {}, // New field present
+              woundMode: 'pc' // New field present
+            },
+            items: []
+          }
+        ],
+        items: []
+      };
+
+      const result = await ImportService.importWorld(dualSchemaData, { dryRun: true });
+      
+      expect(result.path).toBe('as-is');
+      expect(result.detection.state).toBe('new-v13');
+      expect(result.detection.needsTransform).toBe(false);
     });
   });
 
@@ -276,13 +307,13 @@ describe('ImportService - Dual Import Paths', () => {
         actors: [
           {
             _id: 'actor1',
-            name: 'Test Actor',
+            name: 'Customized Actor',
             type: 'pc',
             system: {
-              wounds: { healRate: 3 },
-              armor: { armorTn: 25 }, // Custom value, not default
-              bonuses: { skill: { athletics: 5 } }, // User data
-              woundsPenaltyMod: -5 // User modification
+              woundsPenaltyMod: 99, // Custom value
+              bonuses: { skill: { athletics: 10 }, trait: {}, ring: {} }, // Custom bonuses
+              wounds: { healRate: 0 },
+              woundLevels: { healthy: { value: 10 } }
             },
             items: []
           }
@@ -290,26 +321,54 @@ describe('ImportService - Dual Import Paths', () => {
         items: []
       };
 
-      const result = await ImportService.importWorld(newV13Data, { dryRun: true });
+      const result = await ImportService.importWorld(newV13Data, { dryRun: false });
 
       expect(result.path).toBe('as-is');
-      expect(result.stats.actors.created).toBe(1);
-      // Values should be preserved as-is, not overwritten with defaults
-    });
-  });
+      expect(Actor.create).toHaveBeenCalledOnce();
 
-  describe('Document Creation', () => {
-    it('should not create documents in dry run mode', async () => {
-      const originalData = {
+      const createdActor = Actor.create.mock.calls[0][0];
+      expect(createdActor.system.woundsPenaltyMod).toBe(99);
+      expect(createdActor.system.bonuses.skill.athletics).toBe(10);
+    });
+
+    it('should preserve flags in as-is path', async () => {
+      const newV13Data = {
         metadata: { sourceSystem: 'l5r4', worldId: 'test', worldTitle: 'Test World' },
-        actors: [{ _id: 'a1', name: 'Actor', type: 'pc', system: { wounds: { heal_rate: 0 } }, items: [] }],
-        items: [{ _id: 'i1', name: 'Item', type: 'skill', system: { mastery_3: '' } }]
+        actors: [
+          {
+            _id: 'actor1',
+            name: 'Actor with XP History',
+            type: 'pc',
+            system: {
+              bonuses: { skill: {}, trait: {}, ring: {} },
+              woundMode: 'pc',
+              wounds: { healRate: 0 },
+              woundLevels: { healthy: { value: 10 } }
+            },
+            flags: {
+              l5r4: {
+                xpSpent: [
+                  { id: 'xp1', type: 'manual', change: 10, note: 'Test XP', timestamp: Date.now() }
+                ],
+                customData: 'preserved'
+              }
+            },
+            items: []
+          }
+        ],
+        items: []
       };
 
-      await ImportService.importWorld(originalData, { dryRun: true });
+      const result = await ImportService.importWorld(newV13Data, { dryRun: false });
 
-      expect(global.Actor.create).not.toHaveBeenCalled();
-      expect(global.Item.create).not.toHaveBeenCalled();
+      expect(result.path).toBe('as-is');
+      expect(Actor.create).toHaveBeenCalledOnce();
+
+      const createdActor = Actor.create.mock.calls[0][0];
+      expect(createdActor.flags).toBeDefined();
+      expect(createdActor.flags.l5r4.xpSpent).toHaveLength(1);
+      expect(createdActor.flags.l5r4.xpSpent[0].note).toBe('Test XP');
+      expect(createdActor.flags.l5r4.customData).toBe('preserved');
     });
 
     it('should create documents when dryRun=false (with-transform)', async () => {

@@ -64,6 +64,40 @@ describe('SchemaStateDetectionService', () => {
       expect(result.indicators.snakeCaseTotal).toBe(0);
     });
 
+    it('should detect dual-schema documents as new-v13 (both schemas + new fields)', () => {
+      const data = {
+        actors: [
+          {
+            system: {
+              wounds: { heal_rate: 0, healRate: 0 },
+              wound_lvl: {},
+              woundLevels: {},
+              bonuses: {},
+              woundMode: 'pc'
+            }
+          }
+        ],
+        items: [
+          {
+            system: {
+              mastery_3: '',
+              mastery3: '',
+              freeRanks: 0
+            }
+          }
+        ]
+      };
+
+      const result = SchemaStateDetectionService.detectState(data);
+
+      expect(result.state).toBe('new-v13');
+      expect(result.needsTransform).toBe(false);
+      expect(result.confidence).toBeGreaterThan(0.9);
+      expect(result.indicators.snakeCaseTotal).toBeGreaterThan(0);
+      expect(result.indicators.camelCaseTotal).toBeGreaterThan(0);
+      expect(result.indicators.newFieldsTotal).toBeGreaterThan(0);
+    });
+
     it('should detect mixed schema (partial migration)', () => {
       const data = {
         actors: [

@@ -1,28 +1,24 @@
-<div>
+<div class="migrator-ui">
   <header class="form-header">
-    <h2>🎴 L5R4 Migration Tool</h2>
+    <h3>L5R4 Migration Tool</h3>
     <p class="notes">
       <strong>System:</strong> {{systemId}} | <strong>World:</strong> {{worldName}}
     </p>
   </header>
   
-  <section class="form-group">
+  <section class="standard-form">
     <div class="notification info flexrow">
       {{#if isL5R4}}
-        <i class="fas fa-check-circle"></i>
         <span>Running on <strong>l5r4</strong> - Ready to export</span>
       {{else if isL5R4Enhanced}}
-        <i class="fas fa-check-circle"></i>
         <span>Running on <strong>l5r4-enhanced</strong> - Ready to import</span>
       {{else}}
-        <i class="fas fa-exclamation-triangle"></i>
         <span>Unsupported system: {{systemId}}</span>
       {{/if}}
     </div>
     
     {{#if hasExportData}}
     <div class="notification info flexrow">
-      <i class="fas fa-database"></i>
       <span>Export data loaded</span>
     </div>
     {{/if}}
@@ -30,10 +26,8 @@
     {{#if hasValidation}}
     <div class="notification {{#if validationReady}}success{{else}}warning{{/if}} flexrow">
       {{#if validationReady}}
-        <i class="fas fa-check-circle"></i>
         <span>Validation passed - Ready to import!</span>
       {{else}}
-        <i class="fas fa-exclamation-circle"></i>
         <span>Validation found issues - Check report</span>
       {{/if}}
     </div>
@@ -41,7 +35,7 @@
     
     {{#if schemaDetection}}
     <div class="notification info">
-      <h4>📊 Detected Schema</h4>
+      <h4>Detected Schema</h4>
       <div class="form-fields">
         <div class="form-group">
           <label>Schema State:</label>
@@ -60,28 +54,32 @@
     {{/if}}
   </section>
   
-  <section class="form-group">
+  <section class="standard-form">
     <h3 class="form-header">Migration Workflow</h3>
     
     <!-- Step 1: Backup -->
     <div class="form-group">
-      <label class="step-label"><span class="step-number">1</span> Create Backup (Recommended)</label>
-      <p class="notes">Create a safety backup before starting migration</p>
-      <button type="button" data-action="backup">
-        <i class="fas fa-save"></i>
-        Create Backup
-      </button>
+      <label class="step-label">Create Backup (Recommended)</label>
+      <div class="form-fields">
+        <button type="button" data-action="backup">
+          <i class="fas fa-save"></i>
+          Create Backup
+        </button>
+      </div>
+      <p class="hint">Create a safety backup before starting migration</p>
     </div>
     
     <!-- Step 2: Export (l5r4 only) -->
     {{#if isL5R4}}
     <div class="form-group">
-      <label class="step-label"><span class="step-number">2</span> Export World Data</label>
-      <p class="notes">Export all actors, items, and world data from l5r4 system</p>
-      <button type="button" data-action="export">
-        <i class="fas fa-file-export"></i>
-        Export Data
-      </button>
+      <label class="step-label">Export World Data</label>
+      <div class="form-fields">
+        <button type="button" data-action="export">
+          <i class="fas fa-file-export"></i>
+          Export Data
+        </button>
+      </div>
+      <p class="hint">Export all actors, items, and world data from l5r4 system</p>
       <p class="hint">
         <em>After export, switch to l5r4-enhanced system and upload the export file</em>
       </p>
@@ -91,13 +89,15 @@
     <!-- Step 2: Upload (l5r4-enhanced only) -->
     {{#if isL5R4Enhanced}}
     <div class="form-group">
-      <label class="step-label"><span class="step-number">2</span> Upload Export File</label>
-      <p class="notes">Load the export file from your l5r4 world</p>
-      <button type="button" data-action="uploadFile">
-        <i class="fas fa-upload"></i>
-        Upload Export File
-      </button>
+      <label class="step-label">Upload Export File</label>
+      <div class="form-fields">
+        <button type="button" data-action="uploadFile">
+          <i class="fas fa-upload"></i>
+          Upload Export File
+        </button>
+      </div>
       {{#if hasExportData}}
+      <p class="hint">Load the export file from your l5r4 world</p>
       <p class="hint success">
         <i class="fas fa-check"></i> <em>Export data loaded</em>
       </p>
@@ -106,12 +106,14 @@
     
     <!-- Step 3: Validate -->
     <div class="form-group">
-      <label class="step-label"><span class="step-number">3</span> Validate Data</label>
-      <p class="notes">Check data integrity and migration readiness</p>
-      <button type="button" data-action="validate" {{#unless hasExportData}}disabled{{/unless}}>
-        <i class="fas fa-check-double"></i>
-        Validate Data
-      </button>
+      <label class="step-label">Validate Data</label>
+      <div class="form-fields">
+        <button type="button" data-action="validate" {{#unless hasExportData}}disabled{{/unless}}>
+          <i class="fas fa-check-double"></i>
+          Validate Data
+        </button>
+      </div>
+      <p class="hint">Check data integrity and migration readiness</p>
       {{#if hasValidation}}
       <p class="hint {{#if validationReady}}success{{else}}warning{{/if}}">
         <i class="fas {{#if validationReady}}fa-check{{else}}fa-exclamation{{/if}}"></i>
@@ -122,27 +124,19 @@
     
     <!-- Step 4: Import -->
     <div class="form-group">
-      <label class="step-label"><span class="step-number">4</span> Import to l5r4-enhanced</label>
-      <p class="notes">Transform and import data into current world</p>
-      <button type="button" data-action="import" class="important" {{#unless hasExportData}}disabled{{/unless}}>
-        <i class="fas fa-file-import"></i>
-        Import Data
-      </button>
+      <label class="step-label">Import to l5r4-enhanced</label>
+      <div class="form-fields">
+        <button type="button" data-action="import" class="important" {{#unless hasExportData}}disabled{{/unless}}>
+          <i class="fas fa-file-import"></i>
+          Import Data
+        </button>
+      </div>
+      <p class="hint">Transform and import data into current world</p>
       <p class="hint warning">
         <i class="fas fa-exclamation-triangle"></i>
         <em>Create a backup first! Import will add documents to this world.</em>
       </p>
     </div>
     {{/if}}
-  </section>
-  
-  <section class="form-group">
-    <h3 class="form-header">ℹ️ Information</h3>
-    <ul class="notes">
-      <li><strong>Phase 1 (l5r4):</strong> Create backup, then export data</li>
-      <li><strong>Phase 2 (l5r4-enhanced):</strong> Upload export, validate, then import</li>
-      <li><strong>Transformations:</strong> Converts snake_case to camelCase, bow → weapon, adds new fields</li>
-      <li><strong>Safety:</strong> Always create backups before migration operations</li>
-    </ul>
   </section>
 </div>

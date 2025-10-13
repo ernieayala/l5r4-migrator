@@ -4,7 +4,7 @@
  */
 
 /* Step Number Badge */
-.step-label .step-number {
+.migrator-ui .step-label .step-number {
   display: inline-block;
   width: 1.5em;
   height: 1.5em;
@@ -18,30 +18,30 @@
 }
 
 /* Hint Text Variants */
-.hint.success {
+.migrator-ui .hint.success {
   color: var(--color-text-positive);
 }
 
-.hint.warning {
+.migrator-ui .hint.warning {
   color: var(--color-text-warning);
 }
 
 /* Schema State Tags */
-.tag.state-original {
+.migrator-ui .tag.state-original {
   background: #fef3c7;
   color: #92400e;
   padding: 0.25em 0.5em;
   border-radius: 3px;
 }
 
-.tag.state-new-v13 {
+.migrator-ui .tag.state-new-v13 {
   background: #d1fae5;
   color: #065f46;
   padding: 0.25em 0.5em;
   border-radius: 3px;
 }
 
-.tag.state-mixed {
+.migrator-ui .tag.state-mixed {
   background: #fee2e2;
   color: #991b1b;
   padding: 0.25em 0.5em;
@@ -49,23 +49,40 @@
 }
 
 /* Confidence Tags */
-.tag.confidence-high {
+.migrator-ui .tag.confidence-high {
   background: #d1fae5;
   color: #065f46;
   padding: 0.25em 0.5em;
   border-radius: 3px;
 }
 
-.tag.confidence-medium {
+.migrator-ui .tag.confidence-medium {
   background: #fef3c7;
   color: #92400e;
   padding: 0.25em 0.5em;
   border-radius: 3px;
 }
 
-.tag.confidence-low {
+.migrator-ui .tag.confidence-low {
   background: #fee2e2;
   color: #991b1b;
   padding: 0.25em 0.5em;
   border-radius: 3px;
+}
+
+/* Form */
+.migrator-ui .notification {
+  margin-block-end: 1rem;
+}
+
+.migrator-ui .step-label + .form-fields {
+  flex: 1;
+}
+
+.migrator-ui .form-fields button {
+  width: 100%;
+}
+
+.migrator-ui h3 {
+  margin: 0;
 }

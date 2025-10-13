@@ -162,12 +162,13 @@ export class ImportService {
    * @private
    */
   static async _importWithTransform(data, options = {}) {
-    const { dryRun = false, skipFolders = false, skipScenes = false, skipJournals = false } = options;
+    const { dryRun = false, skipFolders = false, skipScenes = false, skipJournals = false, detection } = options;
 
     const result = {
       success: true,
       dryRun,
       path: 'with-transform',
+      detection,
       stats: {
         folders: { attempted: 0, created: 0, failed: 0 },
         actors: { attempted: 0, created: 0, failed: 0, transformed: 0 },
@@ -235,12 +236,13 @@ export class ImportService {
    * @private
    */
   static async _importAsIs(data, options = {}) {
-    const { dryRun = false, skipFolders = false, skipScenes = false, skipJournals = false } = options;
+    const { dryRun = false, skipFolders = false, skipScenes = false, skipJournals = false, detection } = options;
 
     const result = {
       success: true,
       dryRun,
       path: 'as-is',
+      detection,
       stats: {
         folders: { attempted: 0, created: 0, failed: 0 },
         actors: { attempted: 0, created: 0, failed: 0 },
