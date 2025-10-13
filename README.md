@@ -1,21 +1,29 @@
 # L5R4 World Migrator
 
+[![FoundryVTT version](https://img.shields.io/badge/FVTT-v13.x-informational)](https://foundryvtt.com/)
+[![Version](https://img.shields.io/badge/Version-1.0.0-blue)](https://github.com/ernieayala/l5r4-migrator/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![GitHub Downloads](https://img.shields.io/github/downloads/ernieayala/l5r4-migrator/total?label=Downloads&color=brightgreen)](https://github.com/ernieayala/l5r4-migrator/releases)
+[![GitHub Issues](https://img.shields.io/github/issues/ernieayala/l5r4-migrator)](https://github.com/ernieayala/l5r4-migrator/issues)
+
 Migrate Foundry VTT worlds from **l5r4** to **l5r4-enhanced** system (v13+).
 
 ## Why This Module?
 
-Foundry doesn't allow changing system IDs. This module exports your l5r4 world data and imports it into a new l5r4-enhanced world.
+You can't switch an existing world from l5r4 to l5r4-enhanced - Foundry doesn't allow it. Instead, this module:
 
-Automatically detects your source version and applies correct transformations:
-- **Original v12/v13** → Full schema transformation
-- **New v13** → As-is import
+1. Copies all your characters, items, and scenes from your old world
+2. Creates them in a new l5r4-enhanced world
+3. Automatically handles any format differences between the systems
+
+Your original world stays untouched as a backup.
 
 ## Features
 
-- **Auto-detection** - Identifies schema version and routes data correctly
-- **Safe** - Timestamped backups, dry-run mode, validation before import
-- **Complete** - Migrates actors, items, scenes, journals, folders, embedded data
-- **Smart Assets** - Updates default PNG icons to WEBP, preserves custom artwork
+- **Automatic** - Detects your world version and handles conversion automatically
+- **Safe** - Creates backups and checks everything before importing
+- **Complete** - Copies characters, items, scenes, journals, and folder organization
+- **Smart** - Updates system icons while keeping your custom artwork
 
 ## Installation
 
@@ -31,20 +39,21 @@ Or search "L5R4 World Migrator" in Foundry's module browser.
 ### Quick Start
 
 **In your l5r4 world:**
-1. Press F12, run: `game.modules.get('l5r4-migrator').api.openMigrator()`
-2. Click **Create Backup** (saves to Downloads)
-3. Click **Export Data** (saves JSON file)
+1. Open Settings (⚙️), click **L5R4 World Migrator** button
+2. Click **Create Backup** - saves a safety copy to your Downloads folder
+3. Click **Export Data** - saves your world data file to Downloads
 
 **Create new world:**
-4. Return to setup, create NEW world with **l5r4-enhanced** system
+4. Exit to main menu (Return to Setup)
+5. Click **Create World**, select **l5r4-enhanced** system, name it, and create
+6. Launch your new world
 
 **In your new l5r4-enhanced world:**
-5. Press F12, run: `game.modules.get('l5r4-migrator').api.openMigrator()`
-6. Click **Upload Export File**, select JSON from step 3
-7. Click **Validate Data**, review report
-8. Click **Import Data**, confirm, done
-
-**Time:** 15-30 minutes typical
+7. Open Settings (⚙️), click **L5R4 World Migrator** button
+8. Click **Upload Export File**, choose the file from step 3
+9. Click **Validate Data** - checks if everything looks good
+10. Click **Import Data**, confirm - your characters and items are now copied over
+11. Check a few characters and scenes to make sure everything looks right
 
 ## Requirements
 
@@ -59,17 +68,23 @@ Configure in **Module Settings**:
 - Auto-backup before migrations (default: on)
 - Log level (default: info)
 
-## What Migrates
+## What Gets Copied
 
-**Included:** Actors, items, scenes, journals, folders, permissions, embedded items, Active Effects
+**Included:**
+- Characters (PCs and NPCs) with all their stats and items
+- Standalone items in your world
+- Scenes (maps, tokens, lighting, walls)
+- Journal entries and notes
+- Folder organization
+- Permissions (who owns what)
 
-**Not Included:** Compendiums, module/world settings, macros
+**Not Included:**
+- Compendium packs (system-provided content)
+- Module settings
+- Macros (may need manual recreation)
+- Chat history
 
-**Transformations (Original v12/v13 only):**
-- Field renames: snake_case → camelCase (`heal_rate` → `healRate`)
-- Item conversions: `bow` → `weapon` with `isBow: true`
-- Icon updates: Default PNG → WEBP (custom artwork preserved)
-- New fields added with defaults
+**Note:** The module automatically updates data format for older worlds. Your custom character portraits and item images are preserved.
 
 ## Documentation
 
@@ -79,11 +94,14 @@ Configure in **Module Settings**:
 
 ## Troubleshooting
 
-**Migration fails:** Check console (F12), run validation first, verify target is l5r4-enhanced
+**Migration fails:** 
+- Make sure you ran Validate Data first
+- Verify the new world is using l5r4-enhanced system
+- Press F12 to see error details, share them when asking for help
 
-**Missing data:** Check import report and validation warnings
-
-**Slow:** Large worlds take 5-10 minutes to process
+**Missing characters or items:**
+- Check the import report shown after import completes
+- Look for warnings during the Validate Data step
 
 ## Support
 

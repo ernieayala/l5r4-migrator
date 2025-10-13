@@ -8,7 +8,6 @@ Migrate from **l5r4** to **l5r4-enhanced** system.
 - Don't change system ID directly
 - Always create backup first
 - Test with world copy first
-- Allow 30-60 minutes
 
 **Included:** Actors, items, scenes, journals, folders, permissions, embedded items, Active Effects
 
@@ -31,7 +30,7 @@ Module auto-detects your schema:
 
 ### 1. Export from l5r4 World
 
-1. In l5r4 world, press F12, run: `game.modules.get('l5r4-migrator').api.openMigrator()`
+1. In l5r4 world, open Settings (⚙️), click **L5R4 World Migrator** button
 2. Click **Create Backup** (downloads to browser)
 3. Click **Export Data** (saves JSON file)
 
@@ -41,7 +40,7 @@ Module auto-detects your schema:
 
 ### 3. Import to l5r4-enhanced World
 
-5. In new world, press F12, run: `game.modules.get('l5r4-migrator').api.openMigrator()`
+5. In new world, open Settings (⚙️), click **L5R4 World Migrator** button
 6. Click **Upload Export File**
 7. Click **Validate Data**, review report (check confidence %)
 8. Click **Import Data**, confirm
@@ -67,7 +66,6 @@ Module auto-detects your schema:
 
 **Can I undo?** No, but your old world is untouched. Keep your backup.
 
-**How long?** 15-60 minutes depending on world size.
 
 **Multiple worlds?** Yes, repeat for each.
 
