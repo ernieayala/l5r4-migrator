@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Protects custom/external icons from modification
   - Applies to both document icons and token images
   - Smart detection: only migrates known system defaults
+- **Roll Table Support** - Complete roll table export and import
+  - Added `includeTables` option to export service (default: true)
+  - Added `skipTables` option to import service
+  - Roll tables exported via `game.tables` collection
+  - Import supports both transformation and as-is paths
+  - Tables preserved with complete data (results, formulas, etc.)
 
 ## [1.0.0] - 2025-10-11
 
