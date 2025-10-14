@@ -1,0 +1,30 @@
+<section class="skills panelBorder">
+  <h2>
+    <div>{{localize "l5r4.sheet.skills"}}</div>
+    <a class="item-create" data-type="skill" title="{{localize "l5r4.sheet.addSkill"}}">
+      <i class="fas fa-plus"></i>
+    </a>
+  </h2>
+  <h3>
+    <div>{{localize "l5r4.sheet.skillName"}}</div>
+    <div>{{localize "l5r4.skill.rank"}}</div>
+    <div>{{localize "l5r4.skill.trait"}}</div>
+  </h3>
+  {{#each skills as |skill id|}}
+  <div class="skill-item item" data-item-id="{{skill._id}}">
+    <a class="icon-item skill-roll">
+      <img title="Roll skill" src="icons/dice/d10black.svg" />
+    </a>
+    <input class="skill-name inline-edit" type="text" value="{{skill.name}}" data-field="name" 
+    placeholder="{{localize "l5r4.sheet.skillName"}}" />
+    <input class="skill-value inline-edit" type="number" value="{{skill.system.rank}}" data-field="system.rank"
+      placeholder="0" data-type="Number">
+    <select class="skill-trait inline-edit" data-field="system.trait">
+      {{selectOptions @root.config.traits selected=skill.system.trait localize=true}}
+    </select>
+    <a class="icon-item item-delete">
+      <i class="fas fa-trash"></i>
+    </a>
+  </div>
+  {{/each}}
+</section>

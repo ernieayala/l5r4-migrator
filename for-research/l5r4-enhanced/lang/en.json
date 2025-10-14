@@ -1,0 +1,547 @@
+{
+  "l5r4": {
+    "ui": {
+      "mechanics": {
+        "rings": {
+          "ring": "Ring",
+          "fire": "Fire",
+          "water": "Water",
+          "air": "Air",
+          "earth": "Earth",
+          "void": "Void",
+          "voidPoints": "Void Points",
+          "all": "All"
+        },
+        "traits": {
+          "sta": "Stamina",
+          "wil": "Willpower",
+          "str": "Strength",
+          "per": "Perception",
+          "ref": "Reflexes",
+          "awa": "Awareness",
+          "agi": "Agility",
+          "int": "Intelligence"
+        },
+        "rolls": {
+          "success": "Success",
+          "failure": "Failure",
+          "missed": "Missed",
+          "explodesOn": "Explodes On",
+          "withEmphasis": "with Emphasis",
+          "unskilled": "Unskilled",
+          "traitRoll": "Trait Roll",
+          "ringRoll": "Ring Roll",
+          "skillRoll": "Skill Roll",
+          "damageRoll": "Damage Roll",
+          "attackRoll": "Attack Roll",
+          "spellCasting": "Spell Casting Roll",
+          "unskilledRoll": "Unskilled Roll",
+          "emphasis": "Emphasis",
+          "raise": "Raise",
+          "raises": "Raises",
+          "automatic": "Automatic",
+          "formula": "Formula",
+          "result": "Result"
+        },
+        "notifications": {
+          "itemCreated": "Created {type}: {name}",
+          "itemDeleted": "Deleted {type}: {name}",
+          "itemUpdated": "Updated {type}: {name}",
+          "woundConfigFailed": "Failed to open wound configuration",
+          "woundConfigUpdateFailed": "Failed to update wound configuration",
+          "invalidWoundConfigValue": "Invalid wound configuration value"
+        },
+        "combat": {
+          "attack": "Attack",
+          "melee": "Melee",
+          "ranged": "Ranged",
+          "multiplier": "Multiplier",
+          "woundPenalty": "Wound Penalty",
+          "armorTnBonus": "Armor TN Bonus",
+          "targeting": {
+            "vs": "vs",
+            "multipleTargets": "targets - TN not auto-set"
+          }
+        },
+        "wounds": {
+          "wounds": "Wounds",
+          "armorTn": "Armor TN",
+          "armorTnBase": "Armor TN Base",
+          "armorReduction": "Reduction",
+          "woundLevel": "Level",
+          "woundsSuffered": "Wounds Suffered",
+          "maxWounds": "Max Wounds",
+          "penalty": "Penalty",
+          "woundHealRate": "Rate of Wound Heal",
+          "healRateFormula": "x 2 +",
+          "woundMode": "Wound Mode",
+          "manual": "Manual",
+          "formula": "Formula",
+          "woundConfiguration": "Wound Configuration",
+          "earthMultiplier": "Earth Multiplier",
+          "woundBonus": "Wound Bonus",
+          "threshold": "Threshold",
+          "healthy": "Healthy",
+          "nicked": "Nicked",
+          "grazed": "Grazed",
+          "hurt": "Hurt",
+          "injured": "Injured",
+          "crippled": "Crippled",
+          "down": "Down",
+          "out": "Out"
+        },
+        "stances": {
+          "pending": "Pending",
+          "attack": "Attack Stance",
+          "fullAttack": "Full Attack Stance",
+          "defense": "Defense Stance",
+          "fullDefense": "Full Defense Stance",
+          "center": "Center Stance",
+          "fullDefenseDescription": "Make a Defense/Reflexes roll. Add half the result (rounded up) to your Armor TN for the duration of this stance.",
+          "cannotAttackDefense": "Cannot attack while in Defense Stance",
+          "fullAttackBonus": "Full Attack Stance: +2k1"
+        },
+        "mounted": {
+          "fullAttackRestriction": "Full Attack stance requires Horsemanship 3+ when mounted",
+          "attackBonus": "Mounted/Higher: +1k0"
+        },
+        "fear": {
+          "fearRank": "Fear Rank",
+          "fearLabel": "Fear {rank}",
+          "clickToTest": "Click to test Fear against selected characters",
+          "testResult": "Fear {rank} Test",
+          "testSuccess": "Resisted Fear {rank}",
+          "testFailure": "Failed Fear {rank} Test",
+          "penaltyApplied": "Penalty: -{penalty}kO to all rolls",
+          "catastrophicFailure": "CATASTROPHIC FAILURE! Character flees or cowers helplessly.",
+          "noTargets": "No tokens selected for Fear test",
+          "noWillpower": "{character} has no Willpower trait",
+          "noFear": "This NPC has no Fear effect configured",
+          "testAgainst": "vs {creature}",
+          "rollFailed": "Fear test roll failed - invalid formula or corrupted data",
+          "templateFailed": "Fear test chat template failed to render"
+        }
+      },
+      "common": {
+        "roll": "Roll",
+        "cancel": "Cancel",
+        "ok": "OK",
+        "none": "None",
+        "keep": "Keep",
+        "raise": "Raise",
+        "init": "Initiative",
+        "bonus": "Bonus",
+        "mod": "Modifier",
+        "rate": "Rate",
+        "current": "Current",
+        "total": "Total",
+        "left": "left",
+        "close": "Close",
+        "apply": "Apply",
+        "toChat": "To Chat",
+        "effect": "Effect",
+        "simple": "Simple",
+        "complex": "Complex",
+        "free": "Free",
+        "action": "Action",
+        "edit": "Edit",
+        "delete": "Delete",
+        "name": "Name",
+        "description": "Description",
+        "notes": "Notes",
+        "activeEffects": "Active Effects",
+        "active": "Active",
+        "new": "New",
+        "disabled": "disabled",
+        "rank": "Rank",
+        "clan": "Clan",
+        "school": "School",
+        "xp": "Experience Points",
+        "insight": "Insight",
+        "skill": "Skill",
+        "damage": "Damage",
+        "type": "Type",
+        "ring": "Ring",
+        "mastery": "Mastery",
+        "tn": "TN",
+        "cost": "Cost"
+      },
+      "sheets": {
+        "bio": "Background",
+        "skill": "Skill",
+        "skills": "Skills",
+        "addSkill": "Add Skill",
+        "weapon": "Weapon",
+        "weapons": "Weapons",
+        "addWeapon": "Add Weapon",
+        "armor": "Armor",
+        "addArmor": "Add Armor",
+        "item": "Item",
+        "items": "Items",
+        "addItem": "Add Item",
+        "notes": "Notes",
+        "spell": "Spell",
+        "spells": "Spells",
+        "addSpell": "Add Spell",
+        "technique": "Technique",
+        "techniques": "Techniques",
+        "addTechnique": "Add Technique",
+        "armors": "Armors",
+        "advantage": "Advantage",
+        "advantages": "Advantages",
+        "addAdvantage": "Add Advantage",
+        "disadvantage": "Disadvantage",
+        "disadvantages": "Disadvantages",
+        "addDisadvantage": "Add Disadvantage",
+        "kata": "Kata",
+        "katas": "Katas",
+        "addKata": "Add Kata",
+        "kiho": "Kiho",
+        "kihos": "Kihos",
+        "addKiho": "Add Kiho",
+        "tattoo": "Tattoo",
+        "tattoos": "Tattoos",
+        "addTattoo": "Add Tattoo",
+        "addTechSpell": "Add Technique/Spell",
+        "addAdvDis": "Add Advantage/Disadvantage",
+        "addEquipment": "Add Equipment",
+        "equipment": "Equipment",
+        "abilities": "Abilities",
+        "character": "Character",
+        "rulesSummary": "Rules Summary",
+        "description": "Description",
+        "woundLevels": "Wound Levels",
+        "spellSlots": "Spell Slots",
+        "demands": "Demands",
+        "traits": "Traits",
+        "itemSheetTitle": "Item Sheet",
+        "xpModal": "Experience"
+      },
+      "notifications": {
+        "actorNotFound": "Actor not found for damage roll",
+        "noPermissionDamage": "You don't have permission to roll damage for this actor",
+        "noValidWeapon": "No valid weapon found for attack roll",
+        "fullDefenseRollFailed": "Failed to make Full Defense roll. Please roll manually.",
+        "invalidRingForSpell": "Invalid ring for spell slot: {ring}",
+        "noActorForVoid": "No actor available for void point spending",
+        "chatMessageFailed": "Failed to post roll to chat - see console for details",
+        "deleteEffect": "Failed to delete effect.",
+        "schoolRankZero": "You can't cast a spell with School Rank reduced to zero",
+        "noSpellSlots": "You ran out of spell slots for this ring"
+      },
+      "chat": {
+        "traitRoll": "Trait Roll {trait}",
+        "ringRoll": "Ring Roll {ring}",
+        "skillRoll": "Skill Roll {skill}",
+        "damageRoll": "Damage Roll {weapon}",
+        "rollName": "Roll {roll}"
+      },
+      "hints": {
+        "leftRightToAdjust": "Left and Right to Adjust",
+        "leftClickPlusRightClickMinus": "Shift+Left click: +1, Shift+Right click: -1",
+        "voidPointsClickAdjust": "Left click: +1, Right click: -1",
+        "shiftClickRankPoints": "Shift+Click: ±0.1, Shift+Ctrl+Click: ±1.0"
+      }
+    },
+    "character": {
+      "skills": {
+        "properties": {
+          "type": "Type",
+          "trait": "Trait",
+          "emphasis": "Emphases",
+          "school": "School skill",
+          "mastery3": "Rank 3 Mastery",
+          "mastery5": "Rank 5 Mastery",
+          "mastery7": "Rank 7 Mastery",
+          "insightbonus": "Insight Bonus"
+        },
+        "names": {
+          "acting": "Acting",
+          "animalHandling": "Animal Handling",
+          "artisan": "Artisan",
+          "athletics": "Athletics",
+          "battle": "Battle",
+          "calligraphy": "Calligraphy",
+          "chainWeapons": "Chain Weapons",
+          "commerce": "Commerce",
+          "craft": "Craft",
+          "courtier": "Courtier",
+          "defense": "Defense",
+          "divination": "Divination",
+          "engineering": "Engineering",
+          "etiquette": "Etiquette",
+          "forgery": "Forgery",
+          "games": "Games",
+          "heavyWeapons": "Heavy Weapons",
+          "horsemanship": "Horsemanship",
+          "hunting": "Hunting",
+          "iaijutsu": "Iaijutsu",
+          "investigation": "Investigation",
+          "jiujutsu": "Jiujutsu",
+          "kenjutsu": "Kenjutsu",
+          "knives": "Knives",
+          "kyujutsu": "Kyujutsu",
+          "lore": "Lore",
+          "medicine": "Medicine",
+          "meditation": "Meditation",
+          "ninjutsu": "Ninjutsu",
+          "perform": "Perform",
+          "polearms": "Polearms",
+          "sailing": "Sailing",
+          "sincerity": "Sincerity",
+          "sleightOfHand": "Sleight of Hand",
+          "spears": "Spears",
+          "spellcraft": "Spellcraft",
+          "staves": "Staves",
+          "stealth": "Stealth",
+          "teaCeremony": "Tea Ceremony",
+          "temptation": "Temptation",
+          "warFan": "War Fan",
+          "weapons": "Weapons"
+        }
+      },
+      "skillTypes": {
+        "high": "High",
+        "bugei": "Bugei",
+        "merch": "Merchant",
+        "low": "Low"
+      },
+      "advantages": {
+        "physical": "Physical",
+        "mental": "Mental",
+        "social": "Social",
+        "material": "Material",
+        "spiritual": "Spiritual",
+        "ancestor": "Ancestor"
+      },
+      "ranks": {
+        "honorRank": "Honor",
+        "honorPoints": "Honor Points",
+        "gloryRank": "Glory",
+        "gloryPoints": "Glory Points",
+        "statusRank": "Status Rank",
+        "statusPoints": "Status Points",
+        "shadowRank": "Shadowland Taint",
+        "shadowPoints": "Shadow Points",
+        "insightRank": "Insight Rank",
+        "insightPoints": "Insight Points"
+      },
+      "stance": {
+        "title": "Combat Stance",
+        "current": "Current Stance"
+      },
+      "experience": {
+        "xpAmount": "Amount",
+        "note": "Note",
+        "reason": "Reason",
+        "adjustExperience": "Adjust Experience",
+        "experienceSummary": "Experience Summary",
+        "usedTotal": "Used / Total",
+        "poolChanges": "Pool Changes",
+        "when": "When",
+        "none": "No entries",
+        "purchases": "Purchases",
+        "xpLog": "XP Log",
+        "traitChange": "{label} {from}→{to}",
+        "voidChange": "Void {from}→{to}",
+        "skillCreate": "{name} 0→{rank}",
+        "skillChange": "{name} {from}→{to}",
+        "recalculateTooltip": "Recalculate XP purchases from current character state",
+        "recalculateSuccess": "XP purchases recalculated successfully",
+        "recalculateFailed": "Failed to recalculate XP purchases",
+        "breakdown": {
+          "base": "Base",
+          "disadvantagesGrant": "Disadvantages",
+          "cap10": "(cap 10)",
+          "manualAdjustments": "Manual adjustments",
+          "traits": "Traits",
+          "void": "Void",
+          "skills": "Skills",
+          "advantages": "Advantages",
+          "kata": "Kata",
+          "kiho": "Kiho"
+        },
+        "fallbackLabels": {
+          "advantage": "Advantage",
+          "disadvantage": "Disadvantage",
+          "traitIncrease": "Trait Increase",
+          "voidIncrease": "Void Increase",
+          "skillCreated": "Skill Created",
+          "skillIncreased": "Skill Increased"
+        }
+      }
+    },
+    "equipment": {
+      "weapons": {
+        "attackType": "Attack Type",
+        "size": "Size",
+        "damageKeep": "Damage Keep",
+        "range": "Range",
+        "arrow": "Arrow",
+        "typeWeapon": "Weapon",
+        "typeBow": "Bow",
+        "associatedSkill": "Associated Skill",
+        "fallback": "Fallback",
+        "skillExample": {
+          "bow": "Kyujutsu",
+          "weapon": "Kenjutsu"
+        },
+        "arrows": {
+          "armor": "Armor Piercing",
+          "flesh": "Flesh Cutter",
+          "humming": "Humming Bulb",
+          "rope": "Rope Cutter",
+          "willow": "Willow Leaf"
+        },
+        "sizes": {
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large"
+        }
+      },
+      "armor": {
+        "reduction": "Reduction",
+        "equipped": "Equipped"
+      },
+      "general": {}
+    },
+    "magic": {
+      "spells": {
+        "range": "Range",
+        "aoe": "Area of Effect",
+        "duration": "Duration",
+        "raises": "Raises",
+        "affinity": "Affinity",
+        "deficiency": "Deficiency",
+        "maho": "Maho",
+        "useSpellSlot": "Use Spell Slot",
+        "voidSlot": "Use Void Spell Slot"
+      },
+      "kiho": {
+        "internal": "Internal",
+        "karmic": "Karmic",
+        "martial": "Martial",
+        "mystic": "Mystic"
+      },
+      "techniques": {
+        "single": "Technique",
+        "plural": "Techniques"
+      }
+    },
+    "system": {
+      "migration": {
+        "itemTypeChangeInfo": "L5R4: migrated {count} Item(s) from \"commonItem\" to \"item\".",
+        "itemTypeChangeError": "L5R4: Item type migration failed. See console for details.",
+        "iconsUpdated": "L5R4 Migration: Updated {count} world image path(s).",
+        "compendiumIconsUpdated": "L5R4 Migration (Compendia): Updated {count} image path(s)."
+      },
+      "errors": {
+        "deleteEffect": "Failed to delete effect."
+      }
+    },
+    "world": {
+      "wealth": {
+        "koku": "Koku",
+        "bu": "Bu",
+        "zeni": "Zeni"
+      }
+    }
+  },
+  "SETTINGS": {
+    "showTraitRollOptions": {
+      "name": "Ask for Trait Rolls options by default.",
+      "label": "Hold Shift to Toggle."
+    },
+    "showSpellRollOptions": {
+      "name": "Ask if the Ring Roll is a spell by default.",
+      "label": "Hold Shift to Toggle."
+    },
+    "showSkillRollOptions": {
+      "name": "Ask for Skill Rolls and Damage Roll options by default.",
+      "label": "Hold Shift to Toggle."
+    },
+    "allowNpcVoidPoints": {
+      "name": "Display Void Point checkbox for NPC rolls.",
+      "label": "NPCs normally lack Void."
+    },
+    "useLtTenDiceRule": {
+      "name": "Use the modified Ten Dice Rule from Little Truths.",
+      "label": "If there are an odd number of excess rolled dice and fewer than 10 kept dice, add 2 to the roll total so the \"extra\" die gives a benefit."
+    },
+    "calculateRank": {
+      "name": "Calculate Insight Rank automatically",
+      "label": "Insight Rank is updated automatically based on total Insight Points"
+    },
+    "allowArmorStacking": {
+      "name": "Allow armor stacking",
+      "label": "Multiple pieces of \"armor\" can be stacked (to represent buffs, etc.)"
+    },
+    "showWeaponRollOptions": {
+      "name": "Ask for Weapon Roll options by default.",
+      "label": "Hold Shift to Toggle."
+    },
+    "LtException": {
+      "name": "Apply Little Truths exception",
+      "label": "When dice keep is reduced below 10 by conversion, add 2."
+    },
+    "runMigration": {
+      "name": "Run migrations on startup",
+      "label": "If enabled, pending data migrations will run the next time the world loads. Disable to skip migrations for troubleshooting."
+    },
+    "lastMigratedVersion": {
+      "name": "Last migrated version",
+      "label": "Internal. Do not change."
+    },
+    "forceMigration": {
+      "name": "Force migration on startup",
+      "label": "Forces all migrations to run on next world load, regardless of version. Automatically resets after migration completes."
+    },
+    "defaultNpcWoundMode": {
+      "name": "Default NPC Wound Mode",
+      "label": "Controls whether new NPCs use formula-based (Earth Ring) or manual threshold entry for wound calculations. Existing NPCs retain their individual settings.",
+      "choices": {
+        "manual": "Manual (Direct Entry)",
+        "formula": "Formula (Earth-based)"
+      }
+    },
+    "debugWoundConfig": {
+      "name": "Debug Wound Configuration",
+      "label": "Enable detailed console logging for Wound Configuration Application interactions, event handling, and actor updates. Useful for troubleshooting form response issues."
+    }
+  },
+  "EFFECT": {
+    "blinded": "Blinded",
+    "dazed": "Dazed",
+    "dead": "Dead",
+    "entangled": "Entangled",
+    "fasting": "Fasting",
+    "fatigued": "Fatigued",
+    "grappled": "Grappled",
+    "mounted": "Mounted/Higher",
+    "prone": "Prone",
+    "stunned": "Stunned"
+  },
+  "TYPES": {
+    "Actor": {
+      "pc": "PC",
+      "npc": "NPC"
+    },
+    "Item": {
+      "advantage": "Advantage",
+      "armor": "Armor",
+      "bow": "Bow",
+      "clan": "Clan",
+      "commonItem": "Item",
+      "disadvantage": "Disadvantage",
+      "family": "Family",
+      "kata": "Kata",
+      "kiho": "Kiho",
+      "school": "School",
+      "skill": "Skill",
+      "spell": "Spell",
+      "tattoo": "Tattoo",
+      "technique": "Technique",
+      "weapon": "Weapon"
+    }
+  }
+}

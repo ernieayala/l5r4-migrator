@@ -1,0 +1,36 @@
+<section class="skills panelBorder">
+  <h2 class="skills-title">
+    <div>{{localize "l5r4.sheet.skills"}}</div>
+    <a data-action="createItem" data-type="skill" title="{{localize "l5r4.sheet.addSkill"}}">
+      <i class="fas fa-plus"></i>
+    </a>
+  </h2>
+  <h3>
+    <div></div>
+    <a data-action="sortSkills" data-sortby="name"><div>{{localize "l5r4.sheet.skillName"}}</div></a>
+    <a data-action="sortSkills" data-sortby="rank"><div>{{localize "l5r4.skill.rank"}}</div></a>
+    <a data-action="sortSkills" data-sortby="trait"><div>{{localize "l5r4.skill.trait"}}</div></a>
+    <a data-action="sortSkills" data-sortby="type"><div>{{localize "l5r4.skill.type"}}</div></a>
+    <a data-action="sortSkills" data-sortby="school"><div>{{localize "l5r4.skill.school"}}</div></a>
+    <a data-action="sortSkills" data-sortby="emphasis"><div>{{localize "l5r4.skill.emphasis"}}</div></a>
+    <div></div>
+  </h3>
+  {{#each skills as |skill id|}}
+  <div class="skill-item item" data-item-id="{{skill._id}}">
+    <a class="icon-item" data-action="rollSkill">
+      <img title="Roll skill" src="icons/dice/d10black.svg" />
+    </a>
+    <input class="skill-name" type="text" value="{{skill.name}}" data-action="inlineEdit" data-field="name" placeholder="{{localize "l5r4.sheet.skillName"}}" />
+    <input class="skill-value" type="number" value="{{skill.system.rank}}" data-action="inlineEdit" data-field="system.rank" placeholder="0" data-type="Number">
+    <select class="skill-trait" data-action="inlineEdit" data-field="system.trait">
+      {{selectOptions @root.config.traits selected=skill.system.trait localize=true}}
+    </select>
+    <select class="skill-type" data-action="inlineEdit" data-field="system.type">
+      {{selectOptions @root.config.skillTypes selected=skill.system.type localize=true}}
+    </select>
+    <input class="school-check" data-action="inlineEdit" data-field="system.school" type="checkbox" {{checked skill.system.school}} data-type="Boolean" />
+    <input class="skill-emphasis" data-action="inlineEdit" data-field="system.emphasis" type="text" value="{{skill.system.emphasis}}" />
+    <a data-action="editItem" title="{{localize "l5r4.sheet.edit"}}"><i class="fas fa-edit fa-fw"></i></a>
+  </div>
+  {{/each}}
+</section>

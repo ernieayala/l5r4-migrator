@@ -1,0 +1,95 @@
+{
+  "id": "l5r4-enhanced",
+  "title": "Legend of the Five Rings 4e Enhanced",
+  "description": "Enhanced implementation of Legend of the Five Rings 4th Edition for Foundry VTT v13+. Built with modern architecture featuring complete character management, authentic L5R4 mechanics, automated stance system, and comprehensive XP tracking.",
+  "version": "2.0.0",
+  "authors": [
+    {
+      "name": "Ernie Ayala",
+      "url": "https://github.com/ernieayala/l5r4"
+    }
+  ],
+  "url": "https://github.com/ernieayala/l5r4",
+  "manifest": "https://github.com/ernieayala/l5r4/releases/latest/download/system.json",
+  "download": "https://github.com/ernieayala/l5r4/releases/latest/download/l5r4.zip",
+  "compatibility": {
+    "minimum": 13,
+    "verified": 13,
+    "maximum": 13
+  },
+  "esmodules": [
+    "dist/l5r4-enhanced.js"
+  ],
+  "styles": [
+    "dist/l5r4-enhanced.css"
+  ],
+  "packs": [],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "es",
+      "name": "Español",
+      "path": "lang/es.json"
+    },
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
+    },
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    },
+    {
+      "lang": "ru",
+      "name": "Русский",
+      "path": "lang/ru.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "pc": {},
+      "npc": {}
+    },
+    "Item": {
+      "advantage": {},
+      "armor": {},
+      "clan": {},
+      "commonItem": {},
+      "disadvantage": {},
+      "family": {},
+      "school": {},
+      "kata": {},
+      "kiho": {},
+      "skill": {},
+      "spell": {},
+      "tattoo": {},
+      "technique": {},
+      "weapon": {}
+    }
+  },
+  "grid": {
+    "distance": 5,
+    "units": "ft"
+  },
+  "relationships": {
+    "recommends": [
+      {
+        "id": "quench",
+        "type": "module",
+        "reason": "Required for running integration tests in Foundry VTT"
+      }
+    ]
+  },
+  "license": "MIT"
+}

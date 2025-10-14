@@ -1,0 +1,60 @@
+<div class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64" />
+    <h1><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+  </header>
+  <div class="sheet-content">
+    <table>
+      <tr>
+        <th>{{localize "l5r4.spell.ring"}}</th>
+        <th>{{localize "l5r4.spell.maho"}}</th>
+      </tr>
+      <td>
+        <select name="system.ring">
+          {{selectOptions config.spellRings selected=item.system.ring localize=true}}
+        </select>
+      </td>
+      <td>
+        <input name="system.maho" type="checkbox" {{checked item.system.maho}} data-type="Boolean" />
+      </td>
+    </table>
+    <table>
+      <tr>
+        <th>{{localize "l5r4.spell.mastery"}}</th>
+        <th>{{localize "l5r4.spell.range"}}</th>
+        <th>{{localize "l5r4.spell.aoe"}}</th>
+        <th>{{localize "l5r4.spell.duration"}}</th>
+        <th>{{localize "l5r4.spell.raises"}}</th>
+      </tr>
+      <td>
+        <input name="system.mastery" type="number" value="{{item.system.mastery}}" data-type="Number" />
+      </td>
+      <td>
+        <input name="system.range" type="text" value="{{item.system.range}}" data-type="String" />
+      </td>
+      <td>
+        <input name="system.aoe" type="text" value="{{item.system.aoe}}" data-type="String" />
+      </td>
+      <td>
+        <input name="system.duration" type="text" value="{{item.system.duration}}" data-type="String" />
+      </td>
+      <td>
+        <textarea name="system.raises">{{item.system.raises}}</textarea>
+      </td>
+    </table>
+  </div>
+  <div class="editor-sections">
+    <div class="editor-section">
+      <h2>{{localize "l5r4.sheet.rulesSummary"}}</h2>
+      <prose-mirror name="system.specialRules" editable="{{editable}}" value="{{system.specialRules}}"  toggled="true">
+        {{{enrichedSpecialRules}}}
+      </prose-mirror>
+    </div>
+    <div class="editor-section">
+      <h2>{{localize "l5r4.sheet.description"}}</h2>
+      <prose-mirror name="system.description" editable="{{editable}}" value="{{system.description}}"  toggled="true">
+        {{{enrichedDescription}}}
+      </prose-mirror>
+    </div>
+  </div>
+</div>

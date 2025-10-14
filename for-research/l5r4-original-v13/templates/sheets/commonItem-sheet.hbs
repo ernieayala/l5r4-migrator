@@ -1,0 +1,13 @@
+<div class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+  <img src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+  <h1><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+  </header>
+  <div class="editor-sections">
+    <div class="editor-section">
+      <prose-mirror name="system.description" editable="{{editable}}" value="{{system.description}}"  toggled="true">
+        {{{enrichedDescription}}}
+      </prose-mirror>
+    </div>
+  </div>
+</div>

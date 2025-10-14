@@ -1,0 +1,45 @@
+.l5r4.sheet.item {
+  form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sheet-content {
+    flex-shrink: 0;
+    padding: 0.5rem;
+  }
+
+  .editor-sections {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 0.5rem 0.5rem;
+
+    .editor-section {
+      display: flex;
+      flex-direction: column;
+
+      h2 {
+        margin: 0.5rem 0;
+        flex-shrink: 0;
+      }
+
+      prose-mirror {
+        min-height: 50px;
+
+        .editor-container {
+          min-height: 50px;
+        }
+      }
+    }
+  }
+
+  td{
+    text-align: center;
+  }
+}

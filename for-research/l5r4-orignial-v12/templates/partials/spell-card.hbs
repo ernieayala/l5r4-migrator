@@ -1,0 +1,44 @@
+<div class="item-border {{type}}">
+  <div class="spell-card item" data-item-id="{{_id}}">
+    <div class="spell-info spell-name">
+      <h3>
+        {{#if inSheet}}
+        <img width="15px" height="15px" src="{{img}}" />
+        <a title="{{localize "l5r4.sheet.edit"}}" class="item-edit">{{name}}</a>
+        {{else}}
+        {{name}}
+        {{/if}}
+      </h3>
+    </div>
+    <div class="spell-info spell-stats">
+      <div class="spell-ring">
+        {{localize "l5r4.spell.ring"}}: {{localize (concat "l5r4.rings." system.ring)}}
+      </div>
+      <div class="spell-mastery">
+        {{localize "l5r4.spell.mastery"}}: {{system.mastery}}
+      </div>
+      <div class="spell-range">
+        {{localize "l5r4.spell.range"}}: {{system.range}}
+      </div>
+      <div class="spell-aoe">
+        {{localize "l5r4.spell.aoe"}}: {{system.aoe}}
+      </div>
+      <div class="spell-duration">
+        {{localize "l5r4.spell.duration"}}: {{system.duration}}
+      </div>
+      <div class="spell-raises">
+        {{localize "l5r4.spell.raises"}}: {{system.raises}}
+      </div>
+      {{#unless inSheet}}
+      <div class="spell-effects">
+        {{{system.specialRules}}}
+      </div>
+      {{/unless}}
+    </div>
+    {{#if inSheet}}
+      <div>
+        <a class="item-edit"  title="{{localize "l5r4.sheet.edit"}}"><i class="fas fa-edit fa-fw"></i></a>
+      </div>
+    {{/if}}
+  </div>
+</div>

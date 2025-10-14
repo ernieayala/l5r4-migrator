@@ -1,0 +1,32 @@
+<section class="equipment panelBorder">
+  <h2 class="equipement-title">
+    <div>{{localize "l5r4.sheet.equipment"}}</div>
+    <div class="wealth wealth-koku">{{localize "l5r4.wealth.koku"}}: <input type="text" name="system.wealth.koku" value="{{system.wealth.koku}}" placeholder="{{localize "l5r4.wealth.koku"}}" /></div>
+    <div class="wealth wealth-koku">{{localize "l5r4.wealth.bu"}}: <input type="text" name="system.wealth.bu" value="{{system.wealth.bu}}" placeholder="{{localize "l5r4.wealth.bu"}}" /></div>
+    <div class="wealth wealth-koku">{{localize "l5r4.wealth.zeni"}}: <input type="text" name="system.wealth.zeni" value="{{system.wealth.zeni}}" placeholder="{{localize "l5r4.wealth.zeni"}}" /></div>
+    <a data-action="createItem" data-type="equipment" title="{{localize "l5r4.sheet.addEquipment"}}">
+      <i class="fas fa-plus"></i>
+    </a>
+  </h2>
+  <section class="equipment-list">
+    <section class="weapons-list">
+      {{#each weapons as |weapon id|}}
+      {{> "systems/l5r4/templates/partials/weapon-card.hbs" _id=weapon._id name=weapon.name img=weapon.img system=weapon.system ranged=false inSheet=true}}
+      {{/each}}
+
+      {{#each bows as |weapon id|}}
+      {{> "systems/l5r4/templates/partials/weapon-card.hbs" _id=weapon._id name=weapon.name img=weapon.img system=weapon.system ranged=true inSheet=true}}
+      {{/each}}
+    </section>
+    <section class="armors-list">
+      {{#each armors as |armor id|}}
+      {{> "systems/l5r4/templates/partials/armor-card.hbs" _id=armor._id name=armor.name img=armor.img system=armor.system inSheet=true}}
+      {{/each}}
+    </section>
+    <section class="commonItems-list">
+      {{#each commonItems as |item id|}}
+      {{> "systems/l5r4/templates/partials/commonItem-card.hbs" _id=item._id name=item.name img=item.img system=item.system inSheet=true}}
+      {{/each}}
+    </section>
+  </section>
+</section>

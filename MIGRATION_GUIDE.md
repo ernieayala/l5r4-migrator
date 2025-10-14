@@ -5,6 +5,7 @@ Migrate from **l5r4** to **l5r4-enhanced** system.
 ## Before You Start
 
 ⚠️ **Critical:**
+
 - Don't change system ID directly
 - Always create backup first
 - Test with world copy first
@@ -22,6 +23,7 @@ Module auto-detects your schema:
 **New v13:** camelCase fields → As-is import (no changes)
 
 **Confidence levels:**
+
 - High (≥90%) - Proceed
 - Medium (70-89%) - Safe to proceed
 - Low (<70%) - Review carefully
@@ -46,12 +48,12 @@ Module auto-detects your schema:
 8. Click **Import Data**, confirm
 9. Verify actors, scenes, journals work correctly
 
-
 ## Troubleshooting
 
 **Export fails:** Check console (F12), verify module enabled, refresh page
 
 **Validation errors:**
+
 - Unknown/mixed schema → Contact support
 - Low confidence (<70%) → Review manually before proceeding
 - Invalid data → Fix issues, re-export
@@ -66,7 +68,6 @@ Module auto-detects your schema:
 
 **Can I undo?** No, but your old world is untouched. Keep your backup.
 
-
 **Multiple worlds?** Yes, repeat for each.
 
 **Need both systems?** Yes, during migration.
@@ -76,6 +77,7 @@ Module auto-detects your schema:
 **Active Effects?** Migrate but may need adjustment if they reference old field names.
 
 **Dry run test?**
+
 ```javascript
 await game.modules.get('l5r4-migrator').api.ImportService.importWorld(exportData, { dryRun: true });
 ```
@@ -85,6 +87,7 @@ await game.modules.get('l5r4-migrator').api.ImportService.importWorld(exportData
 **Import fails:** Source world is safe. Delete new world, check console errors, contact support.
 
 **Source world corrupted:** Restore from backup:
+
 ```javascript
 const backupData = /* backup JSON */;
 await game.modules.get('l5r4-migrator').api.BackupService.restoreBackup(backupData);

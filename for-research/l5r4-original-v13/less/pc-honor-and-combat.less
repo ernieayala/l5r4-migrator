@@ -1,0 +1,39 @@
+.l5r4.pc {
+  .ranks {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    column-gap: 1.5em;
+
+    .rank-name {
+      display:grid;
+      grid-template-columns : 1fr min-content;
+      column-gap: .8em;
+      align-items: center;
+      text-align: right;
+    }
+
+    select {
+      font-size: 1em;
+    }
+    input {
+      border: none;
+      margin-bottom: 0.25em;
+      text-align: center;
+      min-width: 3em;
+      width: 3em;
+    }
+  }
+
+  .combat-stats {
+    .initiative-table {
+      background: #d6cd9fa3;
+      text-align: center;
+      width: fit-content;
+    }
+    input {
+      border: none;
+      margin-bottom: 0.25em;
+    }
+  }
+}

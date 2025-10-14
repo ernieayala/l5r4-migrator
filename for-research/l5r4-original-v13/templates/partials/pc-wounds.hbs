@@ -1,0 +1,60 @@
+<section class="pc-wounds">
+  <h2>{{localize "l5r4.traits.wounds"}}</h2>
+  <div class="wounds-grid">
+    <div class="wounds-name">
+      {{localize "l5r4.traits.woundsSuffered"}}
+    </div>
+    <div class="wounds-value">
+      <input type="number" name="system.suffered" value="{{system.suffered}}" data-type="Number" />
+    </div>
+    <div class="wounds-mod">
+      {{localize "l5r4.traits.wounds"}} {{localize "l5r4.mech.mod"}}
+    </div>
+    <div class="wounds-mod-value">
+      <input type="number" name="system.woundsMod" value="{{system.woundsMod}}" data-type="Number" />
+    </div>
+    <div class="wounds-multiplier">
+      {{localize "l5r4.traits.wounds"}} {{localize "l5r4.mech.multiplier"}}
+    </div>
+    <div class="wounds-multiplier-value">
+      <input type="number" name="system.woundsMultiplier" value="{{system.woundsMultiplier}}" data-type="Number" />
+    </div>
+    <div class="wounds-level">
+      {{localize "l5r4.traits.woundLevel"}}
+    </div>
+    <div class="wounds-penalty">
+      {{localize "l5r4.traits.penalty"}}
+    </div>
+    <div class="wounds-total">
+      {{localize "l5r4.traits.total"}}
+    </div>
+    <div class="wounds-current">
+      {{localize "l5r4.traits.current"}}
+    </div>
+    {{#each system.wound_lvl as |wound_lvl name|}}
+    <div class="wounds-lvl-name-{{@index}}">{{localize (concat "l5r4.traits." (name))}}</div>
+    <div class="wounds-lvl-value-{{@index}}">{{value}}</div>
+    <input type="number" name="system.wound_lvl.{{name}}.penalty" value="{{penalty}}" class="wounds-lvl-penalty-{{@index}}" />
+    <input type="checkbox" disabled class="wounds-lvl-current-{{@index}}" {{checked current}} data-type="Boolean"/>
+    {{/each}}
+  </section>
+  <section class="wounds-heal-table">
+    <div>
+      <table class="rate-heal" align="center">
+        <tr>
+          <th colspan="2">{{localize "l5r4.traits.woundHealRate"}}</th>
+        </tr>
+        <tr>
+          <td>{{localize "l5r4.traits.sta"}} x 2 + {{localize "l5r4.ranks.insightRank"}}</td>
+          <td>{{math (math system.traits.sta "*" 2) "+" system.insight.rank}} </td>
+        </tr>
+        <tr>
+          <td>{{localize "l5r4.mech.mod"}}</td>
+          <td><input type="text" name="system.wounds.mod" value="{{system.wounds.mod}}" data-type="Number" /></td>
+        </tr>
+        <td>{{localize "l5r4.mech.current"}} {{localize "l5r4.mech.rate"}}</td>
+        <td>{{system.wounds.heal_rate}}</td>
+      </table>
+    </div>
+  </div>
+</section>

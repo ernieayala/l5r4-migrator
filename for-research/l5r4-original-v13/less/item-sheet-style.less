@@ -1,0 +1,86 @@
+.l5r4.item {
+    .window-content {
+        background: @main-background;
+        background-size: cover;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    font-family: "Rotis Serif";
+
+    input[type="checkbox"] {
+        background-color: var(--color-input-bg);
+        color: var(--color-input-bg);
+
+        &::before {
+            background-color: var(--color-input-bg);
+            color: var(--color-input-bg);
+        }
+
+        &:checked::after {
+            color: #302831;
+        }
+    }
+
+    input,
+    select,
+    textarea {
+        background: none;
+        border: none;
+        background-color: @accent-color;
+        font-family: "Rotis Serif";
+        color: var(--color-text-emphatic);
+    }
+
+    table {
+        background: #d6cd9fa3;
+
+        input,
+        select,
+        textarea {
+            color: inherit;
+        }
+    }
+
+    img {
+        border: none
+    }
+
+    .title {
+        .rotisSerif();
+        font-weight: bold
+    }
+
+    .sheet-header {
+        .rotisSerif();
+        background: @brush-background;
+        background-size: 100% 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.5rem;
+        flex-shrink: 0;
+
+        img {
+            flex-shrink: 0;
+        }
+
+        h1 {
+            flex: 1;
+            min-width: 0;
+            margin: 0;
+
+            input {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        input {
+            background-color: transparent;
+        }
+    }
+}

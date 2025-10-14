@@ -28,6 +28,7 @@ Your original world stays untouched as a backup.
 ## Installation
 
 **Manifest URL:**
+
 ```
 https://github.com/ernieayala/l5r4-migrator/releases/latest/download/module.json
 ```
@@ -39,21 +40,14 @@ Or search "L5R4 World Migrator" in Foundry's module browser.
 ### Quick Start
 
 **In your l5r4 world:**
+
 1. Open Settings (⚙️), click **L5R4 World Migrator** button
 2. Click **Create Backup** - saves a safety copy to your Downloads folder
 3. Click **Export Data** - saves your world data file to Downloads
 
-**Create new world:**
-4. Exit to main menu (Return to Setup)
-5. Click **Create World**, select **l5r4-enhanced** system, name it, and create
-6. Launch your new world
+**Create new world:** 4. Exit to main menu (Return to Setup) 5. Click **Create World**, select **l5r4-enhanced** system, name it, and create 6. Launch your new world
 
-**In your new l5r4-enhanced world:**
-7. Open Settings (⚙️), click **L5R4 World Migrator** button
-8. Click **Upload Export File**, choose the file from step 3
-9. Click **Validate Data** - checks if everything looks good
-10. Click **Import Data**, confirm - your characters and items are now copied over
-11. Check a few characters and scenes to make sure everything looks right
+**In your new l5r4-enhanced world:** 7. Open Settings (⚙️), click **L5R4 World Migrator** button 8. Click **Upload Export File**, choose the file from step 3 9. Click **Validate Data** - checks if everything looks good 10. Click **Import Data**, confirm - your characters and items are now copied over 11. Check a few characters and scenes to make sure everything looks right
 
 ## Requirements
 
@@ -64,6 +58,7 @@ Or search "L5R4 World Migrator" in Foundry's module browser.
 ## Settings
 
 Configure in **Module Settings**:
+
 - Backup location (default: `data/backups`)
 - Auto-backup before migrations (default: on)
 - Log level (default: info)
@@ -71,6 +66,7 @@ Configure in **Module Settings**:
 ## What Gets Copied
 
 **Included:**
+
 - Characters (PCs and NPCs) with all their stats and items
 - Standalone items in your world
 - Scenes (maps, tokens, lighting, walls)
@@ -79,6 +75,7 @@ Configure in **Module Settings**:
 - Permissions (who owns what)
 
 **Not Included:**
+
 - Compendium packs (system-provided content)
 - Module settings
 - Macros (may need manual recreation)
@@ -91,15 +88,16 @@ Configure in **Module Settings**:
 - [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) - Troubleshooting and FAQs
 - [DEVELOPERS.md](DEVELOPERS.md) - API and development
 
-
 ## Troubleshooting
 
-**Migration fails:** 
+**Migration fails:**
+
 - Make sure you ran Validate Data first
 - Verify the new world is using l5r4-enhanced system
 - Press F12 to see error details, share them when asking for help
 
 **Missing characters or items:**
+
 - Check the import report shown after import completes
 - Look for warnings during the Validate Data step
 

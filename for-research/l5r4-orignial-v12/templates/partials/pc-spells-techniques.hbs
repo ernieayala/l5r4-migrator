@@ -1,0 +1,37 @@
+<section class="spells techniques panelBorder">
+  <h2>
+      <div>{{localize "l5r4.sheet.techniques"}}/{{localize "l5r4.sheet.spells"}}</div>
+      {{#if spells.length}}
+    {{> "systems/l5r4/templates/partials/pc-spell-slots.hbs"}}
+    {{/if}}
+      <a class="item-create" data-type="spell" title="{{localize "l5r4.sheet.addTechSpell"}}">
+        <i class="fas fa-plus"></i>
+      </a>
+    </h2>
+  <section class="special-list spells-list">
+    
+    {{#each spells as |spell id|}}
+    {{> "systems/l5r4/templates/partials/spell-card.hbs" system=spell.system inSheet=true}}
+    {{/each}}
+  </section>    
+  <section class="special-list techniques-list">
+    {{#each techniques as |technique id|}}
+    {{> "systems/l5r4/templates/partials/technique-card.hbs" system=technique.system inSheet=true}}
+    {{/each}}
+  </section>
+  <section class="special-list kata-list">
+    {{#each katas as |kata id|}}
+    {{> "systems/l5r4/templates/partials/kata-card.hbs" system=kata.system inSheet=true}}
+    {{/each}}
+  </section>
+  <section class="special-list kiho-list">
+    {{#each kihos as |kiho id|}}
+    {{> "systems/l5r4/templates/partials/kiho-card.hbs" system=kiho.system inSheet=true}}
+    {{/each}}
+  </section>
+  <section class="special-list tattoo-list">
+    {{#each tattoos as |tattoo id|}}
+    {{> "systems/l5r4/templates/partials/tattoo-card.hbs" system=tattoo.system inSheet=true}}
+    {{/each}}
+  </section>
+</section>

@@ -1,0 +1,56 @@
+.l5r4.npc {
+  min-width: 600px !important;
+
+  input[type="checkbox"] {
+    background-color: var(--color-input-bg);
+    color: var(--color-input-bg);
+
+    &::before {
+      background-color: var(--color-input-bg);
+      color: var(--color-input-bg);
+    }
+
+    &:checked::after {
+      color: #302831;
+    }
+  }
+
+  .window-content {
+    background: @main-background;
+    background-size: cover;
+  }
+
+  font-family: "Rotis Serif";
+
+  input,
+  select,
+  textarea {
+    background: none;
+    border: none;
+    background-color: @accent-color;
+    color: var(--color-text-emphatic);
+  }
+
+  table {
+
+    input,
+    select,
+    textarea {
+      color: inherit;
+    }
+  }
+
+  .title {
+    .rotisSerif();
+    font-weight: bold
+  }
+
+  .top {
+    .rotisSerif();
+    background: @brush-background;
+    background-size: 75% 100%;
+    background-position-x: 117%;
+
+
+  }
+}

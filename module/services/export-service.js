@@ -38,7 +38,14 @@ export class ExportService {
    * @returns {Promise<Object>} Export result with data and metadata
    */
   static async exportWorld(options = {}) {
-    const { includeScenes = true, includeJournals = true, includeTables = true, validate = true, actorIds = null, itemIds = null } = options;
+    const {
+      includeScenes = true,
+      includeJournals = true,
+      includeTables = true,
+      validate = true,
+      actorIds = null,
+      itemIds = null
+    } = options;
 
     Logger.info('Starting world export for migration...');
 

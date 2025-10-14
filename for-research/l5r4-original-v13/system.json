@@ -1,0 +1,55 @@
+{
+  "id": "l5r4",
+  "title": "Legend of the Five Rings 4th Edition",
+  "description": "System to play L5R 4th edition",
+  "authors": [
+    {
+      "name": "Mateo Caycedo Alvarez",
+      "url": "https://gitlab.com/teo-cay/"
+    }
+  ],
+  "version": "0.10.6",
+  "compatibility": {
+    "minimum": 13,
+    "verified": 13,
+    "maximum": 13
+  },
+  "esmodules": [
+    "l5r4.js"
+  ],
+  "styles": [
+    "l5r4.css"
+  ],
+  "background": "systems/l5r4/l5r4cover.webp",
+  "packs": [],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "es",
+      "name": "Español",
+      "path": "lang/es.json"
+    },
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
+    },
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
+    }
+  ],
+  "grid": {
+    "distance": 5,
+    "units": "ft"
+  },
+  "url": "https://gitlab.com/team-l5r4/l5r4",
+  "manifest": "https://gitlab.com/team-l5r4/l5r4/-/raw/master/system.json",
+  "download": "https://gitlab.com/team-l5r4/l5r4/-/archive/0.10.6/l5r4-0.10.6.zip",
+  "license": "GPL v3"
+}

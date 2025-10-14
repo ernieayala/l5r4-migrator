@@ -1,0 +1,18 @@
+<section class="spells techniques panelBorder">
+  <h2 class="advantages-title">
+    <div>{{localize "l5r4.sheet.advantages"}}/{{localize "l5r4.sheet.disadvantages"}}</div>
+      <a data-action="createItem" data-type="advantage" title="{{localize "l5r4.sheet.addAdv/Dis"}}">
+        <i class="fas fa-plus"></i>
+      </a>
+    </h2>
+  <section class="special-list advantage-list">
+    {{#each advantages as |advantage id|}}
+    {{> "systems/l5r4/templates/partials/advantage-card.hbs" _id=advantage._id name=advantage.name img=advantage.img system=advantage.system inSheet=true}}
+    {{/each}}
+  </section>
+  <section class="special-list disadvantage-list">
+    {{#each disadvantages as |disadvantage id|}}
+    {{> "systems/l5r4/templates/partials/disadvantage-card.hbs" _id=disadvantage._id name=disadvantage.name img=disadvantage.img system=disadvantage.system inSheet=true}}
+    {{/each}}
+  </section>
+</section>

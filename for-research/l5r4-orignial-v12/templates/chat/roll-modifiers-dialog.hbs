@@ -1,0 +1,70 @@
+<form>
+  {{#unless weapon}}
+  <div class="form-group">
+    <label>{{localize "l5r4.mech.woundPenalty"}}?</label>
+    <input type="checkbox" name="woundPenalty" checked="checked" />
+  </div>
+  {{/unless}}
+  {{#unless noVoid}}
+  <div class="form-group">
+    <label>{{localize "l5r4.rings.void"}}?</label>
+    <input type="checkbox" name="void" />
+  </div>
+  {{/unless}}
+  {{#if trait}}
+  <div class="form-group">
+    <label>{{localize "l5r4.mech.unskilledRoll"}}?</label>
+    <input type="checkbox" name="unskilled" />
+  </div>
+  {{/if}}
+  {{#if skill}}
+  <div class="form-group">
+    <label>{{localize "l5r4.mech.emphasis"}}?</label>
+    <input type="checkbox" name="emphasis" />
+  </div>
+  <div class="form-group">
+    <label>{{localize "l5r4.mech.roll"}} {{localize "l5r4.mech.mod"}}?</label>
+    <input type="number" name="rollMod" value={{rollBonus}} />
+  </div>
+  <div class="form-group">
+    <label>{{localize "l5r4.mech.keep"}} {{localize "l5r4.mech.mod"}}?</label>
+    <input type="number" name="keepMod" value={{keepBonus}} />
+  </div>
+  <div class="form-group">
+    <label>{{localize "l5r4.mech.total"}} {{localize "l5r4.mech.mod"}} ?</label>
+    <input type="number" name="totalMod" value={{totalBonus}} />
+  </div>
+  {{else}}
+  <div class="form-group">
+    <label>{{localize "l5r4.mech.roll"}} {{localize "l5r4.mech.mod"}}?</label>
+    <input type="number" name="rollMod" value="0" />
+  </div>
+  <div class="form-group">
+    <label>{{localize "l5r4.mech.keep"}} {{localize "l5r4.mech.mod"}}?</label>
+    <input type="number" name="keepMod" value="0" />
+  </div>
+  <div class="form-group">
+    <label>{{localize "l5r4.mech.total"}} {{localize "l5r4.mech.mod"}} ?</label>
+    <input type="number" name="totalMod" value="0" />
+  </div>
+  {{/if}}
+  {{#if spell}}
+  <div class="form-group">
+    <label>{{localize "l5r4.spell.affinity"}}?</label>
+    <input type="checkbox" name="affinity" />
+  </div>
+  <div class="form-group">
+    <label>{{localize "l5r4.spell.deficiency"}}?</label>
+    <input type="checkbox" name="deficiency" />
+  </div>
+  <div class="form-group">
+    <label>{{localize "l5r4.chat.useSpellSlot"}} {{ring}}?</label>
+    <input type="checkbox" name="spellSlot" checked="checked"/>
+  </div>
+  <div class="form-group">
+    <label>{{localize "l5r4.chat.voidSlot"}}</label>
+    <input type="checkbox" name="voidSlot" />
+  </div>
+  {{/if}}
+  
+</form>

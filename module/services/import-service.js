@@ -161,7 +161,14 @@ export class ImportService {
    * @private
    */
   static async _importWithTransform(data, options = {}) {
-    const { dryRun = false, skipFolders = false, skipScenes = false, skipJournals = false, skipTables = false, detection } = options;
+    const {
+      dryRun = false,
+      skipFolders = false,
+      skipScenes = false,
+      skipJournals = false,
+      skipTables = false,
+      detection
+    } = options;
 
     const result = {
       success: true,
@@ -242,7 +249,14 @@ export class ImportService {
    * @private
    */
   static async _importAsIs(data, options = {}) {
-    const { dryRun = false, skipFolders = false, skipScenes = false, skipJournals = false, skipTables = false, detection } = options;
+    const {
+      dryRun = false,
+      skipFolders = false,
+      skipScenes = false,
+      skipJournals = false,
+      skipTables = false,
+      detection
+    } = options;
 
     const result = {
       success: true,
@@ -669,11 +683,13 @@ export class ImportService {
       try {
         // Check folder depth before creation
         const depth = this._getFolderDepth(folder, folderData);
-        
+
         if (depth > MAX_FOLDER_DEPTH) {
           stats.skipped++;
           stats.failed++;
-          Logger.warn(`Failed to import folder ${folder.name} [${folder.type}]: Error: You may not nest Folders more than ${MAX_FOLDER_DEPTH} levels deep.`);
+          Logger.warn(
+            `Failed to import folder ${folder.name} [${folder.type}]: Error: You may not nest Folders more than ${MAX_FOLDER_DEPTH} levels deep.`
+          );
           continue;
         }
 
@@ -715,7 +731,7 @@ export class ImportService {
       }
       depth++;
       currentFolder = parent;
-      
+
       // Check if we've reached a root folder
       if (!currentFolder.folder) {
         break;
@@ -779,6 +795,7 @@ export class ImportService {
     for (const table of tableData) {
       try {
         if (!dryRun) {
+          // eslint-disable-next-line no-undef
           await RollTable.create(table, { keepId: true });
         }
         stats.created++;

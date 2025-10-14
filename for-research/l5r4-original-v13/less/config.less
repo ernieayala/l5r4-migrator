@@ -1,0 +1,146 @@
+//fonts
+@font-face{
+  font-family: "Brushtip";
+  src: url("assets/fonts/BrushtipTexe.ttf");
+}
+
+@font-face{
+  font-family: "Old Style";
+  src: url("assets/fonts/OLDSH___.TTF");
+}
+
+@font-face{
+  font-family: "Old Style";
+  src: url("assets/fonts/OLDSIH__.TTF");
+  font-style: italic;
+}
+
+@font-face{
+  font-family: "Old Style";
+  src: url("assets/fonts/OLDSSCH_.TTF");
+  font-weight: bold;
+}
+
+@font-face{
+  font-family: "Rotis Serif";
+  src: url("assets/fonts/RotisSerif.otf");
+}
+
+@font-face{
+  font-family: "Rotis Serif";
+  src: url("assets/fonts/RotisSerifStd-Bold.otf");
+  font-weight: bold;
+}
+
+@font-face{
+  font-family: "Rotis Semi Serif";
+  src: url("assets/fonts/RotisSemiSerifStd.otf");
+}
+
+@font-face{
+  font-family: "Rotis Semi Sans";
+  src: url("assets/fonts/RotisSemiSansStd.otf");
+}
+
+@font-face{
+  font-family: "Hiroshige book";
+  src: url("assets/fonts/HiroshigeStd-Book.otf");
+}
+
+@font-face{
+  font-family: "Hiroshige book";
+  src: url("assets/fonts/HiroshigeStd-BookItalic.otf");
+  font-style: italic;
+}
+
+@font-face{
+  font-family: "Hiroshige book";
+  src: url("assets/fonts/HiroshigeStd-Bold.otf");
+}
+
+.hiroshigueBook(){
+  font-family: "Hiroshigue book";
+  text-transform: none;
+}
+
+.rotisSerif(){
+  font-family: "Rotis Serif";
+  text-transform: none;
+}
+
+.oldStyle(){
+  font-family: "Old Style";
+  text-transform: none;
+  font-weight: bold;
+}
+
+// textures
+@main-background: rgb(255, 250, 230) url("assets/textures/scroll2.webp") no-repeat;
+@brush-background: url("assets/textures/brush.webp") no-repeat 0 0;
+@water-background: url("assets/textures/watercolor.webp") no-repeat 0 0;
+
+// images
+@air-ring-img: url("assets/icons/air.png");
+@water-ring-img: url("assets/icons/water.png");
+@earth-ring-img: url("assets/icons/earth.png");
+@fire-ring-img: url("assets/icons/fire.png");
+@void-ring-img: url("assets/icons/void.png");
+
+// colors
+@accent-color: #d6cd9fa3;
+
+// Scope CSS variables to L5R4 sheets only
+.l5r4 {
+    --color-underline-inactive: #7a7971;
+    --color-underline-active: #44191A;
+    --color-underline-header: #782e22;
+    --color-input-bg: #d6cd9fa3;
+
+    --color-scheme: dark;
+    --color-warm-1: #ee9b3a;
+    --color-warm-2: #c9593f;
+    --color-warm-3: #5d142b;
+    --color-cool-3: #584a75;
+    --color-cool-4: #302831;
+    --color-cool-5: #0b0a13;
+    --color-cool-5-25: rgba(11, 10, 19, 0.25);
+    --color-cool-5-50: rgba(11, 10, 19, 0.5);
+    --color-cool-5-75: rgba(11, 10, 19, 0.75);
+    --color-cool-5-90: rgba(11, 10, 19, 0.9);
+    --color-light-1: #f7f3e8;
+    --color-light-2: #efe6d8;
+    --color-light-3: #e7d1b1;
+    --color-light-4: #d0b8a3;
+    --color-light-5: #9f8475;
+    --color-light-6: #816b66;
+    --color-dark-1: #111;
+    --color-dark-2: #222;
+    --color-dark-3: #333;
+    --color-dark-4: #444;
+    --color-dark-5: #555;
+    --color-dark-6: #666;
+    --color-level-error: #ce0707;
+    --color-level-error-bg: rgba(105, 0, 8, 0.8);
+    --color-level-error-border: #750003;
+    --color-level-info: #59a1f6;
+    --color-level-info-bg: rgba(47, 80, 132, 0.8);
+    --color-level-info-border: #5c87b9;
+    --color-level-success: #26b231;
+    --color-level-success-bg: rgba(26, 107, 34, 0.8);
+    --color-level-success-border: #1b8f23;
+    --color-level-warning: #ee9b3a;
+    --color-level-warning-bg: rgba(214, 150, 0, 0.8);
+    --color-level-warning-border: #b18404;
+    --color-scrollbar: #5d142b;
+    --color-scrollbar-track: transparent;
+    --color-text-emphatic: var(--color-dark-1);
+    --color-text-primary: var(--color-dark-2);
+    --color-text-secondary: var(--color-dark-3);
+    --color-text-subtle: var(--color-dark-4);
+    --color-text-accent: var(--color-warm-1);
+    --color-text-selection: var(--color-light-1);
+    --color-text-selection-bg: var(--color-dark-6);
+    --color-shadow-dark: var(--color-dark-1);
+    --color-shadow-primary: var(--color-warm-2);
+    --color-shadow-highlight: var(--color-warm-1);
+}

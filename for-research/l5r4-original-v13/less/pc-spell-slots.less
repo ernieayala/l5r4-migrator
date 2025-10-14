@@ -1,0 +1,39 @@
+.l5r4.pc {
+    .spells-slots {
+        display: grid;
+        grid-template-columns: auto repeat(5, minmax(min-content, auto));
+        column-gap: 0.5rem;
+        font-size: 1rem;
+        align-items: center;
+
+        .slots-title {
+            align-self: center;
+            justify-self: flex-end;
+            padding-right: 0.5rem;
+            margin: inherit;
+            white-space: nowrap;
+        }
+
+        img {
+            border: none;
+            width: 30px;
+            aspect-ratio: auto 1/ 1;
+            height: 30px;
+            flex-shrink: 0;
+        }
+        input {
+            width: 3ch;
+            min-width: 3ch;
+        }
+
+        .slots {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.25rem;
+            min-width: min-content;
+        }
+
+    }
+
+}

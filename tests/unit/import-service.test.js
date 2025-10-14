@@ -499,6 +499,120 @@ describe('Import Service', () => {
     });
   });
 
+  describe('_getFolderDepth', () => {
+    it('should return 0 for root folders', () => {
+      const rootFolder = { _id: 'root1', name: 'Root', folder: null };
+      const allFolders = [rootFolder];
+
+      const depth = ImportService._getFolderDepth(rootFolder, allFolders);
+      expect(depth).toBe(0);
+    });
+
+    it('should return 1 for first level folders', () => {
+      const rootFolder = { _id: 'root1', name: 'Root', folder: null };
+      const childFolder = { _id: 'child1', name: 'Child', folder: 'root1' };
+      const allFolders = [rootFolder, childFolder];
+
+      const depth = ImportService._getFolderDepth(childFolder, allFolders);
+      expect(depth).toBe(1);
+    });
+
+    it('should return 2 for second level folders', () => {
+      const rootFolder = { _id: 'root1', name: 'Root', folder: null };
+      const level1 = { _id: 'level1', name: 'Level 1', folder: 'root1' };
+      const level2 = { _id: 'level2', name: 'Level 2', folder: 'level1' };
+      const allFolders = [rootFolder, level1, level2];
+
+      const depth = ImportService._getFolderDepth(level2, allFolders);
+      expect(depth).toBe(2);
+    });
+
+    it('should correctly calculate depth for deeply nested folders', () => {
+      const root = { _id: 'root', name: 'Root', folder: null };
+      const l1 = { _id: 'l1', name: 'Level 1', folder: 'root' };
+      const l2 = { _id: 'l2', name: 'Level 2', folder: 'l1' };
+      const l3 = { _id: 'l3', name: 'Level 3', folder: 'l2' };
+      const l4 = { _id: 'l4', name: 'Level 4', folder: 'l3' };
+      const l5 = { _id: 'l5', name: 'Level 5', folder: 'l4' };
+      const allFolders = [root, l1, l2, l3, l4, l5];
+
+      expect(ImportService._getFolderDepth(root, allFolders)).toBe(0);
+      expect(ImportService._getFolderDepth(l1, allFolders)).toBe(1);
+      expect(ImportService._getFolderDepth(l2, allFolders)).toBe(2);
+      expect(ImportService._getFolderDepth(l3, allFolders)).toBe(3);
+      expect(ImportService._getFolderDepth(l4, allFolders)).toBe(4);
+      expect(ImportService._getFolderDepth(l5, allFolders)).toBe(5);
+    });
+  });
+
+  describe('_importFolders', () => {
+    it('should import folders up to depth 4', async () => {
+      const root = { _id: 'root', name: 'Root', folder: null };
+      const l1 = { _id: 'l1', name: 'Level 1', folder: 'root' };
+      const l2 = { _id: 'l2', name: 'Level 2', folder: 'l1' };
+      const l3 = { _id: 'l3', name: 'Level 3', folder: 'l2' };
+      const l4 = { _id: 'l4', name: 'Level 4', folder: 'l3' };
+      const folders = [root, l1, l2, l3, l4];
+
+      const stats = await ImportService._importFolders(folders, false);
+
+      expect(stats.attempted).toBe(5);
+      expect(stats.created).toBe(5);
+      expect(stats.failed).toBe(0);
+      expect(stats.skipped).toBe(0);
+      expect(Folder.create).toHaveBeenCalledTimes(5);
+    });
+
+    it('should skip folders exceeding depth 4', async () => {
+      const root = { _id: 'root', name: 'Root', folder: null, type: 'Actor' };
+      const l1 = { _id: 'l1', name: 'Level 1', folder: 'root', type: 'Actor' };
+      const l2 = { _id: 'l2', name: 'Level 2', folder: 'l1', type: 'Actor' };
+      const l3 = { _id: 'l3', name: 'Level 3', folder: 'l2', type: 'Actor' };
+      const l4 = { _id: 'l4', name: 'Level 4', folder: 'l3', type: 'Actor' };
+      const l5 = { _id: 'l5', name: 'Level 5 - Too Deep', folder: 'l4', type: 'Actor' };
+      const folders = [root, l1, l2, l3, l4, l5];
+
+      const stats = await ImportService._importFolders(folders, false);
+
+      expect(stats.attempted).toBe(6);
+      expect(stats.created).toBe(5);
+      expect(stats.failed).toBe(1);
+      expect(stats.skipped).toBe(1);
+      expect(Folder.create).toHaveBeenCalledTimes(5);
+    });
+
+    it('should handle folders sorted by depth correctly', async () => {
+      // Provide folders in reverse order to test sorting
+      const l2 = { _id: 'l2', name: 'Level 2', folder: 'l1' };
+      const root = { _id: 'root', name: 'Root', folder: null };
+      const l1 = { _id: 'l1', name: 'Level 1', folder: 'root' };
+      const folders = [l2, root, l1];
+
+      const stats = await ImportService._importFolders(folders, false);
+
+      expect(stats.created).toBe(3);
+      expect(Folder.create).toHaveBeenCalledTimes(3);
+
+      // Verify creation order: root, l1, l2
+      expect(Folder.create.mock.calls[0][0]._id).toBe('root');
+      expect(Folder.create.mock.calls[1][0]._id).toBe('l1');
+      expect(Folder.create.mock.calls[2][0]._id).toBe('l2');
+    });
+
+    it('should work in dry run mode', async () => {
+      const root = { _id: 'root', name: 'Root', folder: null };
+      const l1 = { _id: 'l1', name: 'Level 1', folder: 'root' };
+      const folders = [root, l1];
+
+      const stats = await ImportService._importFolders(folders, true);
+
+      expect(stats.attempted).toBe(2);
+      expect(stats.created).toBe(2);
+      expect(stats.failed).toBe(0);
+      expect(Folder.create).not.toHaveBeenCalled();
+    });
+  });
+
   describe('Integration scenarios', () => {
     it('should handle complete migration pipeline', async () => {
       const legacyData = {

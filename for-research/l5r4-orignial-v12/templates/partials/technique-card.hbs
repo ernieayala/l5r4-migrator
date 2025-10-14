@@ -1,0 +1,39 @@
+<div class="item-border {{type}}">
+  <div class="technique-card item" data-item-id="{{_id}}">
+    <div class="technique-info technique-name">
+      <h3>
+        {{#if inSheet}}
+        <img width="15px" height="15px" src="{{img}}" />
+        <a title="{{localize "l5r4.sheet.edit"}}" class="item-edit">{{name}}</a>
+        {{else}}
+        {{name}}
+        {{/if}}
+      </h3>
+    </div>
+    <div class="technique-info technique-stats">
+      {{#unless system.shugenja}}
+      <div class="technique-rank">
+        {{localize "l5r4.skill.rank"}}: {{system.rank}}
+      </div>
+      {{/unless}}
+      {{#if system.shugenja}}
+      <div class="technique-affiniy">
+        {{localize "l5r4.spell.affinity"}}: {{localize (concat "l5r4.rings." system.affinity)}}
+      </div>
+      <div class="technique-deficiency">
+        {{localize "l5r4.spell.deficiency"}}: {{localize (concat "l5r4.rings." system.deficiency)}}
+      </div>
+      {{/if}}
+      {{#unless inSheet}}
+      <div class="technique-effects">
+        {{{system.specialRules}}}
+      </div>
+      {{/unless}}
+    </div>
+    {{#if inSheet}}
+      <div>
+        <a class="item-edit"  title="{{localize "l5r4.sheet.edit"}}"><i class="fas fa-edit fa-fw"></i></a>
+      </div>
+    {{/if}}
+  </div>
+</div>
