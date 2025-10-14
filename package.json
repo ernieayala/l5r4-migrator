@@ -1,6 +1,6 @@
 {
   "name": "l5r4-migrator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Migration tool for transferring worlds from legacy l5r4 system to l5r4-enhanced system",
   "type": "module",
   "author": "Ernie Ayala",

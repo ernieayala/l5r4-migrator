@@ -2,7 +2,7 @@
   "id": "l5r4-migrator",
   "title": "L5R4 World Migrator",
   "description": "Complete migration tool for transferring worlds from legacy l5r4 system to l5r4-enhanced system. Features backup, export, validation, schema transformation, and import with comprehensive error handling and user-friendly UI.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "authors": [
     {
       "name": "Ernie Ayala",
@@ -14,8 +14,12 @@
     "verified": "13",
     "maximum": "13"
   },
-  "esmodules": ["l5r4-migrator.js"],
-  "styles": ["styles/l5r4-migrator.css"],
+  "esmodules": [
+    "l5r4-migrator.js"
+  ],
+  "styles": [
+    "styles/l5r4-migrator.css"
+  ],
   "languages": [
     {
       "lang": "en",

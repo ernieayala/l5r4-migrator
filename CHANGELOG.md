@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Nothing currently in development.
+
+## [1.0.1] - 2025-10-14
+
 ### Added
 - **Asset Migration** - Automatic icon migration from PNG to WEBP format
   - Migrates default system icons (actors and items)
