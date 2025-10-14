@@ -31,13 +31,14 @@ export class ExportService {
    * @param {Object} options - Export options
    * @param {boolean} options.includeScenes - Include scenes (default: true)
    * @param {boolean} options.includeJournals - Include journal entries (default: true)
+   * @param {boolean} options.includeTables - Include roll tables (default: true)
    * @param {boolean} options.validate - Validate exported data (default: true)
    * @param {Array<string>} options.actorIds - Specific actor IDs to export (default: all)
    * @param {Array<string>} options.itemIds - Specific item IDs to export (default: all)
    * @returns {Promise<Object>} Export result with data and metadata
    */
   static async exportWorld(options = {}) {
-    const { includeScenes = true, includeJournals = true, validate = true, actorIds = null, itemIds = null } = options;
+    const { includeScenes = true, includeJournals = true, includeTables = true, validate = true, actorIds = null, itemIds = null } = options;
 
     Logger.info('Starting world export for migration...');
 
@@ -55,6 +56,7 @@ export class ExportService {
       items: [],
       scenes: [],
       journals: [],
+      tables: [],
       folders: [],
       validation: {
         enabled: validate,
@@ -130,6 +132,12 @@ export class ExportService {
         exportData.journals = game.journal.contents.map((j) => j.toObject());
       }
 
+      // Export roll tables if requested
+      if (includeTables) {
+        Logger.info(`Exporting ${game.tables.contents.length} roll tables...`);
+        exportData.tables = game.tables.contents.map((t) => t.toObject());
+      }
+
       // Always export folders for organization
       Logger.info(`Exporting ${game.folders.contents.length} folders...`);
       exportData.folders = game.folders.contents.map((f) => f.toObject());
@@ -140,6 +148,7 @@ export class ExportService {
         items: exportData.items.length,
         scenes: exportData.scenes.length,
         journals: exportData.journals.length,
+        tables: exportData.tables.length,
         folders: exportData.folders.length
       };
 

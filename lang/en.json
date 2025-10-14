@@ -18,7 +18,7 @@
       "BackupDescription": "Create a timestamped backup of the current world before any migration operations.",
 
       "ExportData": "Export World Data",
-      "ExportDescription": "Export all actors, items, scenes, and journal entries to a migration file.",
+      "ExportDescription": "Export all actors, items, scenes, journal entries, and roll tables to a migration file.",
 
       "ValidateData": "Validate Migration Data",
       "ValidateDescription": "Check imported data for errors and compatibility issues before applying.",

@@ -117,6 +117,7 @@ export class ImportService {
    * @param {boolean} options.skipFolders - Skip folder creation
    * @param {boolean} options.skipScenes - Skip scene import
    * @param {boolean} options.skipJournals - Skip journal import
+   * @param {boolean} options.skipTables - Skip roll table import
    * @param {boolean} options.skipDetection - Skip schema detection (force transform path)
    * @returns {Promise<Object>} Import result with statistics
    */
@@ -160,7 +161,7 @@ export class ImportService {
    * @private
    */
   static async _importWithTransform(data, options = {}) {
-    const { dryRun = false, skipFolders = false, skipScenes = false, skipJournals = false, detection } = options;
+    const { dryRun = false, skipFolders = false, skipScenes = false, skipJournals = false, skipTables = false, detection } = options;
 
     const result = {
       success: true,
@@ -172,7 +173,8 @@ export class ImportService {
         actors: { attempted: 0, created: 0, failed: 0, transformed: 0 },
         items: { attempted: 0, created: 0, failed: 0, transformed: 0 },
         scenes: { attempted: 0, created: 0, failed: 0 },
-        journals: { attempted: 0, created: 0, failed: 0 }
+        journals: { attempted: 0, created: 0, failed: 0 },
+        tables: { attempted: 0, created: 0, failed: 0 }
       },
       errors: []
     };
@@ -208,6 +210,12 @@ export class ImportService {
         result.stats.journals = await this._importJournals(data.journals, dryRun);
       }
 
+      // Import roll tables
+      if (!skipTables && data.tables?.length) {
+        Logger.info(`Importing ${data.tables.length} roll tables...`);
+        result.stats.tables = await this._importTables(data.tables, dryRun);
+      }
+
       // Calculate totals
       const totalAttempted = Object.values(result.stats).reduce((sum, s) => sum + s.attempted, 0);
       const totalCreated = Object.values(result.stats).reduce((sum, s) => sum + s.created, 0);
@@ -234,7 +242,7 @@ export class ImportService {
    * @private
    */
   static async _importAsIs(data, options = {}) {
-    const { dryRun = false, skipFolders = false, skipScenes = false, skipJournals = false, detection } = options;
+    const { dryRun = false, skipFolders = false, skipScenes = false, skipJournals = false, skipTables = false, detection } = options;
 
     const result = {
       success: true,
@@ -246,7 +254,8 @@ export class ImportService {
         actors: { attempted: 0, created: 0, failed: 0 },
         items: { attempted: 0, created: 0, failed: 0 },
         scenes: { attempted: 0, created: 0, failed: 0 },
-        journals: { attempted: 0, created: 0, failed: 0 }
+        journals: { attempted: 0, created: 0, failed: 0 },
+        tables: { attempted: 0, created: 0, failed: 0 }
       },
       errors: []
     };
@@ -280,6 +289,12 @@ export class ImportService {
       if (!skipJournals && data.journals?.length) {
         Logger.info(`Importing ${data.journals.length} journal entries as-is...`);
         result.stats.journals = await this._importJournals(data.journals, dryRun);
+      }
+
+      // Import roll tables
+      if (!skipTables && data.tables?.length) {
+        Logger.info(`Importing ${data.tables.length} roll tables as-is...`);
+        result.stats.tables = await this._importTables(data.tables, dryRun);
       }
 
       // Calculate totals
@@ -635,10 +650,12 @@ export class ImportService {
   /**
    * Import folders
    * Sort by folder path depth to ensure parents are created before children
+   * Skips folders that exceed Foundry's 4-level depth limit
    * @private
    */
   static async _importFolders(folderData, dryRun) {
-    const stats = { attempted: folderData.length, created: 0, failed: 0 };
+    const stats = { attempted: folderData.length, created: 0, failed: 0, skipped: 0 };
+    const MAX_FOLDER_DEPTH = 4;
 
     // Sort folders by depth (parent-first)
     // Folders without a parent come first, then by folder depth
@@ -650,6 +667,16 @@ export class ImportService {
 
     for (const folder of sortedFolders) {
       try {
+        // Check folder depth before creation
+        const depth = this._getFolderDepth(folder, folderData);
+        
+        if (depth > MAX_FOLDER_DEPTH) {
+          stats.skipped++;
+          stats.failed++;
+          Logger.warn(`Failed to import folder ${folder.name} [${folder.type}]: Error: You may not nest Folders more than ${MAX_FOLDER_DEPTH} levels deep.`);
+          continue;
+        }
+
         if (!dryRun) {
           await Folder.create(folder, { keepId: true });
         }
@@ -660,11 +687,16 @@ export class ImportService {
       }
     }
 
+    if (stats.skipped > 0) {
+      Logger.warn(`Skipped ${stats.skipped} folder(s) that exceeded the ${MAX_FOLDER_DEPTH}-level depth limit`);
+    }
+
     return stats;
   }
 
   /**
    * Calculate folder depth (how many parent levels)
+   * Returns 0 for root folders, 1 for first level, 2 for second level, etc.
    * @private
    */
   static _getFolderDepth(folder, allFolders) {
@@ -672,7 +704,7 @@ export class ImportService {
       return 0;
     } // Root folder
 
-    let depth = 1;
+    let depth = 0;
     let currentFolder = folder;
 
     // Traverse up to find depth (max 10 levels to prevent infinite loops)
@@ -683,6 +715,11 @@ export class ImportService {
       }
       depth++;
       currentFolder = parent;
+      
+      // Check if we've reached a root folder
+      if (!currentFolder.folder) {
+        break;
+      }
     }
 
     return depth;
@@ -726,6 +763,28 @@ export class ImportService {
       } catch (error) {
         stats.failed++;
         Logger.warn(`Failed to import journal ${journal.name}:`, error);
+      }
+    }
+
+    return stats;
+  }
+
+  /**
+   * Import roll tables
+   * @private
+   */
+  static async _importTables(tableData, dryRun) {
+    const stats = { attempted: tableData.length, created: 0, failed: 0 };
+
+    for (const table of tableData) {
+      try {
+        if (!dryRun) {
+          await RollTable.create(table, { keepId: true });
+        }
+        stats.created++;
+      } catch (error) {
+        stats.failed++;
+        Logger.warn(`Failed to import roll table ${table.name}:`, error);
       }
     }
 
