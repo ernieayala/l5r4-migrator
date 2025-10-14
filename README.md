@@ -3,7 +3,6 @@
 [![FoundryVTT version](https://img.shields.io/badge/FVTT-v13.x-informational)](https://foundryvtt.com/)
 [![Version](https://img.shields.io/badge/Version-1.0.0-blue)](https://github.com/ernieayala/l5r4-migrator/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![GitHub Downloads](https://img.shields.io/github/downloads/ernieayala/l5r4-migrator/total?label=Downloads&color=brightgreen)](https://github.com/ernieayala/l5r4-migrator/releases)
 [![GitHub Issues](https://img.shields.io/github/issues/ernieayala/l5r4-migrator)](https://github.com/ernieayala/l5r4-migrator/issues)
 
 Migrate Foundry VTT worlds from **l5r4** to **l5r4-enhanced** system (v13+).
