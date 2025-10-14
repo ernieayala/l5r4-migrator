@@ -63,6 +63,10 @@ export function setup() {
       contents: [],
       get: vi.fn()
     },
+    tables: {
+      contents: [],
+      get: vi.fn()
+    },
     world: {
       id: 'test-world',
       title: 'Test World'
@@ -226,6 +230,21 @@ export function setup() {
   };
 
   globalThis.Folder = class MockFolder {
+    constructor(data) {
+      Object.assign(this, data);
+    }
+    static create(data) {
+      return new this(data);
+    }
+    static deleteDocuments(ids) {
+      return Promise.resolve([]);
+    }
+    toObject() {
+      return { ...this };
+    }
+  };
+
+  globalThis.RollTable = class MockRollTable {
     constructor(data) {
       Object.assign(this, data);
     }
