@@ -84,3 +84,6 @@ docs/.buildinfo
 
 # Research and development
 # for-research/
+
+# Claude Code project config. Kept on disk, never committed.
+.claude/
